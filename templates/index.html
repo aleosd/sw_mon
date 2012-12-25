@@ -1,0 +1,76 @@
+{% extends "switches/base.html" %}
+
+{% block title %}
+Main table
+{% endblock %}
+
+{% block sidemenu %}
+<div class="well well-small">
+<ul class="nav nav-list">
+    <li class="nav-header">Status</li>
+    {% if not status %}
+        <li class="active"><a href="/">All</a></li>
+        <li><a href="/mon/errors/">Error</a></li>
+        <li><a href="/mon/warnings/">Warning</a></li>
+    {% elif status == "errors" %}
+        <li><a href="/">All</a></li>
+        <li class="active"><a href="/mon/errors/">Error</a></li>
+        <li><a href="/mon/warnings/">Warning</a></li>
+    {% elif status == "warnings" %}
+        <li><a href="/">All</a></li>
+        <li><a href="/mon/errors/">Error</a></li>
+        <li class="active"><a href="/mon/warnings/">Warning</a></li>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block maincontent %}
+<div id="textbox">
+    <p class="pull-left"><strong><font size="3">Total devices: {{ switch_list|length }}</font></strong></p>
+    <p class="pull-right">{% now "SHORT_DATETIME_FORMAT" %}</p>
+    <div style="clear: both;"></div>
+</div>
+<script type="text/javascript">
+$(document).ready(function()
+    {
+        $("#sw_table").tablesorter({sortList: [[0,0]]});
+    }
+);
+</script>
+{% if switch_list %}
+    <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
+        <thead>
+        <tr>
+            <th>Номер</th>
+            <th>Адрес</th>
+            <th>IP</th>
+            <th>Ping</th>
+            <th>Uptime</th>
+            <th>Тип</th>
+        </tr>
+        </thead>
+        
+        <tbody>
+        {% for switch in switch_list %}
+            {% if not switch.sw_ping %}
+            <tr class="error">
+            {% elif switch.sw_uptime < 86400 or not switch.sw_uptime %}
+            <tr class="warning">
+            {% else %}
+            <tr>
+            {% endif %}
+                <td>{{ switch.sw_id }}</td>
+                <td>{{ switch.sw_addr }}</td>
+                <td>{{ switch.ip_addr }}</td>
+                <td>{{ switch.sw_ping|default:"Error" }}</td>
+                <td>{{ switch.sw_uptime_str|default:"Unknown" }}</td>
+                <td>{{ switch.sw_type }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+        </table>
+{% else %}
+    <p>No {{ status }} switches in the database</p>
+{% endif %}
+{% endblock %}

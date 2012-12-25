@@ -1,0 +1,35 @@
+{% extends "switches/base.html" %}
+
+{% block title %}
+Please, login!
+{% endblock %}
+
+{% block maincontent %}
+
+{% if form.errors %}
+<br>
+<div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    Your username and password didn't match. Please try again.
+</div>
+{% endif %}
+
+<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+{% csrf_token %}
+<br>
+<table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="login" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endblock %}
