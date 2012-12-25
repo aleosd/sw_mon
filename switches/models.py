@@ -1,0 +1,64 @@
+import re
+import datetime
+from django.core.exceptions import ValidationError
+from django.db import models
+
+
+def validate_build(value):
+    allowed = re.template('[а-я0-9]')
+    for letter in value:
+        if not allowed.findall(letter):
+            raise ValidationError('{} is not allowed build number'.format(value))
+
+
+# Create your models here.
+class SwitchType(models.Model):
+    sw_type = models.CharField(max_length=100, verbose_name='switch type')
+
+    def __str__(self):
+        return self.sw_type
+
+class Street(models.Model):
+    street = models.CharField(max_length=100, verbose_name='street')
+
+    def __str__(self):
+        return self.street
+
+
+class Switch(models.Model):
+    ip_addr = models.IPAddressField(verbose_name='ip address', unique=True)
+    districts = (
+        ('mzv', 'Машзавод'),
+        ('vkz', 'Вокзал'),
+        ('szp', 'Северо-Запад'),
+        ('ggn', 'Гагарина'))
+    sw_district = models.CharField(max_length=3, choices=districts,
+                                   verbose_name='District')
+    sw_street = models.ForeignKey(Street, verbose_name='street')
+    sw_build_num = models.CharField(max_length=4, validators=[validate_build],
+                                    verbose_name='Building number')
+    sw_type = models.ForeignKey(SwitchType, verbose_name='switch type')
+    sw_id = models.IntegerField(unique=True)
+    sw_enabled = models.BooleanField(default=True, verbose_name='Enabled')
+    sw_ping = models.FloatField(blank=True, null=True, editable=False)
+    sw_uptime = models.IntegerField(blank=True, null=True, editable=False)
+    sw_uplink = models.CharField(max_length=200, blank=True, null=True,
+                                 verbose_name='Uplink ports',
+                                 help_text='Enter port numbers, separated with commas')
+
+    def __str__(self):
+        return '{} - {}'.format(self.ip_addr, self.sw_street)
+
+    def sw_addr(self):
+        return '{}, {}'.format(self.sw_street, self.sw_build_num)
+    sw_addr.admin_order_field = 'sw_street'
+
+    def sw_type_colored(self):
+        if str(self.sw_type) == 'Unmanaged':
+            return '<span style="color: #%s;">%s</span>' % (980000, self.sw_type)
+        return self.sw_type
+    sw_type_colored.allow_tags = True
+    sw_type_colored.admin_order_field = 'sw_type'
+
+    def sw_uptime_str(self):
+        return datetime.timedelta(seconds=self.sw_uptime)
