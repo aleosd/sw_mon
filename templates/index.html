@@ -1,4 +1,4 @@
-{% extends "switches/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
 Main table
@@ -37,7 +37,7 @@ $(document).ready(function()
     }
 );
 </script>
-{% if switch_list %}
+{% if render_dict %}
     <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
         <thead>
         <tr>
@@ -51,20 +51,20 @@ $(document).ready(function()
         </thead>
         
         <tbody>
-        {% for switch in switch_list %}
-            {% if not switch.sw_ping %}
+        {% for id, data in render_dict.items %}
+            {% if not data.sw_ping %}
             <tr class="error">
-            {% elif switch.sw_uptime < 86400 or not switch.sw_uptime %}
+            {% elif data.sw_uptime < 86400 or not data.sw_uptime %}
             <tr class="warning">
             {% else %}
             <tr>
             {% endif %}
-                <td>{{ switch.sw_id }}</td>
-                <td>{{ switch.sw_addr }}</td>
-                <td>{{ switch.ip_addr }}</td>
-                <td>{{ switch.sw_ping|default:"Error" }}</td>
-                <td>{{ switch.sw_uptime_str|default:"Unknown" }}</td>
-                <td>{{ switch.sw_type }}</td>
+                <td>{{ data.sw_id }}</td>
+                <td>{{ data.sw_street }}, {{ data.sw_build_num }}</td>
+                <td>{{ data.ip_addr }}</td>
+                <td>{{ data.sw_ping|default:"Error" }}</td>
+                <td>{{ data.sw_uptime|default:"Unknown" }}</td>
+                <td>{{ data.sw_type }}</td>
             </tr>
 
         {% endfor %}
