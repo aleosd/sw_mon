@@ -32,6 +32,5 @@ def index(request, status=None):
                                   'sw_uptime': switch.sw_uptime_str,
                                   'sw_type': sw_type_dic[switch.sw_type_id],
         }
-    print(render_dict)
     return render(request, 'index.html',
-                  {'switch_list': switch_list, 'status': status, 'render_dict': render_dict,})
+                  {'status': status, 'render_dict': render_dict,})

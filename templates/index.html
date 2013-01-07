@@ -26,7 +26,7 @@ Main table
 
 {% block maincontent %}
 <div id="textbox">
-    <p class="pull-left"><strong><font size="3">Total devices: {{ switch_list|length }}</font></strong></p>
+    <p class="pull-left"><strong><font size="3">Total devices: {{ render_dict|length }}</font></strong></p>
     <p class="pull-right">{% now "SHORT_DATETIME_FORMAT" %}</p>
     <div style="clear: both;"></div>
 </div>

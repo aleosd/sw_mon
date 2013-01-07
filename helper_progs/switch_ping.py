@@ -1,8 +1,7 @@
 #! /usr/bin/python3
 
-import os
 import subprocess
-import sqlite3
+import psycopg2
 import re
 from threading import Thread, Lock
 
@@ -16,19 +15,18 @@ Modification for usage with django-project
 switch-monitoring.
 """
 
-DBFILE = 'data.db'
-PATH = '/home/shadow/projects/08_switch_mon/'
-FULLPATH = os.path.join(PATH, DBFILE)
-
-ipl = ['62.165.58.54', '62.165.58.53', 'ya.ru',]
+DBNAME = 'sw_mon'
+USER = 'sw_mon'
+PASS = 'monitor'
 
 def makeconnection():
-    if os.path.isfile(FULLPATH):
-        conn = sqlite3.connect(FULLPATH)
+    try:
+        conn = psycopg2.connect("dbname={} user={} password={}".format(DBNAME,
+                                                                       USER,
+                                                                       PASS))
         return conn
-    else:
-        print('Database file not found!\n')
-        return
+    except Exception as e:
+        print('Error: ', e)
 
 lock = Lock()
 
@@ -47,10 +45,10 @@ def setdata(avg_ping, ip_addr, data='ping'):
     conn = makeconnection()
     c = conn.cursor()
     if data=='ping':
-        c.execute("""UPDATE switches_switch SET 'sw_ping'=(?) WHERE ip_addr=(?)""",
+        c.execute("""UPDATE switches_switch SET sw_ping=(%s) WHERE ip_addr=(%s)""",
                   (avg_ping, ip_addr))
     elif data == 'uptime':
-        c.execute("""UPDATE switches_switch SET 'sw_uptime'=(?) WHERE ip_addr=(?)""",
+        c.execute("""UPDATE switches_switch SET sw_uptime=(%s) WHERE ip_addr=(%s)""",
                   (avg_ping, ip_addr))
     conn.commit()
     conn.close()
