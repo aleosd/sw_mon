@@ -26,7 +26,7 @@ def check_uptime(ip, oid=OID):
                                       '1.3.6.1.2.1.1.3'], stdout=subprocess.PIPE)
                 result = p.communicate()
                 seconds = re.search("(\(\d+\))", result[0].decode('UTF-8'))
-                sec = seconds.group()[1:-1]
+                sec = seconds.group()[1:-3]
                 switch_ping.lock.acquire()
                 switch_ping.setdata(int(sec), ip, 'uptime')
                 switch_ping.lock.release()
