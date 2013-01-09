@@ -18,6 +18,7 @@ switch-monitoring.
 DBNAME = 'sw_mon'
 USER = 'sw_mon'
 PASS = 'monitor'
+PING_DIC = {}
 
 def makeconnection():
     try:
@@ -71,20 +72,33 @@ def ping_st(ip, *args):
             m2 = re.search('rtt min/avg/max/mdev = (.*) ms', line)
             if m2:
                 avgtime = m2.group(1).split('/')[1]
+                PING_DIC[ip] = avgtime
             else:
                 avgtime = None
-    lock.acquire()
-    setdata(avgtime, ip, 'ping')
-    lock.release()
-    return ip, avgtime, ping_bad
+                PING_DIC[ip] = None
 
 def main():
     data_list = fetchdata()
+    threads = []
     for item in data_list:
+        # checking if tests are enabled for device
         if item[1]:
-            Thread(target=ping_st, args=(item[0],)).start()
+            t = Thread(target=ping_st, args=(item[0],))
+            threads.append(t)
         else:
+            PING_DIC[item[0]] = 0
             setdata(0, item[0], 'ping')
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads: # waiting all threads to finish
+        thread.join()
+
+    lock.acquire()
+    for ip, ping in PING_DIC.items():
+        setdata(ping, ip, 'ping')
+    lock.release()
 
 if __name__ == '__main__':
     main()
