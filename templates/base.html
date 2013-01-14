@@ -7,10 +7,10 @@
             {% endblock %}
         </title>
         <!-- Bootstrap -->
-        <link href ="{{ STATIC_URL }}/css/bootstrap.min.css" rel="stylesheet" media="screen">
-        <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-latest.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.tablesorter.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}/js/bootstrap.min.js"></script>
+        <link href ="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-latest.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tablesorter.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
     </head>
     <body>
       <div class="container">
@@ -19,6 +19,16 @@
       <script type="text/javascript">
       $(docment).ready( function() {
       $('.dropdown-toggle').dropdown();
+      });
+      </script>
+
+      <!-- Tooltip script -->
+      <script type="text/javascript">
+      $(function(){
+          $('body').tooltip({
+              selector: "[rel=tooltip]",
+              placement: "bottom"
+          });
       });
       </script>
 

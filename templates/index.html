@@ -26,7 +26,9 @@ Main table
 
 {% block maincontent %}
 <div id="textbox">
-    <p class="pull-left"><strong><font size="3">Total devices: {{ render_dict|length }}</font></strong></p>
+    <p class="pull-left"><strong><font size="3">
+    Total devices: {{ render_dict|length }}; Warnings: {{ bad_uptime }}; Errors: {{ bad_ping }}
+    </font></strong></p>
     <p class="pull-right">{% now "SHORT_DATETIME_FORMAT" %}</p>
     <div style="clear: both;"></div>
 </div>
@@ -54,13 +56,15 @@ $(document).ready(function()
         {% for id, data in render_dict.items %}
             {% if not data.sw_ping %}
             <tr class="error">
-            {% elif data.sw_uptime < 86400 or not data.sw_uptime %}
+            {% elif data.sw_uptime_sec < 86400 or not data.sw_uptime %}
             <tr class="warning">
             {% else %}
             <tr>
             {% endif %}
                 <td>{{ data.sw_id }}</td>
-                <td>{{ data.sw_street }}, {{ data.sw_build_num }}</td>
+                <td><a href="#" rel="tooltip" data-original-title="{{ data.sw_comment }}">
+                    {{ data.sw_street }}, {{ data.sw_build_num }}</a>
+                </td>
                 <td>{{ data.ip_addr }}</td>
                 <td>{{ data.sw_ping|default:"Error" }}</td>
                 <td>{{ data.sw_uptime|default:"Unknown" }}</td>
