@@ -11,7 +11,10 @@ urlpatterns = patterns('',
 
     url(r'^$', 'switches.views.index'),
     url(r'^mon/(?P<status>\w+)/$', 'switches.views.index'), 
-    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'switches/login.html'}),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    url(r'^new/$', 'switches.views.edit'),
+    url(r'^edit/(?P<id>\d+)/$', 'switches.views.edit', name='edit'),
+    url(r'^create/', 'switches.views.create_switch'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

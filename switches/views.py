@@ -1,8 +1,9 @@
 # Create your views here.
 from django.shortcuts import render
-from switches.models import Switch, Street, SwitchType
+from switches.models import Switch, Street, SwitchType, SwitchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 
 @login_required
 def index(request, status=None):
@@ -34,7 +35,8 @@ def index(request, status=None):
                 bad_uptime += 1
             if not switch.sw_ping:
                 bad_ping += 1
-            render_dict[switch.id] = {'sw_id': switch.sw_id,
+            render_dict[switch.id] = {'id': switch.id,
+                                      'sw_id': switch.sw_id,
                                       'sw_street': street_dic[switch.sw_street_id],
                                       'sw_build_num': switch.sw_build_num,
                                       'ip_addr': switch.ip_addr,
@@ -47,3 +49,20 @@ def index(request, status=None):
     return render(request, 'index.html',
                   {'status': status, 'render_dict': render_dict,
                    'bad_uptime': bad_uptime, 'bad_ping': bad_ping})
+
+def edit(request, id=None):
+    if not id:
+        return render(request, 'edit.html', {'form': SwitchForm()})
+    else:
+        switch = Switch.objects.get(id=id)
+        form = SwitchForm(instance=switch)
+        request.session['instance'] = switch
+        return render(request, 'edit.html', {'form': form})
+
+
+def create_switch(request):
+    if request.method == 'POST':
+        form = SwitchForm(request.POST, instance=request.session['instance'])
+        if form.is_valid():
+            form.save()
+    return HttpResponseRedirect('/')

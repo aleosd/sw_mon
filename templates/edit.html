@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Switch
+{% endblock %}
+
+{% block sidemenu %}
+<div class="well-small">
+<p><button class="btn">Ping</button></p>
+<p><button class="btn btn-danger">Reboot</button></p>
+</div>
+{% endblock %}
+
+{% block maincontent %}
+<form action="/create/" method=POST>{% csrf_token %}
+    <table>{{ form }}</table><br>
+    <input type=submit>
+</form>
+{% endblock %}

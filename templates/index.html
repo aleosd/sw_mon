@@ -21,6 +21,8 @@ Main table
         <li><a href="/mon/errors/">Error</a></li>
         <li class="active"><a href="/mon/warnings/">Warning</a></li>
     {% endif %}
+        <li class="divider"></li>
+        <li><a href="/new/">Add Switch</a><li>
 </div>
 {% endblock %}
 
@@ -51,7 +53,7 @@ $(document).ready(function()
             <th>Тип</th>
         </tr>
         </thead>
-        
+
         <tbody>
         {% for id, data in render_dict.items %}
             {% if not data.sw_ping %}
@@ -62,7 +64,7 @@ $(document).ready(function()
             <tr>
             {% endif %}
                 <td>{{ data.sw_id }}</td>
-                <td><a href="#" rel="tooltip" data-original-title="{{ data.sw_comment }}">
+                <td><a href="{% url 'edit' data.id %}" rel="tooltip" data-original-title="{{ data.sw_comment }}">
                     {{ data.sw_street }}, {{ data.sw_build_num }}</a>
                 </td>
                 <td>{{ data.ip_addr }}</td>

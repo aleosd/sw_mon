@@ -2,6 +2,7 @@ import re
 import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
+from django import forms
 
 
 def validate_build(value):
@@ -20,6 +21,9 @@ class SwitchType(models.Model):
 
 class Street(models.Model):
     street = models.CharField(max_length=100, verbose_name='street')
+    
+    class Meta:
+        ordering = ('street',)
 
     def __str__(self):
         return self.street
@@ -45,9 +49,12 @@ class Switch(models.Model):
     sw_uplink = models.CharField(max_length=200, blank=True, null=True,
                                  verbose_name='Uplink ports',
                                  help_text='Enter port numbers, separated with commas')
+    sw_comment = models.CharField(max_length=500, blank=True, null=True,
+                                  verbose_name='Comments')
 
     def __str__(self):
-        return '{} - {}'.format(self.ip_addr, self.sw_street)
+        return '{} - {}, {}'.format(self.ip_addr, self.sw_street,
+                                    self.sw_build_num)
 
     def sw_addr(self):
         return '{}, {}'.format(self.sw_street, self.sw_build_num)
@@ -62,3 +69,8 @@ class Switch(models.Model):
 
     def sw_uptime_str(self):
         return datetime.timedelta(seconds=self.sw_uptime)
+
+
+class SwitchForm(forms.ModelForm):
+    class Meta:
+        model = Switch
