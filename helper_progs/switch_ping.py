@@ -4,6 +4,7 @@ import subprocess
 import psycopg2
 import re
 from threading import Thread, Lock
+import secure
 
 
 """  Program for parsing ping information.
@@ -15,9 +16,9 @@ Modification for usage with django-project
 switch-monitoring.
 """
 
-DBNAME = 'sw_mon'
-USER = 'sw_mon'
-PASS = 'monitor'
+DBNAME = secure.DBNAME
+USER = secure.USER
+PASS = secure.PASS
 PING_DIC = {}
 
 def makeconnection():
@@ -34,7 +35,8 @@ lock = Lock()
 def fetchdata():
     conn = makeconnection()
     c = conn.cursor()
-    c.execute("SELECT ip_addr, sw_enabled FROM switches_switch")
+    c.execute("""SELECT ip_addr, sw_enabled, sw_type_id,
+              sw_id, sw_uptime FROM switches_switch""")
     data = c.fetchall()
     data_list = []
     for row in data:
