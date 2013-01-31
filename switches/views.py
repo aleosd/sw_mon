@@ -62,7 +62,16 @@ def edit(request, id=None):
 
 def create_switch(request):
     if request.method == 'POST':
-        form = SwitchForm(request.POST, instance=request.session['instance'])
+        try:
+            form = SwitchForm(request.POST, instance=request.session['instance'])
+        except Exception:
+            form = SwitchForm(request.POST)
         if form.is_valid():
             form.save()
-    return HttpResponseRedirect('/')
+            try:
+                del request.session['instance']
+            except:
+                pass
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, 'edit.html', {'form': form})
