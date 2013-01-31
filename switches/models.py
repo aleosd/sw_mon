@@ -74,3 +74,18 @@ class Switch(models.Model):
 class SwitchForm(forms.ModelForm):
     class Meta:
         model = Switch
+
+
+class Event(models.Model):
+    ev_datetime = models.DateTimeField(auto_now_add=True,
+                                       verbose_name='Date and time')
+    types = (('info', 'Info'),
+            ('warn', 'Warning'),
+            ('err', 'Error'))
+    ev_type = models.CharField(max_length=4, choices=types,
+                               verbose_name='Event type')
+    ev_switch = models.ForeignKey(Switch)
+    ev_event = models.CharField(max_length=50, verbose_name='Event')
+    ev_comment = models.CharField(max_length=500, blank=True, null=True,
+                                  verbose_name='Comments')
+
