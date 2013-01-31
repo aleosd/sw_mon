@@ -6,6 +6,7 @@ import psycopg2
 import re
 from threading import Thread, Lock
 import secure
+import database_con as db
 
 
 """  Program for parsing ping information.
@@ -21,6 +22,7 @@ DBNAME = secure.DBNAME
 USER = secure.USER
 PASS = secure.PASS
 PING_DIC = {}
+EVENT_DIC = {}
 
 def makeconnection():
     try:
@@ -112,10 +114,8 @@ def main():
         thread.join()
 
     lock.acquire()
+    db.setdata(PING_DIC, 'ping')
     for ip in PING_DIC:
-        # print(ip, PING_DIC[ip])
-        setdata(PING_DIC[ip]['ping'], ip, 'ping')
-
         # Event record, if switch not responding
         if PING_DIC[ip]['old_ping'] and not PING_DIC[ip]['ping']:
             db_data = ['err', PING_DIC[ip]['id'], 'Switch is not responding', '']
