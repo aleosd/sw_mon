@@ -1,5 +1,5 @@
 from django.contrib import admin
-from switches.models import Switch, SwitchType, Street
+from switches.models import Switch, SwitchType, Street, Event
 
 
 class SwitchAdmin(admin.ModelAdmin):
@@ -42,3 +42,8 @@ class StreetAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Street, StreetAdmin)
+
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('ev_type', 'ev_datetime')
+
+admin.site.register(Event, EventAdmin)
