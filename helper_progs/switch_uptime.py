@@ -5,6 +5,7 @@ import re
 from threading import Thread
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 import switch_ping
+import database_con as db
 
 
 COMMUNITYRO = 'public'
@@ -13,7 +14,8 @@ OID = '1.3.6.1.2.1.1.3.0'
 UPTIME_DIC = {}
 
 
-def check_uptime(ip, oid=OID):
+def check_uptime(id, ip, oid=OID):
+    UPTIME_DIC[id] = {}
     oid = tuple([int(i) for i in oid.split('.')])
     cg = cmdgen.CommandGenerator()
     comm_data = cmdgen.CommunityData('my-manager', COMMUNITYRO, 0)
@@ -25,19 +27,20 @@ def check_uptime(ip, oid=OID):
             try:
                 p = subprocess.Popen(['snmpwalk', '-v', '1', '-c',
                                       'public', '-On', ip,
-                                      '1.3.6.1.2.1.1.3'], stdout=subprocess.PIPE)
+                                      '1.3.6.1.2.1.1.3', '2>/dev/null'], 
+                                      stdout=subprocess.PIPE)
                 result = p.communicate()
                 seconds = re.search("(\(\d+\))", result[0].decode('UTF-8'))
-                sec = seconds.group()[1:-3]
-                UPTIME_DIC[ip] = sec
+                sec = int(seconds.group()[1:-3])
+                UPTIME_DIC[id]['sw_uptime'] = sec
             except Exception:
-                UPTIME_DIC[ip] = None
+                UPTIME_DIC[id]['sw_uptime'] = None
         else:
             # normal work with pysnmp
             sec = int(str(result[0][1])[:-2])
-            UPTIME_DIC[ip] = sec
+            UPTIME_DIC[id]['sw_uptime'] = sec
     except Exception as e:
-        UPTIME_DIC[ip] = None
+        UPTIME_DIC[id]['sw_uptime'] = None
         # print('Error', e)
 
 
@@ -47,10 +50,11 @@ if __name__=='__main__':
     for item in data_list:
         # cheking if tests are enabled for device
         if item[1]:
-            t = Thread(target=check_uptime, args=(item[0],))
+            t = Thread(target=check_uptime, args=(item[6], item[0],))
             threads.append(t)
         else:
-            UPTIME_DIC[item[0]] = 'Error'
+            UPTIME_DIC[item[6]] = {}
+            UPTIME_DIC[item[6]]['sw_uptime'] = None 
 
     for thread in threads: # starting all threads
         thread.start()
@@ -60,6 +64,7 @@ if __name__=='__main__':
     
     # writing to database
     switch_ping.lock.acquire()
-    for ip, uptime in UPTIME_DIC.items():
-        switch_ping.setdata(uptime, ip, 'uptime')
+    db.setdata(UPTIME_DIC, 'uptime')
+    # for ip, uptime in UPTIME_DIC.items():
+    #     switch_ping.setdata(uptime, ip, 'uptime')
     switch_ping.lock.release()

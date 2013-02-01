@@ -68,14 +68,13 @@ def setdata(avg_ping, ip_addr, data='ping', db_data = []):
     conn.commit()
     conn.close()
 
-def ping_st(ip, old_ping, sw_id, *args):
+def ping_st(ip, old_ping, id, *args):
     p = subprocess.Popen(["ping", "-c", "3", ip], stdout=subprocess.PIPE)
     result = p.communicate()
     pclst = 0
     ping_bad = 'Good'
-    PING_DIC[ip] = {}
-    PING_DIC[ip]['old_ping'] = old_ping
-    PING_DIC[ip]['id'] = sw_id
+    PING_DIC[id] = {}
+    PING_DIC[id]['old_ping'] = old_ping
     for line in result:
         if line != None:
             line = line.decode()
@@ -86,10 +85,10 @@ def ping_st(ip, old_ping, sw_id, *args):
             m2 = re.search('rtt min/avg/max/mdev = (.*) ms', line)
             if m2:
                 avgtime = m2.group(1).split('/')[1]
-                PING_DIC[ip]['ping'] = avgtime
+                PING_DIC[id]['ping'] = float(avgtime)
             else:
                 avgtime = None
-                PING_DIC[ip]['ping'] = None
+                PING_DIC[id]['ping'] = None
 
 def main():
     data_list = fetchdata()
@@ -101,11 +100,9 @@ def main():
             threads.append(t)
         # if disable, setting None
         else:
-            PING_DIC[item[0]] = {}
-            PING_DIC[item[0]]['ping'] = None
-            PING_DIC[item[0]]['old_ping'] = None
-            PING_DIC[item[0]]['id'] = item[6]
-            # setdata(0, item[0], 'ping')
+            PING_DIC[item[6]] = {}
+            PING_DIC[item[6]]['ping'] = None
+            PING_DIC[item[6]]['old_ping'] = None
 
     for thread in threads:
         thread.start()
@@ -115,12 +112,21 @@ def main():
 
     lock.acquire()
     db.setdata(PING_DIC, 'ping')
-    for ip in PING_DIC:
-        # Event record, if switch not responding
-        if PING_DIC[ip]['old_ping'] and not PING_DIC[ip]['ping']:
-            db_data = ['err', PING_DIC[ip]['id'], 'Switch is not responding', '']
-            setdata(None, None, data='event', db_data=db_data)
     lock.release()
+
+    # Create event record in dic if switch not responding
+    for id in PING_DIC:
+        if PING_DIC[id]['old_ping'] and not PING_DIC[id]['ping']:
+            print('Switch not responding!')
+            EVENT_DIC[id]['ev_type'] = 'err'
+            EVENT_DIC[id]['ev_event'] = 'Switch is not responding'
+            EVENT_DIC[id]['ev_comment'] = ''
+
+    # If at least one record, updating database
+    if len(PING_DIC) > 0:
+        lock.acquire()
+        db.setdata(EVENT_DIC, data='event')
+        lock.release()
 
 if __name__ == '__main__':
     main()

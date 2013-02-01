@@ -42,13 +42,13 @@ def setdata(data_dic={}, data='ping'):
     conn = makeconnection()
     c = conn.cursor()
     if data=='ping':
-        for key in data_dic:
-            c.execute("""UPDATE switches_switch SET sw_ping=(%s) WHERE ip_addr=(%s)""",
-                      (data_dic[key]['ping'], key))
+        for id in data_dic:
+            c.execute("""UPDATE switches_switch SET sw_ping=(%s) WHERE id=(%s)""",
+                      (data_dic[id]['ping'], id))
     elif data == 'uptime':
-        for key in data_dic:
-            c.execute("""UPDATE switches_switch SET sw_uptime=(%s) WHERE ip_addr=(%s)""",
-                      (data_dic[key]['sw_uptime'], data_dic[key]['ip_addr']))
+        for id in data_dic:
+            c.execute("""UPDATE switches_switch SET sw_uptime=(%s) WHERE id=(%s)""",
+                      (data_dic[id]['sw_uptime'], id))
     elif data == 'event':
         for key in data_dic:
             c.execute("""INSERT INTO switches_event VALUES (%s)""",
