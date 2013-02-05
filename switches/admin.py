@@ -44,6 +44,6 @@ class StreetAdmin(admin.ModelAdmin):
 admin.site.register(Street, StreetAdmin)
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('ev_type', 'ev_datetime')
+    list_display = ('ev_switch', 'ev_type', 'ev_datetime')
 
 admin.site.register(Event, EventAdmin)

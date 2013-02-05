@@ -85,7 +85,7 @@ class Event(models.Model):
     ev_type = models.CharField(max_length=4, choices=types,
                                verbose_name='Event type')
     ev_switch = models.ForeignKey(Switch)
-    ev_event = models.CharField(max_length=50, verbose_name='Event')
+    ev_event = models.CharField(max_length=500, verbose_name='Event')
     ev_comment = models.CharField(max_length=500, blank=True, null=True,
                                   verbose_name='Comments')
 

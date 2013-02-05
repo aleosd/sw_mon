@@ -51,7 +51,10 @@ def setdata(data_dic={}, data='ping'):
                       (data_dic[id]['sw_uptime'], id))
     elif data == 'event':
         for key in data_dic:
-            c.execute("""INSERT INTO switches_event VALUES (%s)""",
+            c.execute("""INSERT INTO switches_event (ev_datetime, ev_type,
+                                                     ev_switch_id, ev_event,
+                                                     ev_comment) 
+                      VALUES (%s, %s, %s, %s, %s)""",
                       (datetime.datetime.now(), data_dic[key]['ev_type'], key,
                        data_dic[key]['ev_event'], data_dic[key]['ev_comment']))
     conn.commit()

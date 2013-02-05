@@ -91,7 +91,7 @@ def ping_st(ip, old_ping, id, *args):
                 PING_DIC[id]['ping'] = None
 
 def main():
-    data_list = fetchdata()
+    data_list = db.fetchdata()
     threads = []
     for item in data_list:
         # checking if tests are enabled for device
@@ -118,13 +118,15 @@ def main():
     for id in PING_DIC:
         if PING_DIC[id]['old_ping'] and not PING_DIC[id]['ping']:
             print('Switch not responding!')
-            EVENT_DIC[id]['ev_type'] = 'err'
-            EVENT_DIC[id]['ev_event'] = 'Switch is not responding'
-            EVENT_DIC[id]['ev_comment'] = ''
+            EVENT_DIC[id] = {}
+            EVENT_DIC[id]['ev_type'] = "err"
+            EVENT_DIC[id]['ev_event'] = "Switch is not responding"
+            EVENT_DIC[id]['ev_comment'] = " "
 
     # If at least one record, updating database
-    if len(PING_DIC) > 0:
+    if len(EVENT_DIC) > 0:
         lock.acquire()
+        print("Adding new event")
         db.setdata(EVENT_DIC, data='event')
         lock.release()
 
