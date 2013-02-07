@@ -50,16 +50,19 @@ def index(request, status=None):
                   {'status': status, 'render_dict': render_dict,
                    'bad_uptime': bad_uptime, 'bad_ping': bad_ping})
 
+@login_required
 def edit(request, id=None):
     if not id:
         return render(request, 'edit.html', {'form': SwitchForm()})
     else:
+        events = Event.objects.filter(ev_switch=id)[:10]
         switch = Switch.objects.get(id=id)
         form = SwitchForm(instance=switch)
         request.session['instance'] = switch
-        return render(request, 'edit.html', {'form': form})
+        return render(request, 'edit.html', {'form': form, 'events': events})
 
 
+@login_required
 def create_switch(request):
     if request.method == 'POST':
         try:
@@ -76,14 +79,14 @@ def create_switch(request):
         else:
             return render(request, 'edit.html', {'form': form})
 
+@login_required
 def history(request, status=None):
-    event_list = Event.objects.select_related().all().order_by('-id')[:30]
-    render_dict = {}
-    for event in event_list:
-        render_dict[event.id] = {'ev_datetime': event.ev_datetime,
-                                'ev_type': event.ev_type,
-                                'ev_switch_id': event.ev_switch_id,
-                                'ev_event': event.ev_event,
-                                'ev_comment': event.ev_comment}
-    # return render(request, 'history.html', {'render_dict': render_dict})
-    return render(request, 'history.html', {'event_list': event_list})
+    if status == "all":
+        event_list = Event.objects.select_related().all().order_by('-id')[:30]
+    elif status == "warning":
+        pass
+    elif status == "errors":
+        event_list = Event.objects.select_related().filter(ev_type='err')[:30]
+        pass
+    return render(request, 'history.html', {'event_list': event_list,
+                                            'status' : status})
