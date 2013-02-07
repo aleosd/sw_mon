@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+Main table
+{% endblock %}
+
+{% block sidemenu %}
+<div class="well well-small">
+<ul class="nav nav-list">
+    <li class="nav-header">Status</li>
+    {% if not status %}
+        <li class="All"><a href="/mon/events/">All</a></li>
+        <li><a href="/mon/events/warnings/">Warning</a></li>
+        <li><a href="/mon/events/errors/">Error</a></li>
+    {% elif status == "warnings" %}
+        <li><a href="/mon/events">All</a></li>
+        <li class="active"><a href="/mon/events/warnings/">Warning</a></li>
+        <li><a href="/mon/events/errors/">Error</a></li>
+    {% elif status == "errors" %}
+        <li><a href="/mon/events">All</a></li>
+        <li><a href="/mon/events/warnings/">Warning</a></li>
+        <li class="active"><a href="/mon/events/errors/">Error</a></li>
+    {% endif %}
+        <li class="divider"></li>
+        <li><a href="/new/">Add Event</a><li>
+</div>
+{% endblock %}
+
+{% block maincontent %}
+<div id="textbox">
+    <p class="pull-left"><strong><font size="3">
+    Last 24 hours: {{ render_dict|length }}; Warnings: {{ bad_uptime }}; Errors: {{ bad_ping }}
+    </font></strong></p>
+    <p class="pull-right">{% now "SHORT_DATETIME_FORMAT" %}</p>
+    <div style="clear: both;"></div>
+</div>
+<script type="text/javascript">
+$(document).ready(function()
+    {
+        $("#sw_table").tablesorter();
+    }
+);
+</script>
+{% if event_list %}
+    <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
+        <thead>
+        <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Switch</th>
+            <th>Event</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for event in event_list %}
+            {% if event.ev_type == "err" %}
+            <tr class="error">
+            {% elif event.ev_type == "warn" %}
+            <tr class="warning">
+            {% else %}
+            <tr>
+            {% endif %}
+                <td>{{ event.ev_datetime|date:"d M, H:i" }}</td>
+                <td>{{ event.get_ev_type_display }}</td>
+                <td>{{ event.ev_switch }}</td>
+                <td>{{ event.ev_event }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+        </table>
+{% else %}
+    <p>No {{ status }} events in the database</p>
+{% endif %}
+{% endblock %}

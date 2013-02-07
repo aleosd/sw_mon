@@ -1,6 +1,6 @@
 # Create your views here.
 from django.shortcuts import render
-from switches.models import Switch, Street, SwitchType, SwitchForm
+from switches.models import Switch, Street, SwitchType, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -75,3 +75,15 @@ def create_switch(request):
             return HttpResponseRedirect('/')
         else:
             return render(request, 'edit.html', {'form': form})
+
+def history(request, status=None):
+    event_list = Event.objects.select_related().all().order_by('-id')[:30]
+    render_dict = {}
+    for event in event_list:
+        render_dict[event.id] = {'ev_datetime': event.ev_datetime,
+                                'ev_type': event.ev_type,
+                                'ev_switch_id': event.ev_switch_id,
+                                'ev_event': event.ev_event,
+                                'ev_comment': event.ev_comment}
+    # return render(request, 'history.html', {'render_dict': render_dict})
+    return render(request, 'history.html', {'event_list': event_list})

@@ -52,6 +52,10 @@ class Switch(models.Model):
     sw_comment = models.CharField(max_length=500, blank=True, null=True,
                                   verbose_name='Comments')
 
+
+    class Meta:
+        verbose_name_plural = "Switches"
+
     def __str__(self):
         return '{} - {}, {}'.format(self.ip_addr, self.sw_street,
                                     self.sw_build_num)
@@ -71,6 +75,7 @@ class Switch(models.Model):
         return datetime.timedelta(seconds=self.sw_uptime)
 
 
+
 class SwitchForm(forms.ModelForm):
     class Meta:
         model = Switch
@@ -88,4 +93,19 @@ class Event(models.Model):
     ev_event = models.CharField(max_length=500, verbose_name='Event')
     ev_comment = models.CharField(max_length=500, blank=True, null=True,
                                   verbose_name='Comments')
+
+    class Meta:
+        ordering = ['-ev_datetime']
+
+    def ev_type_colored(self):
+        if str(self.ev_type) == 'err':
+            return '<span style="color: #%s;">%s</span>' % ('ff0000', 'Error')
+        elif str(self.ev_type) == 'info':
+            return '<span style="color: #%s;">%s</span>' % ('00ff33', 'Info')
+        elif str(self.ev_type) == 'warn':
+            return '<span style="color: #%s;">%s</span>' % ('ffcc33', 'Warning')
+        return self.ev_type
+    ev_type_colored.allow_tags = True
+    ev_type_colored.admin_order_field = 'sw_type'
+
 
