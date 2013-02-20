@@ -36,7 +36,7 @@ Events history
 {% block maincontent %}
 <div id="textbox">
     <p class="pull-left"><strong><font size="3">
-    Last 24 hours: {{ render_dict|length }}; Warnings: {{ bad_uptime }}; Errors: {{ bad_ping }}
+    Last 24 hours: {{ events_per_day|length }} events; Warnings: {{ bad_uptime }}; Errors: {{ bad_ping }}
     </font></strong></p>
     <p class="pull-right">{% now "SHORT_DATETIME_FORMAT" %}</p>
     <div style="clear: both;"></div>

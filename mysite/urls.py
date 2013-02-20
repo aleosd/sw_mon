@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     # url(r'^mysite/', include('mysite.foo.urls')),
 
     url(r'^$', 'switches.views.index'),
-    url(r'^mon/event/', 'switches.views.history'),
+    url(r'^mon/events/(?P<status>\w+)/$', 'switches.views.history'),
     url(r'^mon/(?P<status>\w+)/$', 'switches.views.index'), 
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^new/$', 'switches.views.edit'),

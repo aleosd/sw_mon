@@ -1,4 +1,5 @@
 # Create your views here.
+from datetime import datetime, timedelta
 from django.shortcuts import render
 from switches.models import Switch, Street, SwitchType, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
@@ -46,6 +47,11 @@ def index(request, status=None):
                                       'sw_type': sw_type_dic[switch.sw_type_id],
                                       'sw_comment': switch.sw_comment,
             }
+    try:
+        del request.session['instance']
+    except:
+        pass
+
     return render(request, 'index.html',
                   {'status': status, 'render_dict': render_dict,
                    'bad_uptime': bad_uptime, 'bad_ping': bad_ping})
@@ -81,12 +87,13 @@ def create_switch(request):
 
 @login_required
 def history(request, status=None):
+    t = Event.objects.filter(ev_datetime__gte=datetime.now() - timedelta(days=1))
     if status == "all":
         event_list = Event.objects.select_related().all().order_by('-id')[:30]
-    elif status == "warning":
-        pass
+    elif status == "warnings":
+        event_list = Event.objects.select_related().filter(ev_type='warn')[:30]
     elif status == "errors":
         event_list = Event.objects.select_related().filter(ev_type='err')[:30]
-        pass
     return render(request, 'history.html', {'event_list': event_list,
-                                            'status' : status})
+                                            'status' : status,
+                                            'events_per_day' : t})

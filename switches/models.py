@@ -21,7 +21,7 @@ class SwitchType(models.Model):
 
 class Street(models.Model):
     street = models.CharField(max_length=100, verbose_name='street')
-    
+
     class Meta:
         ordering = ('street',)
 
@@ -73,6 +73,9 @@ class Switch(models.Model):
 
     def sw_uptime_str(self):
         return datetime.timedelta(seconds=self.sw_uptime)
+
+    def get_absolute_url(self):
+        return "/edit/%i/" % self.id
 
 
 
