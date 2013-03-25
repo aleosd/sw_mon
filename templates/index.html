@@ -1,28 +1,27 @@
 {% extends "base.html" %}
 
 {% block title %}
-Main table
+Monitoring
 {% endblock %}
 
 {% block sidemenu %}
 <div class="well well-small">
 <ul class="nav nav-list">
-    <form class="nav-search pull-left">
-        <input type="text" class="span2" placeholder="Search">
-    </form>
+    <input id="search" type="text" class="input-medium" placeholder="Search"
+                                                    autofocus="autofocus" />
     <li class="nav-header">Status</li>
     {% if not status %}
         <li class="active"><a href="/">All</a></li>
-        <li><a href="/mon/errors/">Error</a></li>
         <li><a href="/mon/warnings/">Warning</a></li>
+        <li><a href="/mon/errors/">Error</a></li>
     {% elif status == "errors" %}
         <li><a href="/">All</a></li>
-        <li class="active"><a href="/mon/errors/">Error</a></li>
         <li><a href="/mon/warnings/">Warning</a></li>
+        <li class="active"><a href="/mon/errors/">Error</a></li>
     {% elif status == "warnings" %}
         <li><a href="/">All</a></li>
-        <li><a href="/mon/errors/">Error</a></li>
         <li class="active"><a href="/mon/warnings/">Warning</a></li>
+        <li><a href="/mon/errors/">Error</a></li>
     {% endif %}
         <li class="divider"></li>
         <li><a href="/new/">Add Switch</a><li>
@@ -32,7 +31,9 @@ Main table
 {% block maincontent %}
 <div id="textbox">
     <p class="pull-left"><strong><font size="3">
-    Total devices: {{ render_dict|length }}; Warnings: {{ bad_uptime }}; Errors: {{ bad_ping }}
+    <span class="label">Total devices: {{ render_dict|length }}</span>
+    <span class="label {% if bad_uptime > 0 %} label-warning{% endif %}">Warnings: {{ bad_uptime }}</span>
+    <span class="label {% if bad_ping > 0 %} label-important{% endif %}">Errors: {{ bad_ping }}</label>
     </font></strong></p>
     <p class="pull-right">{% now "SHORT_DATETIME_FORMAT" %}</p>
     <div style="clear: both;"></div>
@@ -67,13 +68,13 @@ $(document).ready(function()
             <tr>
             {% endif %}
                 <td>{{ data.sw_id }}</td>
-                <td><a href="{% url 'edit' data.id %}" rel="tooltip" data-original-title="{{ data.sw_comment }}">
+                <td id="sw_addr"><a href="{% url 'edit' data.id %}" rel="tooltip" data-original-title="{{ data.sw_comment }}">
                     {{ data.sw_street }}, {{ data.sw_build_num }}</a>
                 </td>
-                <td>{{ data.ip_addr }}</td>
+                <td id="sw_ip">{{ data.ip_addr }}</td>
                 <td>{{ data.sw_ping|default:"Error" }}</td>
                 <td>{{ data.sw_uptime|default:"Unknown" }}</td>
-                <td>{{ data.sw_type }}</td>
+                <td id="sw_type">{{ data.sw_type }}</td>
             </tr>
 
         {% endfor %}
