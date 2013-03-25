@@ -7,6 +7,9 @@ Main table
 {% block sidemenu %}
 <div class="well well-small">
 <ul class="nav nav-list">
+    <form class="nav-search pull-left">
+        <input type="text" class="span2" placeholder="Search">
+    </form>
     <li class="nav-header">Status</li>
     {% if not status %}
         <li class="active"><a href="/">All</a></li>
