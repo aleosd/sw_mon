@@ -1,8 +1,9 @@
 # Create your views here.
 from datetime import datetime, timedelta
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from switches.models import Switch, Street, SwitchType, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 
@@ -97,3 +98,9 @@ def history(request, status=None):
     return render(request, 'history.html', {'event_list': event_list,
                                             'status' : status,
                                             'events_per_day' : t})
+
+'''
+def logout_view(request):
+    logout(request)
+    return redirect('login/?next=/')
+'''

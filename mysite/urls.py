@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^new/$', 'switches.views.edit'),
     url(r'^edit/(?P<id>\d+)/$', 'switches.views.edit', name='edit'),
     url(r'^create/', 'switches.views.create_switch'),
+    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/login/'}),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
