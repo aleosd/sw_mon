@@ -17,6 +17,7 @@ $(document).ready(function() {
     $('#warn').click(function() {
         $(this).addClass('active');
         $('#all').removeClass('active');
+        $('#err').removeClass('active');
         $('#sw_table tbody tr').each(function(e) {
             if ($(this).hasClass('warning'))
                 $(this).show();
@@ -24,6 +25,18 @@ $(document).ready(function() {
                 $(this).hide();
         });
     });
+    $('#err').click(function() {
+        $(this).addClass('active');
+        $('#all').removeClass('active');
+        $('#warn').removeClass('active');
+        $('#sw_table tbody tr').each(function(e) {
+            if ($(this).hasClass('error'))
+                $(this).show();
+            else
+                $(this).hide();
+        });
+    });
+
 });
 
 // table-sorting script

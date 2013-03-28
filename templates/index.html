@@ -5,26 +5,18 @@ Monitoring
 {% endblock %}
 
 {% block sidemenu %}
-<div id="textbox">
-    <!--
-    <p class="pull-left"><strong><font size="3">
-    <span class="label">Total devices: {{ render_dict|length }}</span>
-    <span class="label {% if bad_uptime > 0 %} label-warning{% endif %}">Warnings: {{ bad_uptime }}</span>
-    <span class="label {% if bad_ping > 0 %} label-important{% endif %}">Errors: {{ bad_ping }}</label>
-    </font></strong></p>
-    -->
-</div>
 <div class="well well-small">
 <ul class="nav nav-list">
-    <li><p class="text-center muted">{% now "SHORT_DATETIME_FORMAT" %}</p></li>
+    <li><p class="text-center muted{% if bad_ping > 0 %} text-error{% endif %}">
+        {% now "SHORT_DATETIME_FORMAT" %}</p></li>
     <input id="search" type="text" class="input-medium" placeholder="Search"
                                                     autofocus="autofocus" />
     <li class="nav-header">Status</li>
     {% if not status %}
         <li id="all" class="active clearfix"><a href="/">All<span class="pull-right">{{ render_dict|length }}</span></a></li>
         <li id="warn" class="clearfix"><a href="#">Warning<span class="pull-right">{{ bad_uptime }}</span></a></li>
-        <li class="clearfix">
-            <a id="err" {% if bad_ping > 0 %}class="text-error" {% endif %} href="/mon/errors/">Error
+        <li id="err" class="clearfix">
+            <a id="err" {% if bad_ping > 0 %}class="text-error" {% endif %} href="#">Error
             <span class="pull-right">{{ bad_ping }}</span></a>
         </li>
     {% elif status == "errors" %}
@@ -43,15 +35,6 @@ Monitoring
 {% endblock %}
 
 {% block maincontent %}
-<!--
-<script type="text/javascript">
-$(document).ready(function()
-    {
-        $("#sw_table").tablesorter({sortList: [[0,0]]});
-    }
-);
-</script>
--->
 {% if render_dict %}
     <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
         <thead>
