@@ -45,7 +45,7 @@ def check_uptime(id, ip, oid=OID):
 
 
 if __name__=='__main__':
-    data_list = switch_ping.fetchdata()
+    data_list = db.fetchdata()
     threads = []
     for item in data_list:
         # cheking if tests are enabled for device
