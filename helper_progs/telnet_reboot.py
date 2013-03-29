@@ -6,6 +6,7 @@
 import telnetlib
 import secure
 import switch_ping
+import database_con as db
 
 
 TIMEOUT = 5
@@ -93,7 +94,7 @@ def reboot_telesyn(ip, sw_id):
 
 
 def reg_reboot():
-    data_list = switch_ping.fetchdata()
+    data_list = db.fetchdata()
     for row in data_list:
         # row[2] - switch type, row[4] - uptime
         if row[4]:
