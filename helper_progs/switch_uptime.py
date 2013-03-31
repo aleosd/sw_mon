@@ -4,6 +4,7 @@ import subprocess
 import re
 from threading import Thread
 from pysnmp.entity.rfc3413.oneliner import cmdgen
+from tendo import singleton
 import switch_ping
 import database_con as db
 
@@ -13,6 +14,9 @@ PORT = 161
 OID = '1.3.6.1.2.1.1.3.0'
 UPTIME_DIC = {}
 
+
+# chek if another insnatce of process is still running
+me = singleton.SingleInstance()
 
 def check_uptime(id, ip, oid=OID):
     UPTIME_DIC[id] = {}
