@@ -14,7 +14,9 @@ Events history
 {% block sidemenu %}
 <div class="well well-small">
 <ul class="nav nav-list">
-    <li class="nav-header">Status</li>
+    <li><p class="text-center muted">
+        {% now "SHORT_DATETIME_FORMAT" %}</p></li>
+     <li class="nav-header">Status</li>
     {% if status == "all" %}
         <li class="active"><a href="/mon/events/all/">All</a></li>
         <li><a href="/mon/events/warnings/">Warning</a></li>
@@ -38,7 +40,6 @@ Events history
     <p class="pull-left"><strong><font size="3">
     Last 24 hours: {{ events_per_day|length }} events; Warnings: {{ bad_uptime }}; Errors: {{ bad_ping }}
     </font></strong></p>
-    <p class="pull-right">{% now "SHORT_DATETIME_FORMAT" %}</p>
     <div style="clear: both;"></div>
 </div>
 <script type="text/javascript">
