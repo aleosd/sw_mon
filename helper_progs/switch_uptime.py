@@ -3,6 +3,7 @@
 import subprocess
 import re
 from threading import Thread
+import queue
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 from tendo import singleton
 import switch_ping
@@ -13,6 +14,7 @@ COMMUNITYRO = 'public'
 PORT = 161
 OID = '1.3.6.1.2.1.1.3.0'
 UPTIME_DIC = {}
+MAX_THREADS = 5
 
 
 # chek if another insnatce of process is still running
@@ -26,7 +28,7 @@ def check_uptime(id, ip, oid=OID):
     transport = cmdgen.UdpTransportTarget((ip, PORT))
     try:
         errInd, errStatus, errIdx, result = cg.getCmd(comm_data, transport, oid)
-        # in case of strange error in python3.2 with snmp and cisco
+        # in case of strange error in python3.2 with pysnmp and cisco
         if result == ():
             try:
                 p = subprocess.Popen(['snmpwalk', '-v', '1', '-c',
@@ -48,20 +50,44 @@ def check_uptime(id, ip, oid=OID):
         # print('Error', e)
 
 
+# helper function for queue, limiting threads count to MAX_THREADS 
+def worker():
+    all_done = 0
+    while not all_done:
+        try:
+            item = q.get(0)
+            check_uptime(item[6], item[0],)
+            # q.task_done()
+        except queue.Empty:
+            all_done = 1
+
+
 if __name__=='__main__':
+    q = queue.Queue()
     data_list = db.fetchdata()
     threads = []
+
     for item in data_list:
         # cheking if tests are enabled for device
         if item[1]:
+            '''
             t = Thread(target=check_uptime, args=(item[6], item[0],))
             threads.append(t)
+            '''
+            q.put(item)
         else:
             UPTIME_DIC[item[6]] = {}
             UPTIME_DIC[item[6]]['sw_uptime'] = None 
 
+    for i in range(MAX_THREADS):
+        t = Thread(target=worker)
+        threads.append(t)
+        # t.daemon = True
+        t.start()
+    '''
     for thread in threads: # starting all threads
         thread.start()
+    '''
 
     for thread in threads: # wait for all threads
         thread.join()      # to finish
@@ -69,6 +95,4 @@ if __name__=='__main__':
     # writing to database
     switch_ping.lock.acquire()
     db.setdata(UPTIME_DIC, 'uptime')
-    # for ip, uptime in UPTIME_DIC.items():
-    #     switch_ping.setdata(uptime, ip, 'uptime')
     switch_ping.lock.release()
