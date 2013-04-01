@@ -7,7 +7,7 @@ Monitoring
 {% block sidemenu %}
 <div class="well well-small">
 <ul class="nav nav-list">
-    <li><p class="text-center muted{% if bad_ping > 0 %} text-error{% endif %}">
+    <li><p class="text-center muted{# {% if bad_ping > 0 %} text-error{% endif %} #}">
         {% now "SHORT_DATETIME_FORMAT" %}</p></li>
     <input id="search" type="text" class="input-medium" placeholder="Search"
                                                     autofocus="autofocus" />
@@ -35,6 +35,14 @@ Monitoring
 {% endblock %}
 
 {% block maincontent %}
+<!-- table-sorting script -->
+<script>
+$(document).ready(function()
+    {
+        $("#sw_table").tablesorter({sortList: [[0,0]]});
+    }
+);
+</script>
 {% if render_dict %}
     <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
         <thead>

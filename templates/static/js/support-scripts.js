@@ -40,9 +40,9 @@ $(document).ready(function() {
 });
 
 // table-sorting script
-$(document).ready(function()
-    {
-        $("#sw_table").tablesorter({sortList: [[0,0]]});
-    }
-);
+// $(document).ready(function()
+//    {
+//        $("#sw_table").tablesorter({sortList: [[0,0]]});
+//    }
+// );
 
