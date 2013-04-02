@@ -5,7 +5,6 @@
 
 import telnetlib
 import secure
-import switch_ping
 import database_con as db
 
 
@@ -20,16 +19,22 @@ def pass_chooser(sw_id):
 
 
 
-def reboot_cisco(ip):
-    tn = telnetlib.Telnet(ip)
-    tn.read_until(b"Username: ")
-    tn.write(secure.user.encode('ascii') + b"\n")
-    tn.read_until(b"Password: ")
-    tn.write(secure.mzv_pass.encode('ascii') + b"\n")
-    tn.write(b"pwd\n")
-    tn.write(b"exit\n")
-    print(tn.read_all().decode('ascii'))
-    tn.close()
+def reboot_cisco(ip, sw_id):
+    password = pass_chooser(sw_id)
+
+    try:
+        tn = telnetlib.Telnet(ip, timeout=TIMEOUT)
+        tn.read_until(b"Username: ")
+        tn.write(b"admin\r\n")
+        tn.read_until(b"Password: ")
+        tn.write(password.encode('ascii') + b"\n")
+        tn.write(b"reload\n")
+        tn.write(b"\n")
+        debug_info = tn.read_all().decode('ascii')
+        print(debug_info)
+        tn.close()
+    except Exception as e:
+        print("Error: ", e)
 
 def reboot_snr(ip, sw_id):
     '''Function for rebooting SNR devicec via telnet. Takes an ip and
@@ -101,10 +106,11 @@ def reg_reboot():
             if row[2] in (5,4) and row[4] > 1209600:    # looking for 'SNR' devices
                 reboot_snr(row[0], row[3])              # rebooting them
             elif row[2] == 2 and row[4] > 1209600:      # looking for '3com'
-                print('Rebooting 3com at {}, {}'.format(row[0], row[3]))
                 reboot_3com(row[0], row[3])
             elif row[2] == 1 and row[4] > 1209600:      # looking for 'Allied'
                 reboot_telesyn(row[0], row[3])
+            elif row[2] == 3 and row[4] > 1209600:      # looking for 'Cisco'
+                reboot_cisco(row[0], row[3])
 
 if __name__=='__main__':
     reg_reboot()
