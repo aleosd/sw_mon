@@ -16,6 +16,7 @@ Events history
 <ul class="nav nav-list">
     <li><p class="text-center muted">
         {% now "SHORT_DATETIME_FORMAT" %}</p></li>
+     <li class="nav-header text-center">Last 24 hours: {{ events_per_day|length }} events</li>
      <li class="nav-header">Status</li>
     {% if status == "all" %}
         <li class="active"><a href="/mon/events/all/">All</a></li>
@@ -30,18 +31,10 @@ Events history
         <li><a href="/mon/events/warnings/">Warning</a></li>
         <li class="active"><a href="/mon/events/errors/">Error</a></li>
     {% endif %}
-        <li class="divider"></li>
-        <li><a href="/new/">Add Event</a><li>
 </div>
 {% endblock %}
 
 {% block maincontent %}
-<div id="textbox">
-    <p class="pull-left"><strong><font size="3">
-    Last 24 hours: {{ events_per_day|length }} events; Warnings: {{ bad_uptime }}; Errors: {{ bad_ping }}
-    </font></strong></p>
-    <div style="clear: both;"></div>
-</div>
 <script type="text/javascript">
 $(document).ready(function()
     {
@@ -78,6 +71,22 @@ $(document).ready(function()
         {% endfor %}
         </tbody>
         </table>
+
+<div class="pagination text-center">
+    <span class="step-links">
+        {% if event_list.has_previous %}
+            <a href="?page={{ event_list.previous_page_number }}"> << </a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ event_list.number }} of {{ event_list.paginator.num_pages }}
+        </span>
+
+        {% if event_list.has_next %}
+            <a href="?page={{ event_list.next_page_number }}"> >> </a>
+        {% endif %}
+    </span>
+</div>
 {% else %}
     <p>No {{ status }} events in the database</p>
 {% endif %}

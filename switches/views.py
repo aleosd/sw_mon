@@ -1,11 +1,11 @@
 # Create your views here.
 from datetime import datetime, timedelta
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from switches.models import Switch, Street, SwitchType, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
 from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required
 def index(request, status=None):
@@ -89,18 +89,26 @@ def create_switch(request):
 @login_required
 def history(request, status=None):
     t = Event.objects.filter(ev_datetime__gte=datetime.now() - timedelta(days=1))
+    # events_all = Event.objects.all()
+
     if status == "all":
-        event_list = Event.objects.select_related().all().order_by('-id')[:30]
+        event_list = Event.objects.select_related().all().order_by('-id')
     elif status == "warnings":
         event_list = Event.objects.select_related().filter(ev_type='warn')[:30]
     elif status == "errors":
-        event_list = Event.objects.select_related().filter(ev_type='err')[:30]
+        event_list = Event.objects.select_related().filter(ev_type='err')
+
+    paginator = Paginator(event_list, 50)
+    page = request.GET.get('page')
+
+    try:
+        event_list = paginator.page(page)
+    except PageNotAnInteger:
+        event_list = paginator.page(1)
+    except EmptyPage:
+        event_list = paginator(paginator.num_pages)
+
     return render(request, 'history.html', {'event_list': event_list,
                                             'status' : status,
                                             'events_per_day' : t})
 
-'''
-def logout_view(request):
-    logout(request)
-    return redirect('login/?next=/')
-'''
