@@ -5,10 +5,12 @@ New Switch
 {% endblock %}
 
 {% block sidemenu %}
+<!--
 <div class="well-small">
 <p><button class="btn">Ping</button></p>
 <p><button class="btn btn-danger">Reboot</button></p>
 </div>
+-->
 {% endblock %}
 
 {% block maincontent %}
@@ -63,8 +65,6 @@ $(document).ready(function()
         {% endfor %}
         </tbody>
         </table>
-{% else %}
-    <p>No {{ status }} events in the database</p>
 {% endif %}
 
 {% endblock %}
