@@ -12,7 +12,7 @@ import database_con as db
 
 COMMUNITYRO = 'public'
 PORT = 161
-OID = '1.3.6.1.2.1.1.3.0'
+OID = '1.3.6.1.2.1.1.3'
 UPTIME_DIC = {}
 MAX_THREADS = 5
 
@@ -23,34 +23,34 @@ me = singleton.SingleInstance()
 def check_uptime(id, ip, oid=OID):
     UPTIME_DIC[id] = {}
     oid = tuple([int(i) for i in oid.split('.')])
-    cg = cmdgen.CommandGenerator()
-    comm_data = cmdgen.CommunityData('my-manager', COMMUNITYRO, 0)
-    transport = cmdgen.UdpTransportTarget((ip, PORT))
+#    cg = cmdgen.CommandGenerator()
+#    comm_data = cmdgen.CommunityData('my-manager', COMMUNITYRO, 0)
+#    transport = cmdgen.UdpTransportTarget((ip, PORT))
+#    try:
+#        errInd, errStatus, errIdx, result = cg.getCmd(comm_data, transport, oid)
+#        # in case of strange error in python3.2 with snmp and cisco
+#        if result == ():
     try:
-        errInd, errStatus, errIdx, result = cg.getCmd(comm_data, transport, oid)
-        # in case of strange error in python3.2 with pysnmp and cisco
-        if result == ():
-            try:
-                p = subprocess.Popen(['snmpwalk', '-v', '1', '-c',
-                                      'public', '-On', ip,
-                                      '1.3.6.1.2.1.1.3', '2>/dev/null'], 
-                                      stdout=subprocess.PIPE)
-                result = p.communicate()
-                seconds = re.search("(\(\d+\))", result[0].decode('UTF-8'))
-                sec = int(seconds.group()[1:-3])
-                UPTIME_DIC[id]['sw_uptime'] = sec
-            except Exception:
-                UPTIME_DIC[id]['sw_uptime'] = None
-        else:
-            # normal work with pysnmp
-            sec = int(str(result[0][1])[:-2])
-            UPTIME_DIC[id]['sw_uptime'] = sec
-    except Exception as e:
+        p = subprocess.Popen(['snmpwalk', '-v', '1', '-c',
+                              'public', '-On', ip,
+                              '1.3.6.1.2.1.1.3', '2>/dev/null'],
+                              stdout=subprocess.PIPE)
+        result = p.communicate()
+        seconds = re.search("(\(\d+\))", result[0].decode('UTF-8'))
+        sec = int(seconds.group()[1:-3])
+        UPTIME_DIC[id]['sw_uptime'] = sec
+    except Exception:
         UPTIME_DIC[id]['sw_uptime'] = None
-        # print('Error', e)
+#        else:
+#            # normal work with pysnmp
+#            sec = int(str(result[0][1])[:-2])
+#            UPTIME_DIC[id]['sw_uptime'] = sec
+#    except Exception as e:
+#        UPTIME_DIC[id]['sw_uptime'] = None
+#        # print('Error', e)
+#
 
-
-# helper function for queue, limiting threads count to MAX_THREADS 
+# helper function for queue, limiting threads count to MAX_THREADS
 def worker():
     all_done = 0
     while not all_done:
