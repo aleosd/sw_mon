@@ -10,17 +10,18 @@ import database_con as db
 
 TIMEOUT = 5
 
+'''
 def pass_chooser(sw_id):
     if sw_id < 2000000:             # choosing proper password
         password = secure.mzv_pass
     else:
         password = secure.vkz_pass
     return password
-
+'''
 
 
 def reboot_cisco(ip, sw_id):
-    password = pass_chooser(sw_id)
+    password = secure.pass_chooser(sw_id)
 
     try:
         tn = telnetlib.Telnet(ip, timeout=TIMEOUT)
@@ -40,7 +41,7 @@ def reboot_snr(ip, sw_id):
     '''Function for rebooting SNR devicec via telnet. Takes an ip and
     device_id as argument, login/pass imports from secure.py.'''
 
-    password = pass_chooser(sw_id)
+    password = secure.pass_chooser(sw_id)
 
     try:
         tn = telnetlib.Telnet(ip, timeout=TIMEOUT)
@@ -61,7 +62,7 @@ def reboot_3com(ip, sw_id):
     '''Function for reboting 3com devices via telnet. Takes ip addres
     as argument, user/pass imports from secure.py'''
 
-    password = pass_chooser(sw_id)
+    password = secure.pass_chooser(sw_id)
 
     try:
         tn = telnetlib.Telnet(ip, timeout=TIMEOUT)
@@ -83,7 +84,7 @@ def reboot_telesyn(ip, sw_id):
     '''Function for rebooting allied-telesyn devices via telnet.
     Takes ip addres and switch_id as arguments.'''
 
-    password = pass_chooser(sw_id)
+    password = secure.pass_chooser(sw_id)
 
     try:
         tn = telnetlib.Telnet(ip, timeout=5)
