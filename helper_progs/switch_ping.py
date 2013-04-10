@@ -3,7 +3,6 @@
 import subprocess
 import re
 from threading import Thread, Lock
-import secure
 import database_con as db
 
 
@@ -16,37 +15,25 @@ Modification for usage with django-project
 switch-monitoring.
 """
 
-DBNAME = secure.DBNAME
-USER = secure.USER
-PASS = secure.PASS
 PING_DIC = {}
 EVENT_DIC = {}
 
 lock = Lock()
 
-def ping_st(ip, old_ping, id, manual_check=None,*args):
+def ping_st(ip, old_ping, id, manual_check=None):
     p = subprocess.Popen(["ping", "-c", "3", ip], stdout=subprocess.PIPE)
     result = p.communicate()
     if manual_check:
         return result
-    pclst = 0
-    ping_bad = 'Good'
-    PING_DIC[id] = {}
-    PING_DIC[id]['old_ping'] = old_ping
-    for line in result:
-        if line != None:
-            line = line.decode()
-            m1 = re.search('(.*)% packet loss', line)
-            if m1:
-                pclst = int((m1.group(1)).split()[5])
-                if pclst > 60: ping_bad = 'Bad'
-            m2 = re.search('rtt min/avg/max/mdev = (.*) ms', line)
-            if m2:
-                avgtime = m2.group(1).split('/')[1]
-                PING_DIC[id]['ping'] = float(avgtime)
-            else:
-                avgtime = None
-                PING_DIC[id]['ping'] = None
+    PING_DIC[id] = {'old_ping': old_ping}
+    if result[0]:
+        line = result[0].decode()
+        m2 = re.search('rtt min/avg/max/mdev = (.*) ms', line)
+        if m2:
+            avgtime = m2.group(1).split('/')[1]
+            PING_DIC[id]['ping'] = float(avgtime)
+        else:
+            PING_DIC[id]['ping'] = None
 
 def main():
     data_list = db.fetchdata()
@@ -72,18 +59,18 @@ def main():
     db.setdata(PING_DIC, 'ping')
     lock.release()
 
-    # Create event record in dic if switch not responding
+    # Create event record in dic if switch is not responding
     for id in PING_DIC:
         if PING_DIC[id]['old_ping'] and not PING_DIC[id]['ping']:
             EVENT_DIC[id] = {}
             EVENT_DIC[id]['ev_type'] = "err"
             EVENT_DIC[id]['ev_event'] = "Switch is not responding"
-            EVENT_DIC[id]['ev_comment'] = " "
+            EVENT_DIC[id]['ev_comment'] = ""
         elif not PING_DIC[id]['old_ping'] and PING_DIC[id]['ping']:
             EVENT_DIC[id] = {}
             EVENT_DIC[id]['ev_type'] = "info"
             EVENT_DIC[id]['ev_event'] = "Switch is up and running"
-            EVENT_DIC[id]['ev_comment'] = " "
+            EVENT_DIC[id]['ev_comment'] = ""
 
     # If at least one record, updating database
     if len(EVENT_DIC) > 0:
