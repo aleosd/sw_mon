@@ -4,7 +4,6 @@ import libssh2
 import termios
 import tty
 import secure
-# import database_con as db
 
 
 def ssh_reboot(ip, sw_id): # pass args: ip, type, user, passwd

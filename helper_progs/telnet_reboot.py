@@ -6,18 +6,10 @@
 import telnetlib
 import secure
 import database_con as db
+import ssh_reboot
 
 
 TIMEOUT = 5
-
-'''
-def pass_chooser(sw_id):
-    if sw_id < 2000000:             # choosing proper password
-        password = secure.mzv_pass
-    else:
-        password = secure.vkz_pass
-    return password
-'''
 
 
 def reboot_cisco(ip, sw_id):
@@ -105,7 +97,11 @@ def reg_reboot():
         # row[2] - switch type, row[4] - uptime
         if row[4]:
             if row[2] in (5,4) and row[4] > 1209600:    # looking for 'SNR' devices
-                reboot_snr(row[0], row[3])              # rebooting them
+                try:
+                    ssh_reboot.ssh_reboot(row[0], row[3]) # trying to reboot with ssh
+                except Exception as e:
+                    print("{} reported error: ".format(row[0], e))
+                    reboot_snr(row[0], row[3])          # fallback to telnet
             elif row[2] == 2 and row[4] > 1209600:      # looking for '3com'
                 reboot_3com(row[0], row[3])
             elif row[2] == 1 and row[4] > 1209600:      # looking for 'Allied'
