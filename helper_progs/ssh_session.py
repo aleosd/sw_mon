@@ -10,22 +10,27 @@ import termios
 import tty
 
 if len(sys.argv) != 2:
-    print("Usage: ssh_session.py <ip>\n")
+    print("Usage: ssh_session.py <ip>")
     sys.exit(1)
 else:
     ip = sys.argv[1]
 
 # Create and connect a new socket.
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect((ip, 22))
-         
-# Create a new SSH session using that socket and login
-# using basic password authentication.
-session = libssh2.Session()
-session.startup(sock)
-user = input("Enter username: ")
-password = getpass.getpass(prompt="Password: ")
-session.userauth_password(user, password)
+sock.settimeout(5)
+try:
+    sock.connect((ip, 22))
+             
+    # Create a new SSH session using that socket and login
+    # using basic password authentication.
+    session = libssh2.Session()
+    session.startup(sock)
+    user = input("Enter username: ")
+    password = getpass.getpass(prompt="Password: ")
+    session.userauth_password(user, password)
+except Exception as e:
+    print("Error:", e)
+    sys.exit(1)
  
 # Put the session into non-blocking mode.
  
