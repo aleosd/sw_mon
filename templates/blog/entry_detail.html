@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}
+Monitoring
+{% endblock %}
+
+{% block maincontent %}
+{{ entry.body_html|safe }}
+begin{{ STATIC_URL }}end
+{% endblock %}

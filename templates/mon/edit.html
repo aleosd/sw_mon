@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Switch
+{% endblock %}
+
+{% block sidemenu %}
+<!--
+<div class="well-small">
+<p><button class="btn">Ping</button></p>
+<p><button class="btn btn-danger">Reboot</button></p>
+</div>
+-->
+{% endblock %}
+
+{% block maincontent %}
+
+{% if form.errors %}
+<br>
+<div class="alert">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    Ошибки при заполнении формы:
+</div>
+{% endif %}
+
+<form action="/create/" method=POST>{% csrf_token %}
+    <table>{{ form }}</table><br>
+    <button class="btn" type=submit>Отправить</button>
+    <button class="btn" ONCLICK="window.history.back()">Назад</button>
+</form>
+
+{% if events %}
+<script type="text/javascript">
+$(document).ready(function()
+    {
+        $("#sw_table").tablesorter();
+    }
+);
+</script>
+    <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
+        <thead>
+        <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Switch</th>
+            <th>Event</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for event in events %}
+            {% if event.ev_type == "err" %}
+            <tr class="error">
+            {% elif event.ev_type == "warn" %}
+            <tr class="warning">
+            {% else %}
+            <tr>
+            {% endif %}
+                <td>{{ event.ev_datetime|date:"d M, H:i" }}</td>
+                <td>{{ event.get_ev_type_display }}</td>
+                <td><a href="{{ event.ev_switch.get_absolute_url }}">{{ event.ev_switch }}</a></td>
+                <td>{{ event.ev_event }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+        </table>
+{% endif %}
+
+{% endblock %}

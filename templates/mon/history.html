@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}
+Events history
+{% endblock %}
+
+{% block navbar %}
+<ul class="nav">
+    <li><a href="/">Monitor</a></li>
+    <li class="active"><a href="/mon/events/all/">Events</a></li>
+</ul>
+{% endblock %}
+
+{% block sidemenu %}
+<div class="well well-small">
+<ul class="nav nav-list">
+    <li><p class="text-center muted">
+        {% now "SHORT_DATETIME_FORMAT" %}</p></li>
+     <li class="nav-header text-center">Last 24 hours: {{ events_per_day|length }} events</li>
+     <li class="nav-header">Status</li>
+    {% if status == "all" %}
+        <li class="active"><a href="/mon/events/all/">All</a></li>
+        <li><a href="/mon/events/warnings/">Warning</a></li>
+        <li><a href="/mon/events/errors/">Error</a></li>
+    {% elif status == "warnings" %}
+        <li><a href="/mon/events/all">All</a></li>
+        <li class="active"><a href="/mon/events/warnings/">Warning</a></li>
+        <li><a href="/mon/events/errors/">Error</a></li>
+    {% elif status == "errors" %}
+        <li><a href="/mon/events/all/">All</a></li>
+        <li><a href="/mon/events/warnings/">Warning</a></li>
+        <li class="active"><a href="/mon/events/errors/">Error</a></li>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block maincontent %}
+<script type="text/javascript">
+$(document).ready(function()
+    {
+        $("#sw_table").tablesorter();
+    }
+);
+</script>
+{% if event_list %}
+    <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
+        <thead>
+        <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Switch</th>
+            <th>Event</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for event in event_list %}
+            {% if event.ev_type == "err" %}
+            <tr class="error">
+            {% elif event.ev_type == "warn" %}
+            <tr class="warning">
+            {% else %}
+            <tr>
+            {% endif %}
+                <td>{{ event.ev_datetime|date:"d M, H:i" }}</td>
+                <td>{{ event.get_ev_type_display }}</td>
+                <td><a href="{{ event.ev_switch.get_absolute_url }}">{{ event.ev_switch }}</a></td>
+                <td>{{ event.ev_event }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+        </table>
+
+<div class="pagination text-center">
+    <span class="step-links">
+        {% if event_list.has_previous %}
+            <a href="?page={{ event_list.previous_page_number }}"> << </a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ event_list.number }} of {{ event_list.paginator.num_pages }}
+        </span>
+
+        {% if event_list.has_next %}
+            <a href="?page={{ event_list.next_page_number }}"> >> </a>
+        {% endif %}
+    </span>
+</div>
+{% else %}
+    <p>No {{ status }} events in the database</p>
+{% endif %}
+{% endblock %}
