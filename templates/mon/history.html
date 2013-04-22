@@ -7,7 +7,7 @@ Events history
 {% block navbar %}
 <ul class="nav">
     <li><a href="/">Monitor</a></li>
-    <li class="active"><a href="/mon/events/all/">Events</a></li>
+    <li class="active"><a href="/mon/events/all/">History</a></li>
 </ul>
 {% endblock %}
 
@@ -72,28 +72,20 @@ $(document).ready(function()
         </tbody>
         </table>
 
-<div class="pagination pagination-centered">
-    <ul>
+<div class="pagination text-center">
+    <span class="step-links">
         {% if event_list.has_previous %}
-            <li><a href="?page={{ event_list.previous_page_number }}">Prev</a></li>
-            <li><a href="?page={{ event_list.number|add:"-1" }}">{{ event_list.number|add:"-1" }}</a></li>
-        {% else %}
-            <li class="disabled"><a href="#">Prev</a></li>
+            <a href="?page={{ event_list.previous_page_number }}"> << </a>
         {% endif %}
 
-            <li class="active">
-                <a href="?page={{ event_list.number }}">{{ event_list.number }}</a>
-            </li>
-                
-<!-- Page {{ event_list.number }} of {{ event_list.paginator.num_pages }} -->
+        <span class="current">
+            Page {{ event_list.number }} of {{ event_list.paginator.num_pages }}
+        </span>
 
         {% if event_list.has_next %}
-            <li><a href="?page={{ event_list.next_page_number }}">{{ event_list.next_page_number }}</a></li>
-            <li><a href="?page={{ event_list.next_page_number }}">Next</a></li>
-        {% else %}
-            <li class="desabled"><a href="#">Next</a></li>
+            <a href="?page={{ event_list.next_page_number }}"> >> </a>
         {% endif %}
-    </ul>
+    </span>
 </div>
 {% else %}
     <p>No {{ status }} events in the database</p>
