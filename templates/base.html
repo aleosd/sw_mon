@@ -39,7 +39,7 @@
             {% block navbar %}
             <ul class="nav">
                 <li class="active"><a href="/">Monitor</a></li>
-                <li><a href="/mon/events/all/">History</a></li>
+                <li><a href="/mon/events/all/">Events</a></li>
             </ul>
             {% endblock %}
             <ul class="nav pull-right">
@@ -59,11 +59,17 @@
             </div>
             </div>
             <div class="row">
+                <div class="span12">
+                    {% block full_page_top %} {% endblock %}
+                </div>
                 <div class="span3">
-                {% block sidemenu %} {% endblock %}
+                    {% block sidemenu %} {% endblock %}
                 </div>
                 <div class="span9">
-                {% block maincontent %} {% endblock %}
+                    {% block maincontent %} {% endblock %}
+                </div>
+                <div class="span12">
+                    {% block full_page_bottom %} {% endblock %}
                 </div>
             </div>
         </div>
