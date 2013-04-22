@@ -83,6 +83,7 @@ STATICFILES_FINDERS = (
 SECRET_KEY = ')%4xohm&!tg$ri+b6d+03jx7az8*1&))iyi08a082)b6qt9m0x'
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL ='/'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -123,7 +124,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'switches'
+    'switches',
+    'blog',
+    'device',
+    'smart_selects',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -154,3 +158,5 @@ LOGGING = {
         },
     }
 }
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
