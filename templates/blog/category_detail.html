@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-All Entries
+{{ category.title }}
 {% endblock %}
 
 {% block navbar %}
@@ -17,11 +17,15 @@ All Entries
 <ul class="nav nav-list">
     <li><p class="text-center muted">
         {% now "SHORT_DATETIME_FORMAT" %}</p></li>
-        <li class="active"><a href="/blog/">All Entries</a></li>
+        <li><a href="/blog/">All Entries</a></li>
      <li class="nav-header">By Category</li>
         {% for category in category_list %}
-            <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
-        {% endfor %}
+            {% if category == active_category %}
+                <li class="active"><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
+            {% else %}
+                <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
+            {% endif %}
+ {% endfor %}
 </div>
 
 {% endblock %}
