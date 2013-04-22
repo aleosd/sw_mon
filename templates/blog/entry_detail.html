@@ -1,10 +1,20 @@
 {% extends "base.html" %}
 
 {% block title %}
-Monitoring
+{{ category.title }}
 {% endblock %}
 
-{% block maincontent %}
+{% block navbar %}
+<ul class="nav">
+    <li><a href="/">Monitor</a></li>
+    <li><a href="/mon/events/all">Events</a></li>
+    <li class="active"><a href="/blog/">Blog</a></li>
+</ul>
+{% endblock %}
+
+{% block full_page_bottom %}
+<h3>{{ entry.title }}</h3>
 {{ entry.body_html|safe }}
-begin{{ STATIC_URL }}end
+<hr/>
+<p class="text-right"><em>{{ entry.pub_date|date:"F j, Y" }}</em></p>
 {% endblock %}
