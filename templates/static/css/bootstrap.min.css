@@ -26,3 +26,13 @@ table.tablesorter thead tr .headerSortUp {
     background-image: url(desc.gif);
     }
 
+/* header href for blog */
+
+#blog_header {
+    color: black;
+    }
+
+#blog_header:hover {
+    color: gray;
+    text-decoration: none;
+    }
