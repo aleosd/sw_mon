@@ -1,8 +1,14 @@
 import re
+import datetime
 from django.db import models
 from django.core.exceptions import ValidationError
 from smart_selects.db_fields import ChainedForeignKey
+from django.db.models.signals import post_save, post_init, post_delete
+from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist
 
+
+_NEW_DEVICE = False
 
 def validate_mac(value):
     allowed = re.template('[\:A-Fa-f0-9]')
@@ -19,6 +25,10 @@ class Vendor(models.Model):
 
 
 class Series(models.Model):
+
+    class Meta:
+        verbose_name_plural='Serieses'
+
     ser = models.CharField(max_length=128)
     ser_ven = models.ForeignKey(Vendor)
 
@@ -51,7 +61,7 @@ class Type(models.Model):
 
 class Device(models.Model):
     # Device info
-    dev_mac = models.CharField(max_length=17,
+    dev_mac = models.CharField(max_length=17, unique=True,
                                help_text="MAC-address, separated by columns")
     dev_ven = models.ForeignKey(Vendor)
     dev_ser = ChainedForeignKey(
@@ -64,6 +74,7 @@ class Device(models.Model):
 
     # Device history
     dev_purchase_date = models.DateField()
+    dev_comments = models.TextField(blank=True)
 
     # Device status
     WORKING = 0
@@ -80,3 +91,69 @@ class Device(models.Model):
 
     def __str__(self):
         return '{}-{}'.format(self.dev_ven, self.dev_ser)
+
+
+class Event(models.Model):
+    # Main fields
+    ev_dtime = models.DateTimeField(default=datetime.datetime.now)
+    ev_message = models.CharField(max_length=255)
+
+    ev_device = models.ForeignKey(Device, blank=True, null=True)
+
+    # Event types, for logging
+    INFO = 0
+    WARNING = 1
+    ERROR = 2
+    EVENT_TYPE = (
+        (INFO, 'Info'),
+        (WARNING, 'Warning'),
+        (ERROR, 'Error')
+    )
+    ev_type = models.IntegerField(choices=EVENT_TYPE, default=INFO)
+
+    def __str__(self):
+        return "{} - {}, {}".format(self.get_ev_type_display(), self.ev_message,
+                                    self.ev_device)
+
+
+@receiver(post_save, sender=Device)
+def dev_changed(sender, **kwargs):
+    '''Function called to add new event after save method of Device object.
+    According to global variable, text of event changes.
+    '''
+    global _NEW_DEVICE
+    if _NEW_DEVICE:
+        message_text = 'Added new device'
+    else:
+        message_text = 'Device modified'
+    e = Event(
+        ev_message=message_text,
+        ev_type=1,
+        ev_device=kwargs['instance']
+    )
+    e.save()
+    _NEW_DEVICE = False
+
+@receiver(post_init, sender=Device)
+def dev_init(sender, **kwargs):
+    '''Checking, if device new or existing modification. If new -
+    setting global var to True, for correct event record.
+    '''
+    try:
+        kwargs['instance'].dev_ven
+    except ObjectDoesNotExist:
+        global _NEW_DEVICE
+        _NEW_DEVICE = True
+
+
+@receiver(post_delete, sender=Device)
+def dev_deleted(sender, **kwargs):
+    '''Adding new event record on Device deletion.
+    '''
+    message_text = "Device {} was deleted from database".format(str(kwargs['instance']))
+    e = Event(
+        ev_message = message_text,
+        ev_type=2,
+        ev_device=None,
+        )
+    e.save()

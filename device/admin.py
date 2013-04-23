@@ -1,5 +1,5 @@
 from django.contrib import admin
-from device.models import Device, Vendor, Series
+from device.models import Device, Vendor, Series, Event
 
 class VendorAdmin(admin.ModelAdmin):
     pass
@@ -15,3 +15,8 @@ class SeriesAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(Series, SeriesAdmin)
+
+class EventAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Event, EventAdmin)
