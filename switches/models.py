@@ -3,6 +3,7 @@ import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
 from django import forms
+from device.models import Device
 
 
 def validate_build(value):
@@ -51,6 +52,9 @@ class Switch(models.Model):
                                  help_text='Enter port numbers, separated with commas')
     sw_comment = models.CharField(max_length=500, blank=True, null=True,
                                   verbose_name='Comments')
+    
+    # NEW!!! Link to device
+    # sw_device = models.ForeignKey(Device)
 
 
     class Meta:
@@ -76,7 +80,6 @@ class Switch(models.Model):
 
     def get_absolute_url(self):
         return "/edit/%i/" % self.id
-
 
 
 class SwitchForm(forms.ModelForm):
@@ -110,5 +113,3 @@ class Event(models.Model):
         return self.ev_type
     ev_type_colored.allow_tags = True
     ev_type_colored.admin_order_field = 'sw_type'
-
-
