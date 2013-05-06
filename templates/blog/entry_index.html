@@ -29,7 +29,7 @@ All Entries
 {% block maincontent %}
     {% for entry in entry_list %}
         {# <div class="well well-small"> #}
-            <small>{{ entry.pub_date|date:"F j, Y" }}</small>
+            <small class="pull-right"><span class="label">{{ entry.pub_date|date:"F j, Y" }}</span></small>
             <h3 style="margin-top:0px"><a id="blog_header" href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h3>
             {% if entry.excerpt_html %}
                 {{ entry.excerpt_html|safe }}
