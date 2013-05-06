@@ -9,7 +9,8 @@ class SwitchAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Basics', {'fields': ['ip_addr', 'sw_type', 'sw_id']}),
         ('Address', {'fields': ['sw_district', 'sw_street', 'sw_build_num']}),
-        ('Other', {'fields': ['sw_enabled', 'sw_uplink', 'sw_comment'], 'classes': ['collapse']})
+        ('Other', {'fields': ['sw_enabled', 'sw_uplink', 'sw_comment',
+                              'sw_device'], 'classes': ['collapse']})
     ]
 
     search_fields = ['sw_street__street', 'sw_district', 'sw_type__sw_type']

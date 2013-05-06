@@ -33,7 +33,7 @@ class Series(models.Model):
     ser_ven = models.ForeignKey(Vendor)
 
     def __str__(self):
-        return self.ser
+        return str(self.ser_ven) + '-' + self.ser
 
 """
 class Type(models.Model):
@@ -62,14 +62,16 @@ class Type(models.Model):
 class Device(models.Model):
     # Device info
     dev_mac = models.CharField(max_length=17, unique=True,
+                               verbose_name = 'MAC-address',
                                help_text="MAC-address, separated by columns")
-    dev_ven = models.ForeignKey(Vendor)
+    dev_ven = models.ForeignKey(Vendor, verbose_name = 'Device Vendor')
     dev_ser = ChainedForeignKey(
         Series,
         chained_field="dev_ven",
         chained_model_field="ser_ven",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        verbose_name = 'Device Series',
     )
 
     # Device history
@@ -90,7 +92,7 @@ class Device(models.Model):
     dev_state = models.IntegerField(choices=STATUS_CHOICES, default=ON_STORE)
 
     def __str__(self):
-        return '{}-{}'.format(self.dev_ven, self.dev_ser)
+        return '{}-{} ({})'.format(self.dev_ven, self.dev_ser, self.id)
 
 
 class Event(models.Model):
@@ -124,11 +126,13 @@ def dev_changed(sender, **kwargs):
     global _NEW_DEVICE
     if _NEW_DEVICE:
         message_text = 'Added new device'
+        type_num = 0
     else:
         message_text = 'Device modified'
+        type_num = 1
     e = Event(
         ev_message=message_text,
-        ev_type=1,
+        ev_type=type_num,
         ev_device=kwargs['instance']
     )
     e.save()
