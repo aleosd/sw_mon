@@ -62,6 +62,8 @@ $(document).ready(function()
             <tr class="error">
             {% elif data.sw_uptime_sec < 86400 or not data.sw_uptime %}
             <tr class="warning">
+            {% elif data.sw_uptime_sec > 1209600 %}
+            <tr class="info">
             {% else %}
             <tr>
             {% endif %}

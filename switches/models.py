@@ -54,7 +54,7 @@ class Switch(models.Model):
                                   verbose_name='Comments')
     
     # NEW!!! Link to device
-    # sw_device = models.ForeignKey(Device)
+    sw_device = models.ForeignKey(Device, blank=True, null=True)
 
 
     class Meta:

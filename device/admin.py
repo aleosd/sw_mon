@@ -7,7 +7,7 @@ class VendorAdmin(admin.ModelAdmin):
 admin.site.register(Vendor, VendorAdmin)
 
 class DeviceAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('dev_ven', 'dev_ser', 'dev_mac', 'id',)
 
 admin.site.register(Device, DeviceAdmin)
 
