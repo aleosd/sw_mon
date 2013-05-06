@@ -13,7 +13,7 @@ Monitoring
                                                     autofocus="autofocus" />
     <li class="nav-header">Status</li>
     {% if not status %}
-        <li id="all" class="active clearfix"><a href="/">All<span class="pull-right">{{ render_dict|length }}</span></a></li>
+        <li id="all" class="active clearfix"><a href="/">All<span class="pull-right">{{ switch_list|length }}</span></a></li>
         <li id="warn" class="clearfix"><a href="#">Warning<span class="pull-right">{{ bad_uptime }}</span></a></li>
         <li id="err" class="clearfix">
             <a id="err" {% if bad_ping > 0 %}class="text-error" {% endif %} href="#">Error
@@ -35,6 +35,7 @@ Monitoring
 {% endblock %}
 
 {% block maincontent %}
+
 <!-- table-sorting script -->
 <script>
 $(document).ready(function()
@@ -43,7 +44,8 @@ $(document).ready(function()
     }
 );
 </script>
-{% if render_dict %}
+
+{% if switch_list %}
     <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
         <thead>
         <tr>
@@ -57,24 +59,24 @@ $(document).ready(function()
         </thead>
 
         <tbody>
-        {% for id, data in render_dict.items %}
-            {% if not data.sw_ping %}
+        {% for switch in switch_list %}
+            {% if not switch.sw_ping %}
             <tr class="error">
-            {% elif data.sw_uptime_sec < 86400 or not data.sw_uptime %}
+            {% elif switch.sw_uptime < 86400 or not switch.sw_uptime %}
             <tr class="warning">
-            {% elif data.sw_uptime_sec > 1209600 %}
+            {% elif switch.sw_uptime > 1209600 %}
             <tr class="info">
             {% else %}
             <tr>
             {% endif %}
-                <td>{{ data.sw_id }}</td>
-                <td id="sw_addr"><a href="{% url 'edit' data.id %}" rel="tooltip" data-original-title="{{ data.sw_comment }}">
-                    {{ data.sw_street }}, {{ data.sw_build_num }}</a>
+                <td>{{ switch.sw_id }}</td>
+                <td id="sw_addr"><a href="{% url 'edit' switch.id %}" rel="tooltip" data-original-title="{{ switch.sw_comment }}">
+                    {{ switch.sw_street }}, {{ switch.sw_build_num }}</a>
                 </td>
-                <td id="sw_ip">{{ data.ip_addr }}</td>
-                <td>{{ data.sw_ping|default:"Error" }}</td>
-                <td>{{ data.sw_uptime|default:"Unknown" }}</td>
-                <td id="sw_type">{{ data.sw_type }}</td>
+                <td id="sw_ip">{{ switch.ip_addr }}</td>
+                <td>{{ switch.sw_ping|default:"Error" }}</td>
+                <td>{{ switch.sw_uptime_str|default:"Unknown" }}</td>
+                <td id="sw_type">{{ switch.sw_type }}</td>
             </tr>
 
         {% endfor %}
