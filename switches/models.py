@@ -3,6 +3,8 @@ import datetime
 from django.core.exceptions import ValidationError
 from django.db import models
 from django import forms
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from device.models import Device
 
 
@@ -53,7 +55,6 @@ class Switch(models.Model):
     sw_comment = models.CharField(max_length=500, blank=True, null=True,
                                   verbose_name='Comments')
     
-    # NEW!!! Link to device
     sw_device = models.ForeignKey(Device, blank=True, null=True)
 
 
@@ -114,3 +115,20 @@ class Event(models.Model):
         return self.ev_type
     ev_type_colored.allow_tags = True
     ev_type_colored.admin_order_field = 'sw_type'
+
+
+@receiver(post_save, sender=Switch)
+def dev_changed(sender, **kwargs):
+    '''Function called to change FK Device save method of Switch object.
+    '''
+    sw = kwargs['instance']
+    if sw.sw_device:
+        sw.sw_device.dev_state = 0
+        sw.sw_device.dev_location = sw.sw_addr()
+        sw.sw_device.save()
+        print(sw.sw_addr())
+        print(sender.sw_addr)
+        print(sw.sw_device.dev_mac)
+        print(sw.sw_device.dev_location)
+    else:
+        pass
