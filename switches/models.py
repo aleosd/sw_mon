@@ -83,6 +83,7 @@ class Switch(models.Model):
 
 
 class SwitchForm(forms.ModelForm):
+    sw_device = forms.ModelChoiceField(queryset=Device.objects.filter(dev_state=3))
     class Meta:
         model = Switch
 
