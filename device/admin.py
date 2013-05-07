@@ -7,7 +7,10 @@ class VendorAdmin(admin.ModelAdmin):
 admin.site.register(Vendor, VendorAdmin)
 
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('dev_ven', 'dev_ser', 'dev_mac', 'id',)
+    list_display = ('dev_ven', 'dev_ser', 'dev_mac', 'dev_state', 'id',)
+
+    search_fields = ['dev_mac',]
+    list_filter = ['dev_state', 'dev_ven']
 
 admin.site.register(Device, DeviceAdmin)
 
