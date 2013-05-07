@@ -6,6 +6,7 @@ from smart_selects.db_fields import ChainedForeignKey
 from django.db.models.signals import post_save, post_init, post_delete
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
+# from switches.models import Switch
 
 
 _NEW_DEVICE = False
@@ -34,29 +35,6 @@ class Series(models.Model):
 
     def __str__(self):
         return str(self.ser_ven) + '-' + self.ser
-
-"""
-class Type(models.Model):
-    type_ven = models.CharField(max_length=16)
-    type_models = models.TextField(help_text="Input models, separated \
-                                    with semicolon")
-
-    def model_list(self):
-        '''Type -> list
-
-        Returns models from type_models field, splitted and formatted
-        as list.
-        '''
-        return [s.strip() for s in self.type_models.split(';')]
-
-    def model_by_number(self, num):
-        '''Type, int -> list
-
-        Returns model from model_list by given index number.
-        '''
-        l = self.model_list()
-        return l[num -1]
-"""
 
 
 class Device(models.Model):
@@ -90,12 +68,28 @@ class Device(models.Model):
         (ON_STORE, 'On Store'),
     )
     dev_state = models.IntegerField(choices=STATUS_CHOICES, default=ON_STORE)
+    dev_location = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return '{} ({})'.format(self.dev_ser, self.id)
 
     def str_for_tooltip(self):
         return '{}'.format(self.dev_ser)
+
+    '''
+    def get_location(self):
+        try:
+            switch = Switch.objects.get(sw_device=self.id)
+        except:
+            switch = None
+
+        if switch:
+            sw_addr = switch.sw_addr()
+        else:
+            sw_addr = None
+        return sw_addr
+    '''
+
 
 class Event(models.Model):
     # Main fields
