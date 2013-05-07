@@ -70,8 +70,18 @@ $(document).ready(function()
             <tr>
             {% endif %}
                 <td>{{ switch.sw_id }}</td>
-                <td id="sw_addr"><a href="{% url 'edit' switch.id %}" rel="tooltip" data-original-title="{{ switch.sw_comment }}">
-                    {{ switch.sw_street }}, {{ switch.sw_build_num }}</a>
+                <td id="sw_addr">
+                    <a href="{% url 'edit' switch.id %}"
+                       {% if switch.sw_device or switch.sw_comment %}
+                       rel="tooltip"
+                       data-original-title="{% if switch.sw_device %}
+                                                Model: {{ switch.sw_device.str_for_tooltip }}
+                                            {% endif %}
+                                            {%if switch.sw_comment %}
+                                                Comment: {{ switch.sw_comment }}
+                                            {% endif %}"
+                       {% endif %}>
+                     {{ switch.sw_street }}, {{ switch.sw_build_num }}</a>
                 </td>
                 <td id="sw_ip">{{ switch.ip_addr }}</td>
                 <td>{{ switch.sw_ping|default:"Error" }}</td>

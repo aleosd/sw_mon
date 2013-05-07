@@ -92,8 +92,10 @@ class Device(models.Model):
     dev_state = models.IntegerField(choices=STATUS_CHOICES, default=ON_STORE)
 
     def __str__(self):
-        return '{}-{} ({})'.format(self.dev_ven, self.dev_ser, self.id)
+        return '{} ({})'.format(self.dev_ser, self.id)
 
+    def str_for_tooltip(self):
+        return '{}'.format(self.dev_ser)
 
 class Event(models.Model):
     # Main fields
