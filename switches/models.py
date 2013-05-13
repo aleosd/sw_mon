@@ -84,7 +84,14 @@ class Switch(models.Model):
 
 
 class SwitchForm(forms.ModelForm):
-    sw_device = forms.ModelChoiceField(queryset=Device.objects.filter(dev_state=3))
+    def __init__(self, *args, **kwargs):
+        super(SwitchForm, self).__init__(*args, **kwargs)
+
+        if self.instance.sw_device:
+            sw_device = self.instance.sw_device
+        else:
+            sw_device = forms.ModelChoiceField(queryset=Device.objects.filter(dev_state=3))
+
     class Meta:
         model = Switch
 
