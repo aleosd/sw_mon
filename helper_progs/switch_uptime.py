@@ -4,7 +4,7 @@ import subprocess
 import re
 from threading import Thread
 import queue
-from pysnmp.entity.rfc3413.oneliner import cmdgen
+# from pysnmp.entity.rfc3413.oneliner import cmdgen
 from tendo import singleton
 import switch_ping
 import database_con as db
@@ -77,12 +77,11 @@ if __name__=='__main__':
             q.put(item)
         else:
             UPTIME_DIC[item[6]] = {}
-            UPTIME_DIC[item[6]]['sw_uptime'] = None 
+            UPTIME_DIC[item[6]]['sw_uptime'] = None
 
     for i in range(MAX_THREADS):
         t = Thread(target=worker)
         threads.append(t)
-        # t.daemon = True
         t.start()
     '''
     for thread in threads: # starting all threads
@@ -91,7 +90,7 @@ if __name__=='__main__':
 
     for thread in threads: # wait for all threads
         thread.join()      # to finish
-    
+
     # writing to database
     switch_ping.lock.acquire()
     db.setdata(UPTIME_DIC, 'uptime')

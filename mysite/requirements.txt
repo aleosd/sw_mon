@@ -1,0 +1,4 @@
+django >= 1.5
+django_test_exclude
+pytz
+

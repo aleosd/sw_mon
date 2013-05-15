@@ -45,4 +45,3 @@ $(document).ready(function() {
 //        $("#sw_table").tablesorter({sortList: [[0,0]]});
 //    }
 // );
-

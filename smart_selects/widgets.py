@@ -160,7 +160,7 @@ class ChainedSelect(Select):
                     except: # give up
                         filter = {}
             filtered = list(get_model(self.app_name, self.model_name).objects.filter(**filter).distinct())
-            filtered.sort(cmp=locale.strcoll,) # key=lambda x:unicode_sorter(unicode(x)))
+            filtered.sort(key=str) # key=lambda x:unicode_sorter(unicode(x)))
             for choice in filtered:
                 final_choices.append((choice.pk, str(choice)))
         if len(final_choices) > 1:

@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils import timezone
 
 @login_required
 def index(request, status=None):
@@ -68,7 +69,7 @@ def create_switch(request):
 
 @login_required
 def history(request, status=None):
-    t = Event.objects.filter(ev_datetime__gte=datetime.now() - timedelta(days=1))
+    t = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1))
     # events_all = Event.objects.all()
 
     if status == "all":

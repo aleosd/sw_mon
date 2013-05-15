@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from blog.models import Entry, Category
 
+
 def entries_index(request):
     return render(request, 'blog/entry_index.html',
                               {'entry_list': Entry.objects.all(),
                                'category_list': Category.objects.all()})
+
 
 def entry_detail(request, year, month, day, slug):
     import datetime, time
@@ -16,6 +18,7 @@ def entry_detail(request, year, month, day, slug):
                                      slug=slug)
     return render(request, 'blog/entry_detail.html',
                               {'entry': entry})
+
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)

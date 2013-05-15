@@ -7,6 +7,7 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 class EntryAdmin(admin.ModelAdmin):
+    list_display = ('title', 'pub_date',)
     prepopulated_fields = {'slug': ['title']}
 
 admin.site.register(Entry, EntryAdmin)
