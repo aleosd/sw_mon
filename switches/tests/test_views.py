@@ -1,3 +1,5 @@
+from django.core.urlresolvers import resolve
+from switches.views import index
 from django.test import TestCase
 from django.contrib.auth.models import User
 from switches.models import Switch
@@ -11,8 +13,11 @@ class SwitchViewsTest(TestCase):
         User.objects.create_user('test', 'test@test.com', 'testpass')
         user = self.client.login(username='test', password='testpass')
 
+    # ----------------- SWITCHES PART TESTS ------------------
     def test_site_root_response_code(self):
         response = self.client.get('/')
+        view = resolve('/')
+        self.assertEqual(view.func, index)
         self.assertEqual(response.status_code, 200)
 
     def test_site_root_response_context(self):

@@ -1,5 +1,5 @@
 # Create your views here.
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.shortcuts import render
 from switches.models import Switch, Street, SwitchType, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
