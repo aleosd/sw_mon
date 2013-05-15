@@ -64,7 +64,7 @@ try:
             data = sys.stdin.read(1)
             try:
                 data = "".join(i for i in data if ord(i) < 128)
-                data = data.replace('\n', '\r\n').encode('utf-8')
+                data = data.replace('\n', '\r\n').encode()
             except Exception as e:
                 print('Error: ', e) 
             channel.write(data)

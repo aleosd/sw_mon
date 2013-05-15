@@ -23,7 +23,7 @@ class SwitchAdmin(admin.ModelAdmin):
             self.message_user(request, "1 switch was successfully disabled")
         else:
             self.message_user(request,
-                              "{} switches was disabled".format(sw_updated))
+                              "{} switches were disabled".format(sw_updated))
     disable.short_description = "Disable selected switch check"
 
     def enable(self, request, queryset):
@@ -32,7 +32,7 @@ class SwitchAdmin(admin.ModelAdmin):
             self.message_user(request, "1 switch was successfully enabled")
         else:
             self.message_user(request,
-                              "{} switches was enabled".format(sw_updated))
+                              "{} switches were enabled".format(sw_updated))
     enable.short_description = "Enable selected switch check"
 
 admin.site.register(Switch, SwitchAdmin)

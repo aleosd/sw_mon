@@ -62,6 +62,7 @@ def reboot_3com(ip, sw_id):
         tn.write(secure.user.encode('ascii') + b"\r\n")
         tn.read_until(b"Password: ")
         tn.write(password.encode('ascii') + b"\r\n")
+        tn.write(b"\r\n")   # in case of some alerts, to pass them
         tn.write(b"system\r\n")
         tn.write(b"control\r\n")
         tn.write(b"reboot\r\n")
@@ -96,12 +97,13 @@ def reg_reboot():
     for row in data_list:
         # row[2] - switch type, row[4] - uptime
         if row[4]:
-            if row[2] in (5,4) and row[4] > 1209600:    # looking for 'SNR' devices
+            if row[2] in (5,4,7) and row[4] > 1209600:    # looking for 'SNR' devices
                 try:
                     ssh_reboot.ssh_reboot(row[0], row[3]) # trying to reboot with ssh
                 except Exception as e:
                     print("{} reported error: ".format(row[0], e))
-                    reboot_snr(row[0], row[3])          # fallback to telnet
+                    # if exception, trying ssh_reboot with new password
+                    ssh_reboot.ssh_reboot(row[0], row[3], secure.ssh_password) 
             elif row[2] == 2 and row[4] > 1209600:      # looking for '3com'
                 reboot_3com(row[0], row[3])
             elif row[2] == 1 and row[4] > 1209600:      # looking for 'Allied'

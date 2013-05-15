@@ -6,14 +6,16 @@ import tty
 import secure
 
 
-def ssh_reboot(ip, sw_id): # pass args: ip, type, user, passwd
+def ssh_reboot(ip, sw_id, password=None): # pass args: ip, type, user, passwd
     # Create and connect a new socket.
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ip, 22))
              
     # Create a new SSH session using that socket and login
     # using basic password authentication.
-    password = secure.pass_chooser(sw_id)
+    print('Connecting to {}...'.format(ip))
+    if not password:
+        password = secure.pass_chooser(sw_id)
     user = secure.user
 
     session = libssh2.Session()
@@ -36,8 +38,8 @@ def ssh_reboot(ip, sw_id): # pass args: ip, type, user, passwd
         try:
             channel.write('reload\n'.replace('\n', '\r\n').encode())
             channel.write('Y\n'.replace('\n', '\r\n').encode())
-        except Exception as e:
-            print('Rebooted\n', e)
+        except Exception:
+            print('\n {} Rebooted\n'.format(ip))
 
     finally:
         # Restore attributes of terminal attached to stdin.
