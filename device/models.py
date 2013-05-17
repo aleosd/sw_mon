@@ -76,20 +76,6 @@ class Device(models.Model):
     def str_for_tooltip(self):
         return '{}'.format(self.dev_ser)
 
-    '''
-    def get_location(self):
-        try:
-            switch = Switch.objects.get(sw_device=self.id)
-        except:
-            switch = None
-
-        if switch:
-            sw_addr = switch.sw_addr()
-        else:
-            sw_addr = None
-        return sw_addr
-    '''
-
 
 class Event(models.Model):
     # Main fields

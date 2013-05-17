@@ -11,7 +11,14 @@ from django.utils import timezone
 @login_required
 def index(request, status=None):
     if not status:
-        switch_list = Switch.objects.select_related().filter(sw_enabled=True)
+        switch_list = Switch.objects.select_related(
+            'sw_street',
+            'sw_type',
+            'sw_device',
+            'sw_device__dev_ven',
+            'sw_device__dev_ser',
+            'sw_device__dev_ser__ser_ven',
+        ).filter(sw_enabled=True)
     if status == 'errors':
         switch_list = Switch.objects.select_related().filter(sw_ping=None)
     if status == 'warnings':
