@@ -1,9 +1,13 @@
+#! /usr/bin/python3
+
+
 import sys
 import socket
 import libssh2
 import termios
 import tty
 import secure
+import database_con as db
 
 
 def ssh_reboot(ip, sw_id, password=None): # pass args: ip, type, user, passwd
@@ -46,4 +50,12 @@ def ssh_reboot(ip, sw_id, password=None): # pass args: ip, type, user, passwd
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attrs)
 
 if __name__ == '__main__':
-    ssh_reboot()
+    if len(sys.argv) < 2:
+        print('{0} usage: {0} <ip_addr>'.format(sys.argv[0]), file=sys.stderr)
+        sys.exit(2)
+
+    query = "SELECT sw_id from switches_switch WHERE ip_addr=('{}')".format(str(sys.argv[1]))
+    raw_result = db.ex_query(query)
+    sw_id = raw_result[0][0]
+    
+    ssh_reboot(sys.argv[1], sw_id)

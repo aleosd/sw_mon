@@ -33,6 +33,19 @@ def fetchdata():
     conn.close()
     return data_list
 
+
+def ex_query(query):
+    '''Function for execution custom queries. Takes one parameter - query.
+    Returns result in tuple
+    '''
+
+    conn = makeconnection()
+    c = conn.cursor()
+    c.execute(query)
+    data = c.fetchall()
+    return data
+
+
 def setdata(data_dic={}, data='ping'):
     '''Format of data_dic for event: db_data[0] -> event type
                                      db_date[1] -> switch_id (ForeignKey)

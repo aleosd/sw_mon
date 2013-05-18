@@ -101,9 +101,12 @@ def reg_reboot():
                 try:
                     ssh_reboot.ssh_reboot(row[0], row[3]) # trying to reboot with ssh
                 except Exception as e:
-                    print("{} reported error: ".format(row[0], e))
+                    print("{} reported error: {}".format(row[0], e))
                     # if exception, trying ssh_reboot with new password
-                    ssh_reboot.ssh_reboot(row[0], row[3], secure.ssh_password) 
+                    try:
+                        ssh_reboot.ssh_reboot(row[0], row[3], secure.ssh_password) 
+                    except Exception as e:
+                        print("{} reported another error: {}".format(row[0], e))
             elif row[2] == 2 and row[4] > 1209600:      # looking for '3com'
                 reboot_3com(row[0], row[3])
             elif row[2] == 1 and row[4] > 1209600:      # looking for 'Allied'
