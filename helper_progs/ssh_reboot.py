@@ -10,7 +10,7 @@ import secure
 import database_con as db
 
 
-def ssh_reboot(ip, sw_id, password=None): # pass args: ip, type, user, passwd
+def ssh_reboot(ip, sw_id, password=None, DEBUG=False): # pass args: ip, type, user, passwd
     # Create and connect a new socket.
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ip, 22))
@@ -21,6 +21,9 @@ def ssh_reboot(ip, sw_id, password=None): # pass args: ip, type, user, passwd
     if not password:
         password = secure.pass_chooser(sw_id)
     user = secure.user
+    if DEBUG:
+        print('Using username', user)
+        print('Using password', password)
 
     session = libssh2.Session()
     session.startup(sock)
@@ -58,4 +61,4 @@ if __name__ == '__main__':
     raw_result = db.ex_query(query)
     sw_id = raw_result[0][0]
     
-    ssh_reboot(sys.argv[1], sw_id)
+    ssh_reboot(sys.argv[1], sw_id, DEBUG=True)

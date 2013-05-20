@@ -10,6 +10,7 @@ import ssh_reboot
 
 
 TIMEOUT = 5
+DEBUG = True # be carefull!!! This prints out username/password to console
 
 
 def reboot_cisco(ip, sw_id):
@@ -99,14 +100,16 @@ def reg_reboot():
         if row[4]:
             if row[2] in (5,4,7) and row[4] > 1209600:    # looking for 'SNR' devices
                 try:
-                    ssh_reboot.ssh_reboot(row[0], row[3]) # trying to reboot with ssh
+                    ssh_reboot.ssh_reboot(row[0], row[3], debug=DEBUG) # trying to reboot with ssh
                 except Exception as e:
-                    print("{} reported error: {}".format(row[0], e))
+                    if DEBUG:
+                        print("{} reported error: {}".format(row[0], e))
                     # if exception, trying ssh_reboot with new password
                     try:
-                        ssh_reboot.ssh_reboot(row[0], row[3], secure.ssh_password) 
+                        ssh_reboot.ssh_reboot(row[0], row[3], password=secure.ssh_password) 
                     except Exception as e:
-                        print("{} reported another error: {}".format(row[0], e))
+                        if DEBUG:
+                            print("{} reported another error: {}".format(row[0], e))
             elif row[2] == 2 and row[4] > 1209600:      # looking for '3com'
                 reboot_3com(row[0], row[3])
             elif row[2] == 1 and row[4] > 1209600:      # looking for 'Allied'
