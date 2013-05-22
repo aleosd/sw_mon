@@ -25,7 +25,7 @@ def fetchdata():
     conn = makeconnection()
     c = conn.cursor()
     c.execute("""SELECT ip_addr, sw_enabled, sw_type_id,
-              sw_id, sw_uptime, sw_ping, id FROM switches_switch""")
+              sw_id, sw_uptime, sw_ping, id, sw_uplink FROM switches_switch""")
     data = c.fetchall()
     data_list = []
     for row in data:
@@ -70,6 +70,10 @@ def setdata(data_dic={}, data='ping'):
                       VALUES (%s, %s, %s, %s, %s)""",
                       (datetime.datetime.now(), data_dic[key]['ev_type'], key,
                        data_dic[key]['ev_event'], data_dic[key]['ev_comment']))
+    elif data == 'uplink':
+        for key in data_dic:
+            c.execute("""UPDATE switches_switch SET sw_uplink=(%s) WHERE ip_addr=(%s)""",
+                      (data_dic[key] + ',', key))
     conn.commit()
     conn.close()
 
