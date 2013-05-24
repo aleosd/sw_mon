@@ -1,8 +1,9 @@
 #! /usr/bin/python3
 
-import subprocess
 import re
 from threading import Thread, Lock
+from tendo import singleton
+import sh
 import database_con as db
 
 
@@ -15,25 +16,38 @@ Modification for usage with django-project
 switch-monitoring.
 """
 
+# chek if another insnatce of process is still running
+me = singleton.SingleInstance()
+
 PING_DIC = {}
 EVENT_DIC = {}
 
 lock = Lock()
 
-def ping_st(ip, old_ping, id, manual_check=None):
-    p = subprocess.Popen(["ping", "-c", "3", ip], stdout=subprocess.PIPE)
+
+def ping_st(ip, old_ping, id, manual_check=False):
+    '''
+    p = subprocess.Popen(["ping", "-c", "3", "-i", "0.2", ip], stdout=subprocess.PIPE)
     result = p.communicate()
+    '''
+    try:
+        result = sh.ping("-c 3", "-i 0.2", ip)
+    except sh.ErrorReturnCode_1:
+        result = None
     if manual_check:
         return result
     PING_DIC[id] = {'old_ping': old_ping}
-    if result[0]:
-        line = result[0].decode()
-        m2 = re.search('rtt min/avg/max/mdev = (.*) ms', line)
-        if m2:
-            avgtime = m2.group(1).split('/')[1]
-            PING_DIC[id]['ping'] = float(avgtime)
-        else:
-            PING_DIC[id]['ping'] = None
+    if result:
+        for line in result:
+            # line = result[0].decode()
+            m2 = re.search('rtt min/avg/max/mdev = (.*) ms', line)
+            if m2:
+                avgtime = m2.group(1).split('/')[1]
+                PING_DIC[id]['ping'] = float(avgtime)
+            else:
+                PING_DIC[id]['ping'] = None
+    else:
+        PING_DIC[id]['ping'] = None
 
 def main():
     data_list = db.fetchdata()

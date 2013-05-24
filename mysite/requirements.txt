@@ -1,4 +1,6 @@
 django >= 1.5
 django_test_exclude
 pytz
+sh >= 1.08
+tendo >= 0.0.21
 

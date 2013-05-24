@@ -93,13 +93,13 @@ def main():
                                      ''')
     parser.add_argument('mac', metavar='MAC-address', type=str,
                         help='mac address to search for')
-    parser.add_argument('-u', action="store_true", 
+    parser.add_argument('-u', '--uplink', action="store_true", 
                         help='set this to see all ports, where given mac is listed')
     args = parser.parse_args()
 
     # uncomment this to add uplinks to database!
     # add_uplink_ports()
-    if args.u:
+    if args.uplink:
         global SHOW_UPLINKS
         SHOW_UPLINKS = True
     switches_query(args.mac)
