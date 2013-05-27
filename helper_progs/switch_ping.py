@@ -1,6 +1,8 @@
 #! /usr/bin/python3
 
 import re
+import subprocess
+import time
 from threading import Thread, Lock
 from tendo import singleton
 import sh
@@ -25,27 +27,30 @@ EVENT_DIC = {}
 lock = Lock()
 
 
-def ping_st(ip, old_ping, id, manual_check=False):
-    '''
-    p = subprocess.Popen(["ping", "-c", "3", "-i", "0.2", ip], stdout=subprocess.PIPE)
-    result = p.communicate()
-    '''
-    try:
-        result = sh.ping("-c 3", "-i 0.2", ip)
-    except sh.ErrorReturnCode_1:
-        result = None
+def ping_st(ip, old_ping, id, manual_check=False, ping_type=2):
+    # for subprocess usage
+    if ping_type==2:
+        p = subprocess.Popen(["ping", "-c", "3", "-i", "0.2", ip], stdout=subprocess.PIPE)
+        result = p.communicate()
+        result = result[0].decode()
+
+    # for sh.py usage
+    if ping_type==1:
+        try:
+            result = str(sh.ping("-c 3", "-i 0.2", ip, _bg=True))
+        except sh.ErrorReturnCode_1:
+            result = None
+
     if manual_check:
         return result
     PING_DIC[id] = {'old_ping': old_ping}
     if result:
-        for line in result:
-            # line = result[0].decode()
-            m2 = re.search('rtt min/avg/max/mdev = (.*) ms', line)
-            if m2:
-                avgtime = m2.group(1).split('/')[1]
-                PING_DIC[id]['ping'] = float(avgtime)
-            else:
-                PING_DIC[id]['ping'] = None
+        m2 = re.search('rtt min/avg/max/mdev = (.*) ms', result)
+        if m2:
+            avgtime = m2.group(1).split('/')[1]
+            PING_DIC[id]['ping'] = float(avgtime)
+        else:
+            PING_DIC[id]['ping'] = None
     else:
         PING_DIC[id]['ping'] = None
 
@@ -93,4 +98,6 @@ def main():
         lock.release()
 
 if __name__ == '__main__':
+    start_time = time.time()
     main()
+    print(time.time() - start_time, "seconds")
