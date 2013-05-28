@@ -1,6 +1,5 @@
 #! /usr/bin/python3
 
-
 import sys
 import socket
 import libssh2
@@ -33,7 +32,7 @@ def ssh_reboot(ip, sw_id, password=None, DEBUG=False): # pass args: ip, type, us
     channel = session.channel()
     channel.request_pty('vt100')
     channel.shell()
-    session.blocking = False
+    session.blocking = True
 
     attrs = termios.tcgetattr(sys.stdin)
       

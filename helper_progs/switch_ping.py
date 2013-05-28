@@ -43,6 +43,7 @@ def ping_st(ip, old_ping, id, manual_check=False, ping_type=2):
 
     if manual_check:
         return result
+
     PING_DIC[id] = {'old_ping': old_ping}
     if result:
         m2 = re.search('rtt min/avg/max/mdev = (.*) ms', result)
@@ -53,6 +54,7 @@ def ping_st(ip, old_ping, id, manual_check=False, ping_type=2):
             PING_DIC[id]['ping'] = None
     else:
         PING_DIC[id]['ping'] = None
+
 
 def main():
     data_list = db.fetchdata()
@@ -97,7 +99,6 @@ def main():
         db.setdata(EVENT_DIC, data='event')
         lock.release()
 
+
 if __name__ == '__main__':
-    start_time = time.time()
     main()
-    print(time.time() - start_time, "seconds")
