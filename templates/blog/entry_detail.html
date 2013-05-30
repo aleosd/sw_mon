@@ -1,20 +1,23 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ entry.title }}
+    {{ entry.title }}
 {% endblock %}
 
 {% block navbar %}
-<ul class="nav">
-    <li><a href="/">Monitor</a></li>
-    <li><a href="/mon/events/all">Events</a></li>
-    <li class="active"><a href="/blog/">Blog</a></li>
-</ul>
+    <ul class="nav">
+        <li><a href="/">Monitor</a></li>
+        <li><a href="/mon/events/all">Events</a></li>
+        <li class="active"><a href="/blog/">Blog</a></li>
+    </ul>
 {% endblock %}
 
 {% block full_page_bottom %}
-<h3>{{ entry.title }}</h3>
-{{ entry.body_html|safe }}
-<hr/>
-<p class="text-right"><em>{{ entry.pub_date|date:"F j, Y" }}</em></p>
+    <h3>{{ entry.title }}</h3>
+    {{ entry.body_html|safe }}
+    <hr/>
+    {% if perms.entry.change %}
+        <a href="/admin/blog/entry/{{ entry.id }}/">Редактировать</a>
+    {% endif %}
+    <p class="text-right"><em>{{ entry.pub_date|date:"F j, Y" }}</em></p>
 {% endblock %}

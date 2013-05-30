@@ -61,5 +61,5 @@ class Entry(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return "/blog/{}/{}".format(self.pub_date.strftime("%Y/%b/%d").lower(),
+        return "/blog/{}/{}/".format(self.pub_date.strftime("%Y/%b/%d").lower(),
                                     self.slug)

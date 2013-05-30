@@ -1,10 +1,9 @@
 #! /usr/bin/python3
 
 import subprocess
-import re
+# import re
 from threading import Thread
 import queue
-import time
 # from pysnmp.entity.rfc3413.oneliner import cmdgen
 
 from tendo import singleton
@@ -39,7 +38,7 @@ def check_uptime(id, ip, oid=OID):
                               '1.3.6.1.2.1.1.3', '2>/dev/null'],
                               stdout=subprocess.PIPE)
         result = p.communicate()
-        # looks like this approach alittle bit faster:
+        # looks like this approach little bit faster then regexp:
         sec = result[0].decode('UTF-8')[33:].split(')')[0][:-2]
         # seconds = re.search("(\(\d+\))", result[0].decode('UTF-8'))
         # sec = int(seconds.group()[1:-3])
@@ -71,7 +70,6 @@ def worker():
 
 
 if __name__=='__main__':
-    start_time = time.time()
     q = queue.Queue()
     data_list = db.fetchdata()
     threads = []
@@ -104,5 +102,3 @@ if __name__=='__main__':
     switch_ping.lock.acquire()
     db.setdata(UPTIME_DIC, 'uptime')
     switch_ping.lock.release()
-
-    print(time.time() - start_time, "seconds")

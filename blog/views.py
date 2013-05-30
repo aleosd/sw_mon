@@ -1,10 +1,22 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from blog.models import Entry, Category
 
 
 def entries_index(request):
+    entry_list = Entry.objects.all()
+    paginator = Paginator(entry_list, 10)
+    page = request.GET.get('page')
+
+    try:
+        entry_list = paginator.page(page)
+    except PageNotAnInteger:
+        entry_list = paginator.page(1)
+    except EmptyPage:
+        entry_list = paginator(paginator.num_pages)
+
     return render(request, 'blog/entry_index.html',
-                              {'entry_list': Entry.objects.all(),
+                              {'entry_list': entry_list,
                                'category_list': Category.objects.all()})
 
 

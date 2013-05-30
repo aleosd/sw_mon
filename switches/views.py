@@ -50,7 +50,7 @@ def edit(request, id=None):
     if not id:
         return render(request, 'mon/edit.html', {'form': SwitchForm()})
     else:
-        events = Event.objects.filter(ev_switch=id)[:10]
+        events = Event.objects.filter(ev_switch=id)[:20]
         switch = Switch.objects.get(id=id)
         form = SwitchForm(instance=switch)
         request.session['instance'] = switch

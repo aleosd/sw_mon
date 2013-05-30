@@ -41,4 +41,26 @@ All Entries
         {# </div> #}
     {% endfor %}
 
+<div class="pagination pagination-centered">
+    <ul>
+        {% if entry_list.has_previous %}
+            <li><a href="?page={{ entry_list.previous_page_number }}">Prev</a></li>
+            <li><a href="?page={{ entry_list.number|add:"-1" }}">{{ entry_list.number|add:"-1" }}</a></li>
+        {% else %}
+            <li class="disabled"><a href="#">Prev</a></li>
+        {% endif %}
+
+            <li class="active">
+                <a href="?page={{ entry_list.number }}">{{ entry_list.number }}</a>
+            </li>
+                
+        {% if entry_list.has_next %}
+            <li><a href="?page={{ entry_list.next_page_number }}">{{ entry_list.next_page_number }}</a></li>
+            <li><a href="?page={{ entry_list.next_page_number }}">Next</a></li>
+        {% else %}
+            <li class="desabled"><a href="#">Next</a></li>
+        {% endif %}
+    </ul>
+</div>
+
 {% endblock %}
