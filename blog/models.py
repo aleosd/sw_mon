@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-import datetime
+from django.utils import timezone
 from markdown import markdown
 
 # Create your models here.
@@ -24,7 +24,7 @@ class Entry(models.Model):
     title = models.CharField(max_length=250)
     excerpt = models.TextField(blank=True)
     body = models.TextField()
-    pub_date = models.DateTimeField(default=datetime.datetime.now)
+    pub_date = models.DateTimeField(default=timezone.now)
     slug = models.SlugField(unique_for_date='pub_date')
     author = models.ForeignKey(User)
     enable_comments = models.BooleanField(default=True)
