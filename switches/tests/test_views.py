@@ -34,6 +34,8 @@ def create_switch(**kwargs):
         'sw_type': create_switch_type(),
         'sw_id': 10000001,
         'sw_enabled': True,
+        'sw_ping': 12.6,
+        'sw_uptime': 50000000,
     }
     defaults.update(kwargs)
     return Switch.objects.create(**defaults)
@@ -42,16 +44,16 @@ def create_switch(**kwargs):
 class SwitchViewsTest(TestCase):
     def setUp(self):
         # creating user for auth simulation
-        User.objects.create_user('test', 'test@test.com', 'testpass')
-        user = self.client.login(username='test', password='testpass')
+        self.user = User.objects.create_user('test', 'test@test.com', 'testpass')
+        self.client.login(username='test', password='testpass')
 
-        switch1 = create_switch(
+        self.switch1 = create_switch(
             ip_addr = '192.168.1.1',
             sw_street = create_street(street='my_street_1'),
             sw_type = create_switch_type(sw_type='type_1'),
             sw_id = 1000003
         )
-        switch2 = create_switch(
+        self.switch2 = create_switch(
             ip_addr = '192.168.1.2',
             sw_street=create_street(street='my_street_2'),
             sw_type=create_switch_type(sw_type='type_2'),
@@ -74,15 +76,28 @@ class SwitchViewsTest(TestCase):
     def test_site_root_with_switch_obj(self):
         response = self.client.get('/')
         self.assertIn('192.168.1.2', response.content.decode('utf-8'))
-        # expected_html = render_to_string('mon/index.html')
-        # self.assertEqual(response.content.decode('utf-8'), expected_html)
+        expected_html = render_to_string(
+            'mon/index.html',
+            {'switch_list': [self.switch1, self.switch2],
+             'STATIC_URL': '/static/',
+             'user': self.user,
+             'bad_uptime': 0,
+             'bad_ping': 0,
+            }
+        )
+        self.assertEqual(response.content.decode('utf-8'), expected_html)
 
     def test_switch_edit_view(self):
-        response = self.client.get('/edit/1/')
-        view = resolve('/edit/1/')
-        self.assertEqual(response.status_code, 200)
+        response1 = self.client.get('/edit/{}/'.format(self.switch1.id))
+        response2 = self.client.get('/edit/{}/'.format(self.switch2.id))
+        view = resolve('/edit/{}/'.format(self.switch1.id))
+
+        self.assertEqual(response1.status_code, 200)
         self.assertEqual(view.func, edit)
-        self.assertIn('192.168.1.1', response.content.decode('utf-8'))
+
+        self.assertIn('192.168.1.1', response1.content.decode('utf-8'))
+        self.assertIn('192.168.1.2', response2.content.decode('utf-8'))
+        self.assertTemplateUsed(response1, 'mon/edit.html', 'base.html')
 
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):

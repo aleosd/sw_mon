@@ -50,3 +50,4 @@ class BlogViewsTest(TestCase):
     def test_entry_page_response_code(self):
         response = self.client.get(self.entry1.get_absolute_url())
         self.assertEqual(response.status_code, 200)
+        self.assertIn(self.entry1.title, response.content.decode('utf-8'))

@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 
 import sys
+import os
 import socket
 import libssh2
 import termios
@@ -13,6 +14,7 @@ def ssh_reboot(ip, sw_id, password=None, DEBUG=False): # pass args: ip, type, us
     # Create and connect a new socket.
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ip, 22))
+    TTY = os.isatty(sys.stdin.fileno())
              
     # Create a new SSH session using that socket and login
     # using basic password authentication.
@@ -23,7 +25,6 @@ def ssh_reboot(ip, sw_id, password=None, DEBUG=False): # pass args: ip, type, us
     if DEBUG:
         print('Using username', user)
         print('Using password', password)
-
     session = libssh2.Session()
     session.startup(sock)
     session.userauth_password(user, password)
@@ -34,12 +35,18 @@ def ssh_reboot(ip, sw_id, password=None, DEBUG=False): # pass args: ip, type, us
     channel.shell()
     session.blocking = True
 
-    attrs = termios.tcgetattr(sys.stdin)
+    if DEBUG:
+        print('Getting attrs from stdin')
+
+    if TTY:
+        attrs = termios.tcgetattr(sys.stdin)
+    else:
+        attrs = sys.stdin.readline().rstrip()
       
     try:
         # Put terminal attached to stdin into raw mode.
-        tty.setraw(sys.stdin)
-        session.blocking = True
+        if TTY:
+            tty.setraw(sys.stdin)
 
         try:
             channel.write('reload\n'.replace('\n', '\r\n').encode())
@@ -49,7 +56,8 @@ def ssh_reboot(ip, sw_id, password=None, DEBUG=False): # pass args: ip, type, us
 
     finally:
         # Restore attributes of terminal attached to stdin.
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attrs)
+        if TTY:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attrs)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
