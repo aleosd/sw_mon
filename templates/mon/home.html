@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block navbar %}
+    <a class="brand" id="white_text" href="/">LightNet</a>
+            <ul class="nav">
+                <li><a href="/mon/">Monitor</a></li>
+                <li><a href="/mon/events/all/">Events</a></li>
+                <li><a href="/blog/">Blog</a></li>
+            </ul>
+{% endblock navbar %}
+
+{% block full_page_bottom %}
+<img src="{{ STATIC_URL}}img/switches/latency_graph.png" class="img-polaroid">
+{% endblock full_page_bottom %}

@@ -63,18 +63,18 @@ class SwitchViewsTest(TestCase):
  
     # ----------------- SWITCHES PART TESTS ------------------
     def test_site_root_response_code(self):
-        response = self.client.get('/')
-        view = resolve('/')
+        response = self.client.get('/mon/')
+        view = resolve('/mon/')
         self.assertEqual(view.func, index)
         self.assertEqual(response.status_code, 200)
 
     def test_site_root_response_context(self):
-        response = self.client.get('/')
+        response = self.client.get('/mon/')
         self.assertTrue('switch_list' in response.context)
         self.assertEqual(len(response.context['switch_list']), 2)
 
     def test_site_root_with_switch_obj(self):
-        response = self.client.get('/')
+        response = self.client.get('/mon/')
         self.assertIn('192.168.1.2', response.content.decode('utf-8'))
         expected_html = render_to_string(
             'mon/index.html',
@@ -106,4 +106,9 @@ class SwitchViewsTest(TestCase):
 
     def test_event_error_page_response_code(self):
         response = self.client.get('/mon/events/errors/')
+        self.assertEqual(response.status_code, 200)
+
+    # ----------------- HOME PAGE PART TESTS --------------
+    def test_home_page_response_code(self):
+        response = self.client.get('/mon/home/')
         self.assertEqual(response.status_code, 200)

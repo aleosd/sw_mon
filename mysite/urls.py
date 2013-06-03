@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'mysite.views.home', name='home'),
     # url(r'^mysite/', include('mysite.foo.urls')),
 
-    url(r'^$', 'switches.views.index'),
+    url(r'^$', 'switches.views.home_view'),
     # url(r'^blog/$', 'blog.views.entries_index'),
     # url(r'^blog/(?P<year>\d{4})/(?P<month>\w{3})/(?P<day>\d{2})/(?P<slug>[-\d\w]+)/$',
     #    'blog.views.entry_detail'),

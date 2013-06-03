@@ -36,3 +36,8 @@ table.tablesorter thead tr .headerSortUp {
     color: gray;
     text-decoration: none;
     }
+
+/* white brand name on home page */
+#white_text {
+    color: white;
+    }

@@ -10,7 +10,7 @@ import ssh_reboot
 
 
 TIMEOUT = 5
-DEBUG = True # be carefull!!! This prints out username/password to console
+DEBUG = False # be carefull!!! This prints out username/password to console
 
 
 def reboot_cisco(ip, sw_id):

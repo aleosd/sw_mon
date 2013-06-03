@@ -100,3 +100,7 @@ def history(request, status=None):
                                             'status' : status,
                                             'events_per_day' : t})
 
+
+@login_required
+def home_view(request):
+    return render(request, 'mon/home.html')
