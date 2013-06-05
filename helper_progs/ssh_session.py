@@ -68,6 +68,7 @@ try:
             except Exception as e:
                 print('Error: ', e) 
             channel.write(data)
+            print(data)
 
 finally:
     # Restore attributes of terminal attached to stdin.

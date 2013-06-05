@@ -100,13 +100,13 @@ def reg_reboot():
         if row[4]:
             if row[2] in (5,4,7) and row[4] > 1209600:    # looking for 'SNR' devices
                 try:
-                    ssh_reboot.ssh_reboot(row[0], row[3], DEBUG=DEBUG) # trying to reboot with ssh
+                    ssh_reboot.ssh_reboot_snr(row[0], row[3], DEBUG=DEBUG) # trying to reboot with ssh
                 except Exception as e:
                     if DEBUG:
                         print("{} reported error: {}".format(row[0], e))
                     # if exception, trying ssh_reboot with new password
                     try:
-                        ssh_reboot.ssh_reboot(row[0], row[3],
+                        ssh_reboot.ssh_reboot_snr(row[0], row[3],
                                               password=secure.ssh_password,
                                               DEBUG=DEBUG) 
                     except Exception as e:
@@ -118,6 +118,9 @@ def reg_reboot():
                 reboot_telesyn(row[0], row[3])
             elif row[2] == 3 and row[4] > 1209600:      # looking for 'Cisco'
                 reboot_cisco(row[0], row[3])
+            elif row[2] == 8 and row[4] > 1209600:
+                ssh_reboot.ssh_reboot_dlink(row[0], row[3],
+                                            password=secure.ssh_password)
 
 if __name__=='__main__':
     reg_reboot()
