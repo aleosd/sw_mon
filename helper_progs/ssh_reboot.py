@@ -149,8 +149,12 @@ def ssh_reboot_dlink(channel):
 
 @ssh_rebooter
 def ssh_reboot_snr(channel):
+    '''Function for rebooting dlink switches with ssh.
+    Used with decorator, calling this func with channel arg.
+
+    Tested with SNR-S2940-8G
+    '''
     channel.write('reload\r\n'.encode())
-    time.sleep(1)
     channel.write('Y\r\n'.encode())
 
 
