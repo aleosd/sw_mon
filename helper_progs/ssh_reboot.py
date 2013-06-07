@@ -78,62 +78,6 @@ def ssh_rebooter(reboot_function):
     return wrapper
 
 
-def ssh_reboot_snr_old(ip, sw_id, password=None, DEBUG=False):
-    '''(ipaddress, switch_id, password, DEBUG) -> None
-
-    Function for rebooting SNR switches via ssh. Sure works with 
-    SNR-S2940-8G, SNR-S2940-24G and SNR-S2940-48G.
-    '''
-
-    # Create and connect a new socket.
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((ip, 22))
-    TTY = os.isatty(sys.stdin.fileno())
-             
-    # Create a new SSH session using that socket and login
-    # using basic password authentication.
-    print('Connecting to {}...'.format(ip))
-    if not password:
-        password = secure.pass_chooser(sw_id)
-    user = secure.user
-    if DEBUG:
-        print('Using username', user)
-        print('Using password', password)
-    session = libssh2.Session()
-    session.startup(sock)
-    session.userauth_password(user, password)
-     
-    # Put the session into non-blocking mode.
-    channel = session.channel()
-    channel.request_pty('vt100')
-    channel.shell()
-    session.blocking = True
-
-    if DEBUG:
-        print('Getting attrs from stdin')
-
-    if TTY:
-        attrs = termios.tcgetattr(sys.stdin)
-    else:
-        attrs = sys.stdin.readline().rstrip()
-      
-    try:
-        # Put terminal attached to stdin into raw mode.
-        if TTY:
-            tty.setraw(sys.stdin)
-
-        try:
-            channel.write('reload\n'.replace('\n', '\r\n').encode())
-            channel.write('Y\n'.replace('\n', '\r\n').encode())
-        except Exception as e:
-            print('\n {} reported {}\n'.format(ip, e))
-
-    finally:
-        # Restore attributes of terminal attached to stdin.
-        if TTY:
-            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, attrs)
-
-
 @ssh_rebooter
 def ssh_reboot_dlink(channel):
     '''Function for rebooting dlink switches with ssh.
