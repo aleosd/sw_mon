@@ -39,6 +39,11 @@ $(document).ready(function() {
 
 });
 
+<!-- Dropdown script -->
+$(docment).ready( function() {
+    $('.dropdown-toggle').dropdown();
+});
+
 // table-sorting script
 // $(document).ready(function()
 //    {

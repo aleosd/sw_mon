@@ -81,7 +81,7 @@ class Switch(models.Model):
         return datetime.timedelta(seconds=self.sw_uptime)
 
     def get_absolute_url(self):
-        return "/edit/%i/" % self.id
+        return "/mon/edit/%i/" % self.id
 
 
 class SwitchForm(forms.ModelForm):

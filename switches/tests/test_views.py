@@ -88,9 +88,9 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response.content.decode('utf-8'), expected_html)
 
     def test_switch_edit_view(self):
-        response1 = self.client.get('/edit/{}/'.format(self.switch1.id))
-        response2 = self.client.get('/edit/{}/'.format(self.switch2.id))
-        view = resolve('/edit/{}/'.format(self.switch1.id))
+        response1 = self.client.get('/mon/edit/{}/'.format(self.switch1.id))
+        response2 = self.client.get('/mon/edit/{}/'.format(self.switch2.id))
+        view = resolve('/mon/edit/{}/'.format(self.switch1.id))
 
         self.assertEqual(response1.status_code, 200)
         self.assertEqual(view.func, edit)
@@ -98,6 +98,18 @@ class SwitchViewsTest(TestCase):
         self.assertIn('192.168.1.1', response1.content.decode('utf-8'))
         self.assertIn('192.168.1.2', response2.content.decode('utf-8'))
         self.assertTemplateUsed(response1, 'mon/edit.html', 'base.html')
+
+
+    def test_switch_view_view(self):
+        response = self.client.get('/mon/view/{}/'.format(self.switch1.id))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.switch1.ip_addr, response.content.decode('utf-8'))
+
+    def test_mon_status_views(self):
+        response_warn = self.client.get('/mon/status/warnings/')
+        response_err = self.client.get('/mon/status/errors/')
+        self.assertEqual(response_warn.status_code, 200)
+        self.assertEqual(response_err.status_code, 200)
 
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):

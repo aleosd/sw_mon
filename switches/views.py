@@ -1,6 +1,6 @@
 # Create your views here.
 from datetime import timedelta
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from switches.models import Switch, Street, SwitchType, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -104,3 +104,13 @@ def history(request, status=None):
 @login_required
 def home_view(request):
     return render(request, 'mon/home.html')
+
+
+@login_required
+def view(request, id=None):
+    events = Event.objects.filter(ev_switch=id)[:30]
+    switch = Switch.objects.select_related().get(id=id)
+    # form = SwitchForm(instance=switch)
+    # request.session['instance'] = switch
+    return render(request, 'mon/view.html', {'switch': switch,
+                                             'events': events})

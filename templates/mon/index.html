@@ -4,6 +4,30 @@
 Monitoring
 {% endblock %}
 
+{% block script %}
+
+<!-- Tooltip script -->
+<script type="text/javascript">
+$(function(){
+  $('body').tooltip({
+      selector: "[rel=tooltip]",
+      placement: "top",
+      html: true
+  });
+});
+</script>
+
+<!-- table-sorting script -->
+<script>
+$(document).ready(function()
+    {
+        $("#sw_table").tablesorter({sortList: [[0,0]]});
+    }
+);
+</script>
+
+{% endblock script %}
+
 {% block sidemenu %}
 <div class="well well-small">
 <ul class="nav nav-list">
@@ -21,12 +45,12 @@ Monitoring
         </li>
     {% elif status == "errors" %}
         <li><a href="/mon/">All</a></li>
-        <li><a href="/mon/warnings/">Warning</a></li>
-        <li class="active"><a href="/mon/errors/">Error</a></li>
+        <li><a href="/mon/status/warnings/">Warning</a></li>
+        <li class="active"><a href="/mon/status/errors/">Error</a></li>
     {% elif status == "warnings" %}
         <li><a href="/mon/">All</a></li>
-        <li class="active"><a href="/mon/warnings/">Warning</a></li>
-        <li><a href="/mon/errors/">Error</a></li>
+        <li class="active"><a href="/mon/status/warnings/">Warning</a></li>
+        <li><a href="/mon/status/errors/">Error</a></li>
     {% endif %}
         <li class="divider"></li>
         <li><a href="/new/">Add Switch</a><li>
@@ -36,14 +60,6 @@ Monitoring
 
 {% block maincontent %}
 
-<!-- table-sorting script -->
-<script>
-$(document).ready(function()
-    {
-        $("#sw_table").tablesorter({sortList: [[0,0]]});
-    }
-);
-</script>
 
 {% if switch_list %}
     <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
@@ -71,7 +87,7 @@ $(document).ready(function()
             {% endif %}
                 <td>{{ switch.sw_id }}</td>
                 <td id="sw_addr">
-                    <a href="{% url 'edit' switch.id %}"
+                    <a href="{% url 'view' switch.id %}"
                        {% if switch.sw_device or switch.sw_comment %}
                        rel="tooltip"
                        data-original-title="{% if switch.sw_device %}

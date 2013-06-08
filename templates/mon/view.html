@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ switch }}
+{% endblock %}
+
+{% block script %}
+{% endblock script %}
+
+{% block sidemenu %}
+
+<div class="well-small">
+<p><button class="btn" id='edit_btn'>Edit</button></p>
+<p><button class="btn">Ping</button></p>
+<p><button class="btn btn-danger">Reboot</button></p>
+</div>
+
+{% endblock sidemenu %}
+
+{% block maincontent %}
+<script>
+$('#edit_btn').click(function() {
+    document.location.href='/mon/edit/{{ switch.id }}/';
+    })
+</script>
+
+{% if switch %}
+<p><strong>Информация по свичу:</strong><p>
+    <ul>
+        <li><strong>IP-адрес:</strong> {{ switch.ip_addr }}</li>
+        <li><strong>Район:</strong> {{ switch.get_sw_district_display }}</li>
+        <li><strong>Адрес размещения:</strong> {{ switch.sw_addr }}</li>
+        {% if switch.sw_comment %}
+            <li><strong>Комментарий:</strong> {{ switch.sw_comment }}</li>
+        {% endif %}
+        <li><strong>Тип свича:</strong> {{ switch.sw_type }}</li>
+        {% if switch.sw_device %}
+            <li><strong>Модель свича:</strong> {{ switch.sw_device.str_for_tooltip }}</li>
+        {% endif %}
+        <li><strong>Состояние:</strong> {% if switch.sw_enabled %}Включен{% else %}Отключен{% endif %}</li>
+        <li><strong>Пинг, мс:</strong> {{ switch.sw_ping|default:"Неизвестно" }}</li>
+        <li><strong>Время работы:</strong> {{ switch.sw_uptime_str|default:"Неизвестно" }}</li>
+    </ul>
+
+    {% if events %}
+    <script type="text/javascript">
+    $(document).ready(function()
+        {
+            $("#sw_table").tablesorter();
+        }
+    );
+    </script>
+    <p><strong>Последние 30 событий:</strong></p>
+    <table id="sw_table" class="table table-bordered table-hover table-condensed tablesorter">
+        <thead>
+        <tr>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Switch</th>
+            <th>Event</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for event in events %}
+            {% if event.ev_type == "err" %}
+            <tr class="error">
+            {% elif event.ev_type == "warn" %}
+            <tr class="warning">
+            {% else %}
+            <tr>
+            {% endif %}
+                <td>{{ event.ev_datetime|date:"d M, H:i" }}</td>
+                <td>{{ event.get_ev_type_display }}</td>
+                <td><a href="{{ event.ev_switch.get_absolute_url }}">{{ event.ev_switch }}</a></td>
+                <td>{{ event.ev_event }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %} <!-- Events if -->
+{% endif %} <!-- Switch if -->
+
+{% endblock maincontent %}
+
+
