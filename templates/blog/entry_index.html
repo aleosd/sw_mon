@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}
 All Entries
@@ -19,10 +20,14 @@ All Entries
     <li><p class="text-center muted">
         {% now "SHORT_DATETIME_FORMAT" %}</p></li>
         <li class="active"><a href="/blog/">All Entries</a></li>
-     <li class="nav-header">By Category</li>
-        {% for category in category_list %}
-            <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
-        {% endfor %}
+     <li class="nav-header">{% trans "By Category" %}</li>
+    {% for category in category_list %}
+        <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
+    {% endfor %}
+    {% if perms.entry.change %}
+    <li class="divider"></li>
+    <li><a href="/admin/blog/entry/add/">{% trans "Add Entry" %}</a></li>
+    {% endif %}
 </div>
 
 {% endblock %}

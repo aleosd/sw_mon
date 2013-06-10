@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}
 Events history
@@ -19,7 +20,7 @@ Events history
     <li><p class="text-center muted">
         {% now "SHORT_DATETIME_FORMAT" %}</p></li>
      <li class="nav-header text-center">Last 24 hours: {{ events_per_day|length }} events</li>
-     <li class="nav-header">Status</li>
+     <li class="nav-header">{% trans "Status" %}</li>
     {% if status == "all" %}
         <li class="active"><a href="/mon/events/all/">All</a></li>
         <li><a href="/mon/events/warnings/">Warning</a></li>

@@ -16,26 +16,7 @@
     <body>
       <div class="container">
 
-      <!-- Dropdown script -->
-      <script type="text/javascript">
-      $(docment).ready( function() {
-      $('.dropdown-toggle').dropdown();
-      });
-      </script>
-
       {% block script %}
-
-      <!-- Tooltip script -->
-      <script type="text/javascript">
-      $(function(){
-          $('body').tooltip({
-              selector: "[rel=tooltip]",
-              placement: "top",
-              html: true
-          });
-      });
-      </script>
-
       {% endblock script %}
 
         <div class="navbar navbar-inverse">

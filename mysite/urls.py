@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.conf.urls.i18n import i18n_patterns
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -11,7 +12,6 @@ urlpatterns = patterns('',
 
     url(r'^$', 'switches.views.home_view'),
     url(r'^blog/', include('blog.urls')),
-    url(r'^mon/', include('switches.urls')),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^new/$', 'switches.views.edit'),
     url(r'^create/', 'switches.views.create_switch'),
@@ -23,4 +23,8 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+)
+
+urlpatterns += i18n_patterns('',
+    url(r'^mon/', include('switches.urls')),
 )

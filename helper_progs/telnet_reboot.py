@@ -4,6 +4,7 @@
    database.'''
 
 import sys
+import time
 import telnetlib
 import secure
 import database_con as db
@@ -47,7 +48,8 @@ def reboot_cisco(ip, password, tn):
 
 @telnet_rebooter
 def reboot_3com(ip, password, tn):
-    print('Rebooting 3com')
+    print('Rebooting 3com, ip: {}'.format(ip))
+    # tn = telnetlib.Telnet(ip, timeout=TIMEOUT)
     tn.read_until(b"Login: ")
     tn.write(secure.user.encode('ascii') + b"\r\n")
     tn.read_until(b"Password: ")
@@ -56,16 +58,18 @@ def reboot_3com(ip, password, tn):
     tn.write(b"system\r\n")
     tn.write(b"control\r\n")
     tn.write(b"reboot\r\n")
+    time.sleep(1)
     tn.write(b"yes\r\n")
     # for future success chek, or history/log records
-    debug_info = tn.read_all().decode('ascii')
-    print(debug_info)
+    # debug_info = tn.read_all().decode('ascii')
+    # print(debug_info)
     tn.close()
+    print('Rebooted 3com, ip: {}'.format(ip))
 
 
 @telnet_rebooter
 def reboot_snr(ip, password, tn):
-    tn = telnetlib.Telnet(ip, timeout=TIMEOUT)
+    # tn = telnetlib.Telnet(ip, timeout=TIMEOUT)
     tn.read_until(b"login:")
     tn.write(b"admin\r\n")
     tn.read_until(b"Password:")
@@ -80,7 +84,7 @@ def reboot_snr(ip, password, tn):
 
 @telnet_rebooter
 def reboot_telesyn(ip, password, tn):
-    tn = telnetlib.Telnet(ip, timeout=5)
+    # tn = telnetlib.Telnet(ip, timeout=5)
     tn.read_until(b"login: ")
     tn.write(secure.allied_user.encode('ascii') + b"\n")
     tn.read_until(b"Password: ")
