@@ -11,7 +11,6 @@ urlpatterns = patterns('',
     # url(r'^mysite/', include('mysite.foo.urls')),
 
     url(r'^$', 'switches.views.home_view'),
-    url(r'^blog/', include('blog.urls')),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^new/$', 'switches.views.edit'),
     url(r'^create/', 'switches.views.create_switch'),
@@ -26,5 +25,6 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += i18n_patterns('',
+    url(r'^blog/', include('blog.urls')),
     url(r'^mon/', include('switches.urls')),
 )

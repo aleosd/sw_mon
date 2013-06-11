@@ -18,7 +18,7 @@ Events history
 <div class="well well-small">
 <ul class="nav nav-list">
     <li><p class="text-center muted">
-        {% now "SHORT_DATETIME_FORMAT" %}</p></li>
+        {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
      <li class="nav-header text-center">Last 24 hours: {{ events_per_day|length }} events</li>
      <li class="nav-header">{% trans "Status" %}</li>
     {% if status == "all" %}

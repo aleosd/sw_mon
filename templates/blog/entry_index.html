@@ -2,15 +2,15 @@
 {% load i18n %}
 
 {% block title %}
-All Entries
+{% trans "All Entries" %}
 {% endblock %}
 
 {% block navbar %}
     <a class="brand" href="/">LightNet</a>
     <ul class="nav">
-        <li><a href="/mon/">Monitor</a></li>
-        <li><a href="/mon/events/all">Events</a></li>
-        <li class="active"><a href="/blog/">Blog</a></li>
+        <li><a href="/mon/">{% trans "Monitor" %}</a></li>
+        <li><a href="/mon/events/all">{% trans "Events" %}</a></li>
+        <li class="active"><a href="/blog/">{% trans "Blog" %}</a></li>
     </ul>
 {% endblock navbar %}
 
@@ -18,8 +18,8 @@ All Entries
 <div class="well well-small">
 <ul class="nav nav-list">
     <li><p class="text-center muted">
-        {% now "SHORT_DATETIME_FORMAT" %}</p></li>
-        <li class="active"><a href="/blog/">All Entries</a></li>
+        {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
+        <li class="active"><a href="/blog/">{% trans "All Entries" %}</a></li>
      <li class="nav-header">{% trans "By Category" %}</li>
     {% for category in category_list %}
         <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
@@ -42,7 +42,7 @@ All Entries
             {% else %}
                 {{ entry.body_html|truncatewords_html:"50"|safe }}
             {% endif %}
-            <p><a href="{{ entry.get_absolute_url }}">Читать полностью...</a><p>
+            <p><a href="{{ entry.get_absolute_url }}">{% trans "Read more..." %}</a><p>
             <hr/>
         {# </div> #}
     {% endfor %}
@@ -50,10 +50,10 @@ All Entries
 <div class="pagination pagination-centered">
     <ul>
         {% if entry_list.has_previous %}
-            <li><a href="?page={{ entry_list.previous_page_number }}">Prev</a></li>
+            <li><a href="?page={{ entry_list.previous_page_number }}">{% trans "Prev" %}</a></li>
             <li><a href="?page={{ entry_list.number|add:"-1" }}">{{ entry_list.number|add:"-1" }}</a></li>
         {% else %}
-            <li class="disabled"><a href="#">Prev</a></li>
+            <li class="disabled"><a href="#">{% trans "Prev" %}</a></li>
         {% endif %}
 
             <li class="active">
@@ -62,9 +62,9 @@ All Entries
                 
         {% if entry_list.has_next %}
             <li><a href="?page={{ entry_list.next_page_number }}">{{ entry_list.next_page_number }}</a></li>
-            <li><a href="?page={{ entry_list.next_page_number }}">Next</a></li>
+            <li><a href="?page={{ entry_list.next_page_number }}">{% trans "Next" %}</a></li>
         {% else %}
-            <li class="desabled"><a href="#">Next</a></li>
+            <li class="desabled"><a href="#">{% trans "Next" %}</a></li>
         {% endif %}
     </ul>
 </div>

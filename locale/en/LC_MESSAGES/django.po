@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-10 11:22+0600\n"
+"POT-Creation-Date: 2013-06-11 11:19+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,101 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/mon/history.html:23
+#: templates/base.html:28 templates/blog/entry_index.html:11
+msgid "Monitor"
+msgstr ""
+
+#: templates/base.html:29 templates/blog/entry_index.html:12
+msgid "Events"
+msgstr ""
+
+#: templates/base.html:30 templates/blog/entry_index.html:13
+msgid "Blog"
+msgstr ""
+
+#: templates/base.html:38
+msgid "Admin Panel"
+msgstr ""
+
+#: templates/base.html:40
+msgid "Logout"
+msgstr ""
+
+#: templates/base.html:44
+msgid "Login"
+msgstr ""
+
+#: templates/blog/entry_index.html:5 templates/blog/entry_index.html.py:22
+msgid "All Entries"
+msgstr ""
+
+#: templates/blog/entry_index.html:23
+msgid "By Category"
+msgstr ""
+
+#: templates/blog/entry_index.html:29
+msgid "Add Entry"
+msgstr ""
+
+#: templates/blog/entry_index.html:45
+msgid "Read more..."
+msgstr ""
+
+#: templates/blog/entry_index.html:53 templates/blog/entry_index.html.py:56
+msgid "Prev"
+msgstr ""
+
+#: templates/blog/entry_index.html:65 templates/blog/entry_index.html.py:67
+msgid "Next"
+msgstr ""
+
+#: templates/mon/history.html:23 templates/mon/index.html:39
 msgid "Status"
+msgstr ""
+
+#: templates/mon/index.html:37
+msgid "Search"
+msgstr ""
+
+#: templates/mon/index.html:42 templates/mon/index.html.py:50
+#: templates/mon/index.html:54
+msgid "All"
+msgstr ""
+
+#: templates/mon/index.html:44 templates/mon/index.html.py:51
+#: templates/mon/index.html:55
+msgid "Warning"
+msgstr ""
+
+#: templates/mon/index.html:46 templates/mon/index.html.py:52
+#: templates/mon/index.html:56
+msgid "Error"
+msgstr ""
+
+#: templates/mon/index.html:59
+msgid "Add Switch"
+msgstr ""
+
+#: templates/mon/index.html:72
+msgid "Address"
+msgstr ""
+
+#: templates/mon/index.html:74
+msgid "Ping"
+msgstr ""
+
+#: templates/mon/index.html:75
+msgid "Uptime"
+msgstr ""
+
+#: templates/mon/index.html:76
+msgid "Type"
+msgstr ""
+
+#: templates/mon/index.html:97
+msgid "Model"
+msgstr ""
+
+#: templates/mon/index.html:100
+msgid "Comment"
 msgstr ""

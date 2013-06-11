@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-10 11:22+0600\n"
+"POT-Creation-Date: 2013-06-11 11:19+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,101 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: templates/mon/history.html:23
+#: templates/base.html:28 templates/blog/entry_index.html:11
+msgid "Monitor"
+msgstr "Мониторинг"
+
+#: templates/base.html:29 templates/blog/entry_index.html:12
+msgid "Events"
+msgstr "События"
+
+#: templates/base.html:30 templates/blog/entry_index.html:13
+msgid "Blog"
+msgstr "Блог"
+
+#: templates/base.html:38
+msgid "Admin Panel"
+msgstr "Управление"
+
+#: templates/base.html:40
+msgid "Logout"
+msgstr "Выйти"
+
+#: templates/base.html:44
+msgid "Login"
+msgstr "Войти"
+
+#: templates/blog/entry_index.html:5 templates/blog/entry_index.html.py:22
+msgid "All Entries"
+msgstr "Все записи"
+
+#: templates/blog/entry_index.html:23
+msgid "By Category"
+msgstr "По категориям"
+
+#: templates/blog/entry_index.html:29
+msgid "Add Entry"
+msgstr "Добавить запись"
+
+#: templates/blog/entry_index.html:45
+msgid "Read more..."
+msgstr "Читать далее..."
+
+#: templates/blog/entry_index.html:53 templates/blog/entry_index.html.py:56
+msgid "Prev"
+msgstr "Пред"
+
+#: templates/blog/entry_index.html:65 templates/blog/entry_index.html.py:67
+msgid "Next"
+msgstr "След"
+
+#: templates/mon/history.html:23 templates/mon/index.html:39
 msgid "Status"
 msgstr "Статус"
+
+#: templates/mon/index.html:37
+msgid "Search"
+msgstr "Поиск"
+
+#: templates/mon/index.html:42 templates/mon/index.html.py:50
+#: templates/mon/index.html:54
+msgid "All"
+msgstr "Все"
+
+#: templates/mon/index.html:44 templates/mon/index.html.py:51
+#: templates/mon/index.html:55
+msgid "Warning"
+msgstr ""
+
+#: templates/mon/index.html:46 templates/mon/index.html.py:52
+#: templates/mon/index.html:56
+msgid "Error"
+msgstr "Ошибка"
+
+#: templates/mon/index.html:59
+msgid "Add Switch"
+msgstr "Добавить свич"
+
+#: templates/mon/index.html:72
+msgid "Address"
+msgstr "Адрес"
+
+#: templates/mon/index.html:74
+msgid "Ping"
+msgstr "Пинг"
+
+#: templates/mon/index.html:75
+msgid "Uptime"
+msgstr "Работает"
+
+#: templates/mon/index.html:76
+msgid "Type"
+msgstr "Тип"
+
+#: templates/mon/index.html:97
+msgid "Model"
+msgstr "Модель"
+
+#: templates/mon/index.html:100
+msgid "Comment"
+msgstr "Комментарий"

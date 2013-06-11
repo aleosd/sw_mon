@@ -41,7 +41,7 @@ def reboot_cisco(ip, password, tn):
     tn.write(password.encode('ascii') + b"\n")
     tn.write(b"reload\n")
     tn.write(b"\n")
-    # debug_info = tn.read_all().decode('ascii')
+    debug_info = tn.read_all().decode('ascii')
     # print(debug_info)
     tn.close()
 
@@ -61,7 +61,7 @@ def reboot_3com(ip, password, tn):
     time.sleep(1)
     tn.write(b"yes\r\n")
     # for future success chek, or history/log records
-    # debug_info = tn.read_all().decode('ascii')
+    debug_info = tn.read_all().decode('ascii')
     # print(debug_info)
     tn.close()
     print('Rebooted 3com, ip: {}'.format(ip))
