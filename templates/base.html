@@ -8,7 +8,8 @@
             {% endblock %}
         </title>
         <!-- Bootstrap -->
-        <link href ="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="{{ STATIC_URL }}css/custom.css" rel="stylesheet" media="screen">
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-latest.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tablesorter.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
@@ -33,16 +34,31 @@
             <ul class="nav pull-right">
                 {% if user.is_authenticated %}
                 <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }} <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {{ user.username }} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                  <li><a href="/admin/" target="_blank">{% trans "Admin Panel" %}</a></li>
-                  <li class="divider"></li>
-                  <li><a href="/logout/">{% trans "Logout" %}</a></li>
+                      <li><a href="/admin/" target="_blank">{% trans "Admin Panel" %}</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/logout/">{% trans "Logout" %}</a></li>
                   </ul>
                 </li>
                 {% else %}
-                <li><a href="#">{% trans "Login" %}</a></li>
+                <li><a href="#"><i class="icon-user icon-white"></i> <{% trans "Login" %}</a></li>
                 {% endif %}
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-globe icon-white"></i> Lang<b class="caret"></b></a>
+                <ul id="lang_dropdown" class="dropdown-menu">
+                    <form id="lang_form" class="pull-right form-inline" action="/i18n/setlang/" method="post">{% csrf_token %}
+                        <input name="next" type="hidden" value="/" />
+                            <select id="lang_select" name="language">
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for language in languages %}
+                            <option value="{{ language.code }}">{{ language.name_local }}</option>
+                            {% endfor %}
+                            </select>
+                        <input type="submit" value="Go" class="btn" />
+                    </form>
+                </ul>
+                </li>
             </ul>
             </div> <!--- end of navbar inner -->
             </div> <!--- end of navbar main -->

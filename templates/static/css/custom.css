@@ -1,0 +1,57 @@
+/* tables css */
+
+table.tablesorter thead tr .header {
+    background-image: url(bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    }
+
+table.tablesorter thead tr .headerSortDown {
+    background-image: url(asc.gif);
+    }
+
+table.tablesorter thead tr .headerSortUp {
+    background-image: url(desc.gif);
+    }
+
+/* header href for blog */
+#blog_header {
+    color: black;
+    }
+
+#blog_header:hover {
+    color: gray;
+    text-decoration: none;
+    }
+
+/* white brand name on home page */
+#white_text {
+    color: white;
+    }
+
+/* lang select settings */
+#lang_select {
+    width: 100px;
+    }
+
+.navbar-search .input-prepend {
+    margin-bottom: 0;
+    margin-top: 0;
+    margin-right: 10;
+}
+
+.form-inline .btn {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+#lang_form {
+    margin-bottom: 0;
+}
+
+#lang_dropdown {
+    padding: 5px;
+    min-width: 150px;
+}

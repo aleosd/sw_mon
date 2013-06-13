@@ -10,12 +10,11 @@ urlpatterns = patterns('',
     # url(r'^$', 'mysite.views.home', name='home'),
     # url(r'^mysite/', include('mysite.foo.urls')),
 
-    url(r'^$', 'switches.views.home_view'),
-    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^new/$', 'switches.views.edit'),
     url(r'^create/', 'switches.views.create_switch'),
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/login/'}),
     url(r'^chaining/', include('smart_selects.urls')),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -25,6 +24,8 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += i18n_patterns('',
+    url(r'^$', 'switches.views.home_view'),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r'^blog/', include('blog.urls')),
     url(r'^mon/', include('switches.urls')),
 )
