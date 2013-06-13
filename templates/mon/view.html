@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}
 {{ switch }}
@@ -11,6 +12,8 @@
 
 <div class="well-small">
 <p><button class="btn" id='edit_btn'>Edit</button></p>
+<p><form><input type="button" class="btn" value='{% trans "Connect" %}'
+    onclick="window.open('http://{{ switch.ip_addr }}/');"></form>
 <p><button class="btn">Ping</button></p>
 <p><button class="btn btn-danger">Reboot</button></p>
 </div>
