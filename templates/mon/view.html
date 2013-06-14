@@ -11,11 +11,11 @@
 {% block sidemenu %}
 
 <div class="well-small">
-<p><button class="btn" id='edit_btn'>Edit</button></p>
+<p><button class="btn" id='edit_btn'>{% trans "Edit" %}</button></p>
 <p><form><input type="button" class="btn" value='{% trans "Connect" %}'
     onclick="window.open('http://{{ switch.ip_addr }}/');"></form>
-<p><button class="btn">Ping</button></p>
-<p><button class="btn btn-danger">Reboot</button></p>
+<p><button class="btn">{% trans "Ping" %}</button></p>
+<p><button class="btn btn-danger">{% trans "Reboot" %}</button></p>
 </div>
 
 {% endblock sidemenu %}
@@ -28,21 +28,26 @@ $('#edit_btn').click(function() {
 </script>
 
 {% if switch %}
-<p><strong>Информация по свичу:</strong><p>
+<p><strong>{% trans "Switch information:" %}</strong><p>
     <ul>
-        <li><strong>IP-адрес:</strong> {{ switch.ip_addr }}</li>
-        <li><strong>Район:</strong> {{ switch.get_sw_district_display }}</li>
-        <li><strong>Адрес размещения:</strong> {{ switch.sw_addr }}</li>
+        <li><strong>{% trans "IP-address" %}:</strong> {{ switch.ip_addr }}</li>
+        <li><strong>{% trans "District" %}:</strong> {{ switch.get_sw_district_display }}</li>
+        <li><strong>{% trans "Address" %}:</strong> {{ switch.sw_addr }}</li>
         {% if switch.sw_comment %}
-            <li><strong>Комментарий:</strong> {{ switch.sw_comment }}</li>
+            <li><strong>{% trans "Comment" %}:</strong> {{ switch.sw_comment }}</li>
         {% endif %}
-        <li><strong>Тип свича:</strong> {{ switch.sw_type }}</li>
+        <li><strong>{% trans "Type" %}:</strong> {{ switch.sw_type }}</li>
         {% if switch.sw_device %}
-            <li><strong>Модель свича:</strong> {{ switch.sw_device.str_for_tooltip }}</li>
+            <li><strong>{% trans "Model" %}:</strong> {{ switch.sw_device.str_for_tooltip }}</li>
         {% endif %}
-        <li><strong>Состояние:</strong> {% if switch.sw_enabled %}Включен{% else %}Отключен{% endif %}</li>
-        <li><strong>Пинг, мс:</strong> {{ switch.sw_ping|default:"Неизвестно" }}</li>
-        <li><strong>Время работы:</strong> {{ switch.sw_uptime_str|default:"Неизвестно" }}</li>
+        <li><strong>{% trans "State" %}:</strong> 
+            {% if switch.sw_enabled %}<span class="col_green">{% trans "Enabled" %}</span>
+            {% else %}<span class="col_red">{% trans "Disabled" %}<span>{% endif %}</li>
+        <li><strong>{% trans "Ping, ms" %}:</strong> 
+            {% if switch.sw_ping %}<span class="col_green">{{ switch.sw_ping }}</span>
+            {% else %}<span class="col_red">{% trans "Unknown" %}</span>
+            {% endif %}
+        <li><strong>{% trans "Uptime" %}:</strong> {{ switch.sw_uptime_str|default:"Неизвестно" }}</li>
     </ul>
 
     {% if events %}

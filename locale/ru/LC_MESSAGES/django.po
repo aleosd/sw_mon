@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-11 11:19+0600\n"
+"POT-Creation-Date: 2013-06-14 13:20+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,29 +19,36 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: templates/base.html:28 templates/blog/entry_index.html:11
+#: templates/base.html:29 templates/blog/entry_index.html:11
+#: templates/mon/home.html:11
 msgid "Monitor"
 msgstr "Мониторинг"
 
-#: templates/base.html:29 templates/blog/entry_index.html:12
+#: templates/base.html:30 templates/blog/entry_index.html:12
+#: templates/mon/home.html:12
 msgid "Events"
 msgstr "События"
 
-#: templates/base.html:30 templates/blog/entry_index.html:13
+#: templates/base.html:31 templates/blog/entry_index.html:13
+#: templates/mon/home.html:13
 msgid "Blog"
 msgstr "Блог"
 
-#: templates/base.html:38
+#: templates/base.html:39
 msgid "Admin Panel"
 msgstr "Управление"
 
-#: templates/base.html:40
+#: templates/base.html:41
 msgid "Logout"
 msgstr "Выйти"
 
-#: templates/base.html:44
+#: templates/base.html:45
 msgid "Login"
 msgstr "Войти"
+
+#: templates/base.html:48
+msgid "Lang"
+msgstr "Язык"
 
 #: templates/blog/entry_index.html:5 templates/blog/entry_index.html.py:22
 msgid "All Entries"
@@ -71,6 +78,14 @@ msgstr "След"
 msgid "Status"
 msgstr "Статус"
 
+#: templates/mon/home.html:5
+msgid "Home Page"
+msgstr "Мониторинг"
+
+#: templates/mon/home.html:18
+msgid "Статистика пинга основного шлюза (10.1.10.1)"
+msgstr ""
+
 #: templates/mon/index.html:37
 msgid "Search"
 msgstr "Поиск"
@@ -94,26 +109,70 @@ msgstr "Ошибка"
 msgid "Add Switch"
 msgstr "Добавить свич"
 
-#: templates/mon/index.html:72
+#: templates/mon/index.html:72 templates/mon/view.html:35
 msgid "Address"
 msgstr "Адрес"
 
-#: templates/mon/index.html:74
+#: templates/mon/index.html:74 templates/mon/view.html:17
 msgid "Ping"
 msgstr "Пинг"
 
-#: templates/mon/index.html:75
+#: templates/mon/index.html:75 templates/mon/view.html:50
 msgid "Uptime"
 msgstr "Работает"
 
-#: templates/mon/index.html:76
+#: templates/mon/index.html:76 templates/mon/view.html:39
 msgid "Type"
 msgstr "Тип"
 
-#: templates/mon/index.html:97
+#: templates/mon/index.html:97 templates/mon/view.html:41
 msgid "Model"
 msgstr "Модель"
 
-#: templates/mon/index.html:100
+#: templates/mon/index.html:100 templates/mon/view.html:37
 msgid "Comment"
 msgstr "Комментарий"
+
+#: templates/mon/view.html:14
+msgid "Edit"
+msgstr "Изменить"
+
+#: templates/mon/view.html:15
+msgid "Connect"
+msgstr "Подключиться"
+
+#: templates/mon/view.html:18
+msgid "Reboot"
+msgstr "Перезагрузить"
+
+#: templates/mon/view.html:31
+msgid "Switch information:"
+msgstr "Информация по свичу:"
+
+#: templates/mon/view.html:33
+msgid "IP-address"
+msgstr "Ip-адрес"
+
+#: templates/mon/view.html:34
+msgid "District"
+msgstr "Район"
+
+#: templates/mon/view.html:43
+msgid "State"
+msgstr "Статус"
+
+#: templates/mon/view.html:44
+msgid "Enabled"
+msgstr "Включен"
+
+#: templates/mon/view.html:45
+msgid "Disabled"
+msgstr "Отключен"
+
+#: templates/mon/view.html:46
+msgid "Ping, ms"
+msgstr "Пинг, мс"
+
+#: templates/mon/view.html:48
+msgid "Unknown"
+msgstr "Неизвестно"

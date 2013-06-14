@@ -55,3 +55,15 @@ table.tablesorter thead tr .headerSortUp {
     padding: 5px;
     min-width: 150px;
 }
+
+.col_green {
+    color: #468847;
+}
+
+.col_red {
+    color: #b94a48;
+}
+
+.col_orange {
+    color: #c09853;
+}
