@@ -4,10 +4,12 @@ from django.shortcuts import render
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 # from django.utils.translation import activate
+
+import helper_progs.switch_ping as ping
 
 @login_required
 def index(request, status=None):
@@ -116,3 +118,14 @@ def view(request, id=None):
     # request.session['instance'] = switch
     return render(request, 'mon/view.html', {'switch': switch,
                                              'events': events})
+
+
+def ping_view(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        switch = Switch.objects.select_related().get(id=id)
+        return_data = ping.ping_st(switch.ip_addr, None, None, manual_check=True)
+        return_data = return_data.split('\n')
+    else:
+        return_data = None
+    return render(request, 'mon/ping_view.html', {'return_data': return_data})

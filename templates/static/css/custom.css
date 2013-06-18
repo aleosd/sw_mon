@@ -56,6 +56,7 @@ table.tablesorter thead tr .headerSortUp {
     min-width: 150px;
 }
 
+/* Colour like TB */
 .col_green {
     color: #468847;
 }
@@ -66,4 +67,8 @@ table.tablesorter thead tr .headerSortUp {
 
 .col_orange {
     color: #c09853;
+}
+
+.sw_act_btn {
+    width: 150px;
 }

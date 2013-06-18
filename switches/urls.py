@@ -8,4 +8,5 @@ urlpatterns = patterns('switches.views',
     url(r'^events/(?P<status>\w+)/$', 'history'),
     url(r'^view/(?P<id>\d+)/$', 'view', name='view'),
     url(r'^status/(?P<status>\w+)/$', 'index'), 
+    url(r'^ping/$', 'ping_view'),
 ) 

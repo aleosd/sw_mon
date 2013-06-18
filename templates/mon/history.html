@@ -8,9 +8,9 @@ Events history
 {% block navbar %}
     <a class="brand" href="/">LightNet</a>
     <ul class="nav">
-        <li><a href="/mon/">Monitor</a></li>
-        <li class="active"><a href="/mon/events/all/">Events</a></li>
-        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/mon/">{% trans "Monitor" %}</a></li>
+        <li class="active"><a href="/mon/events/all/">{% trans "Events" %}</a></li>
+        <li><a href="/blog/">{% trans "Blog" %}</a></li>
     </ul>
 {% endblock navbar %}
 
@@ -22,17 +22,17 @@ Events history
      <li class="nav-header text-center">Last 24 hours: {{ events_per_day|length }} events</li>
      <li class="nav-header">{% trans "Status" %}</li>
     {% if status == "all" %}
-        <li class="active"><a href="/mon/events/all/">All</a></li>
-        <li><a href="/mon/events/warnings/">Warning</a></li>
-        <li><a href="/mon/events/errors/">Error</a></li>
+        <li class="active"><a href="/mon/events/all/">{% trans "All" %}</a></li>
+        <li><a href="/mon/events/warnings/">{% trans "Warning" %}</a></li>
+        <li><a href="/mon/events/errors/">{% trans "Error" %}</a></li>
     {% elif status == "warnings" %}
-        <li><a href="/mon/events/all">All</a></li>
-        <li class="active"><a href="/mon/events/warnings/">Warning</a></li>
-        <li><a href="/mon/events/errors/">Error</a></li>
+        <li><a href="/mon/events/all">{% trans "All" %}</a></li>
+        <li class="active"><a href="/mon/events/warnings/">{% trans "Warning" %}</a></li>
+        <li><a href="/mon/events/errors/">{% trans "Error" %}</a></li>
     {% elif status == "errors" %}
-        <li><a href="/mon/events/all/">All</a></li>
-        <li><a href="/mon/events/warnings/">Warning</a></li>
-        <li class="active"><a href="/mon/events/errors/">Error</a></li>
+        <li><a href="/mon/events/all/">{% trans "All" %}</a></li>
+        <li><a href="/mon/events/warnings/">{% trans "Warning" %}</a></li>
+        <li class="active"><a href="/mon/events/errors/">{% trans "Error" %}</a></li>
     {% endif %}
 </div>
 {% endblock %}
@@ -67,7 +67,7 @@ $(document).ready(function()
             {% endif %}
                 <td>{{ event.ev_datetime|date:"d M, H:i" }}</td>
                 <td>{{ event.get_ev_type_display }}</td>
-                <td><a href="{{ event.ev_switch.get_absolute_url }}">{{ event.ev_switch }}</a></td>
+                <td><a href="{% url 'view' event.ev_switch.id %}">{{ event.ev_switch }}</a></td>
                 <td>{{ event.ev_event }}</td>
             </tr>
 

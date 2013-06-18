@@ -5,28 +5,64 @@
 {{ switch }}
 {% endblock %}
 
-{% block script %}
-{% endblock script %}
-
 {% block sidemenu %}
 
 <div class="well-small">
-<p><button class="btn" id='edit_btn'>{% trans "Edit" %}</button></p>
-<p><form><input type="button" class="btn" value='{% trans "Connect" %}'
-    onclick="window.open('http://{{ switch.ip_addr }}/');"></form>
-<p><button class="btn">{% trans "Ping" %}</button></p>
-<p><button class="btn btn-danger">{% trans "Reboot" %}</button></p>
+<p><button class="btn sw_act_btn" id='edit_btn'>{% trans "Edit" %}</button></p>
+<p><button class="btn sw_act_btn" id='connect_btn'>{% trans "Connect" %}</button></p>
+<p><button class="btn sw_act_btn" id='ping_btn'>{% trans "Ping" %}</button></p>
+<p><button class="btn btn-danger sw_act_btn">{% trans "Reboot" %}</button></p>
 </div>
 
-{% endblock sidemenu %}
+<div id="ping_modal" class="modal hide fade" tabindex="-1" role="dialog"
+    aria-labelledby="ping_modal_label" aria-hidden="true">
+    <div class="modal-header">
+        <h4 id="ping_modal_label">{% trans "Ping statistic for" %} {{ switch.ip_addr }}, {{ switch.sw_addr }}</h3>
+    </div>
+    <div class="modal-body">
+        <p id="response"><span class="col_red">Empty Response</span></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
 
-{% block maincontent %}
 <script>
 $('#edit_btn').click(function() {
     document.location.href='/mon/edit/{{ switch.id }}/';
     })
 </script>
 
+<script>
+$('#connect_btn').click(function() {
+    window.open('http://{{ switch.ip_addr }}/');
+    })
+</script>
+
+<script>
+$('#ping_btn').click(function() {
+    $.ajax({
+        type: "POST",
+        url: "/mon/ping/",
+        data: {
+            'id': '{{ switch.id }}',
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+        success: function(data) {
+            $('#response').html(data);
+            $('#ping_modal').modal();
+        },
+        error: function(data) {
+            $('#response').text('Error while processing request');
+        }
+        }).done(function() {
+    });
+});
+</script>
+
+{% endblock sidemenu %}
+
+{% block maincontent %}
 {% if switch %}
 <p><strong>{% trans "Switch information:" %}</strong><p>
     <ul>
@@ -47,7 +83,12 @@ $('#edit_btn').click(function() {
             {% if switch.sw_ping %}<span class="col_green">{{ switch.sw_ping }}</span>
             {% else %}<span class="col_red">{% trans "Unknown" %}</span>
             {% endif %}
-        <li><strong>{% trans "Uptime" %}:</strong> {{ switch.sw_uptime_str|default:"Неизвестно" }}</li>
+        </li>
+        <li><strong>{% trans "Uptime" %}:</strong>
+            {% if switch.sw_uptime %}<span class="col_green">{{ switch.sw_uptime_str }}</span>
+            {% else %}<span class="col_red">{% trans "Unknown" %}</span>
+            {% endif %}
+        </li>
     </ul>
 
     {% if events %}

@@ -2,11 +2,15 @@
 
 import re
 import subprocess
-import time
+import sys
+# import time
 from threading import Thread, Lock
 from tendo import singleton
 import sh
-import database_con as db
+try:
+    import database_con as db
+except Exception:
+    pass
 
 
 """  Program for parsing ping information.

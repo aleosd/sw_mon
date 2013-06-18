@@ -1,0 +1,7 @@
+{% if return_data %}
+    {% for line in return_data %}
+    {{ line }}<br/>
+    {% endfor %}
+{% else %}
+    <p class="col_red">Bad Request</p>
+{% endif %}
