@@ -38,10 +38,8 @@ def index(request, status=None):
             if not switch.sw_ping:
                 bad_ping += 1
 
-    try:
+    if 'instance' in request.session:
         del request.session['instance']
-    except:
-        pass
 
     return render(request, 'mon/index.html',
                   {'status': status,
@@ -69,17 +67,14 @@ def create_switch(request):
             form = SwitchForm(request.POST)
         if form.is_valid():
             form.save()
-            try:
+            if 'instance' in request.session:
                 del request.session['instance']
-            except:
-                pass
             return HttpResponseRedirect('/')
         else:
             return render(request, 'mon/edit.html', {'form': form})
 
 @login_required
 def history(request, status=None):
-    # activate('en')
     t = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1))
     # events_all = Event.objects.all()
 
@@ -111,11 +106,9 @@ def home_view(request):
 
 
 @login_required
-def view(request, id=None):
+def view(request, id):
     events = Event.objects.filter(ev_switch=id)[:30]
     switch = Switch.objects.select_related().get(id=id)
-    # form = SwitchForm(instance=switch)
-    # request.session['instance'] = switch
     return render(request, 'mon/view.html', {'switch': switch,
                                              'events': events})
 
