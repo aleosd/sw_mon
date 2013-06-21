@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}
     {{ entry.title }}
@@ -7,9 +8,9 @@
 {% block navbar %} 
     <a class="brand" href="/">LightNet</a>
     <ul class="nav">
-        <li><a href="/mon/">Monitor</a></li>
-        <li><a href="/mon/events/all">Events</a></li>
-        <li class="active"><a href="/blog/">Blog</a></li>
+        <li><a href="/mon/">{% trans "Monitor" %}</a></li>
+        <li><a href="/mon/events/all">{% trans "Events" %}</a></li>
+        <li class="active"><a href="/blog/">{% trans "Blog" %}</a></li>
     </ul>
 {% endblock %}
 

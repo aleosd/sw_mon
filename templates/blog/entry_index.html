@@ -19,8 +19,15 @@
 <ul class="nav nav-list">
     <li><p class="text-center muted">
         {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
-        <li class="active"><a href="/blog/">{% trans "All Entries" %}</a></li>
-     <li class="nav-header">{% trans "By Category" %}</li>
+    <li><form class="form-horisontal" method="get" action="/blog/search/">
+        <div class="controls-group text-center">
+        <input type="text" class="input-medium" name="q" id="id_q">
+        <button type="submit" class="btn text-center">Search</button>
+        </div>
+        </form>
+    </li>
+    <li class="active"><a href="/blog/">{% trans "All Entries" %}</a></li>
+    <li class="nav-header">{% trans "By Category" %}</li>
     {% for category in category_list %}
         <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
     {% endfor %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}
 {{ category.title }}
@@ -7,9 +8,9 @@
 {% block navbar %}
 <a class="brand" href="/">LightNet</a>
 <ul class="nav">
-    <li><a href="/mon/">Monitor</a></li>
-    <li><a href="/mon/events/all">Events</a></li>
-    <li class="active"><a href="/blog/">Blog</a></li>
+    <li><a href="/mon/">{% trans "Monitor" %}</a></li>
+    <li><a href="/mon/events/all">{% trans "Events" %}</a></li>
+    <li class="active"><a href="/blog/">{% trans "Blog" %}</a></li>
 </ul>
 {% endblock %}
 
@@ -18,15 +19,27 @@
 <ul class="nav nav-list">
     <li><p class="text-center muted">
         {% now "SHORT_DATETIME_FORMAT" %}</p></li>
-        <li><a href="/blog/">All Entries</a></li>
-     <li class="nav-header">By Category</li>
-        {% for category in category_list %}
-            {% if category == active_category %}
-                <li class="active"><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
-            {% else %}
-                <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
-            {% endif %}
- {% endfor %}
+    <li><form class="form-horisontal" method="get" action="/blog/search/">
+            <div class="controls-group text-center">
+                <input type="text" class="input-medium" name="q" id="id_q">
+                <button type="submit" class="btn text-center">Search</button>
+            </div>
+        </form>
+    </li>
+    <li><a href="/blog/">{% trans "All Entries" %}</a></li>
+    <li class="nav-header">{% trans "By Category" %}</li>
+    {% for category in category_list %}
+        {% if category == active_category %}
+            <li class="active"><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
+        {% else %}
+            <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if perms.entry.change %}
+    <li class="divider"></li>
+    <li><a href="/admin/blog/entry/add/">{% trans "Add Entry" %}</a></li>
+    {% endif %}
+
 </div>
 
 {% endblock %}

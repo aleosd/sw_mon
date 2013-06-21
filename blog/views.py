@@ -38,3 +38,12 @@ def category_detail(request, slug):
                   {'entry_list': category.entry_set.all(),
                    'active_category': category,
                    'category_list': Category.objects.all()})
+
+
+def search(request):
+    query = request.GET['q']
+    results = Entry.objects.all().filter(keywords__icontains=query)
+    return render(request, 'blog/search.html', 
+                  {'results': results,
+                   'query': query,
+                   'category_list': Category.objects.all(),})

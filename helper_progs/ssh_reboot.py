@@ -31,7 +31,11 @@ def ssh_rebooter(reboot_function):
         # Create and connect a new socket.
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(3)
-        sock.connect((ip, 22))
+        try:
+            sock.connect((ip, 22))
+        except Exception as e:
+            print('Error while connecting to {}, {}'.format(ip, e)) 
+            sys.exit(1)
         TTY = os.isatty(sys.stdin.fileno())
                  
         # Create a new SSH session using that socket and login

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Search Results" %}
+{% endblock %}
+
+{% block navbar %}
+    <a class="brand" href="/">LightNet</a>
+    <ul class="nav">
+        <li><a href="/mon/">{% trans "Monitor" %}</a></li>
+        <li><a href="/mon/events/all">{% trans "Events" %}</a></li>
+        <li class="active"><a href="/blog/">{% trans "Blog" %}</a></li>
+    </ul>
+{% endblock navbar %}
+
+{% block sidemenu %}
+<div class="well well-small">
+<ul class="nav nav-list">
+    <li><p class="text-center muted">
+        {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
+    <li><form class="form-horisontal" method="get" action="/blog/search/">
+            <div class="controls-group text-center">
+            <input type="text" class="input-medium" name="q" id="id_q">
+            <button type="submit" class="btn text-center">Search</button>
+            </div>
+        </form>
+    </li>
+  <li class="active"><a href="/blog/">{% trans "All Entries" %}</a></li>
+    <li class="nav-header">{% trans "By Category" %}</li>
+    {% for category in category_list %}
+        <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
+    {% endfor %}
+    {% if perms.entry.change %}
+    <li class="divider"></li>
+    <li><a href="/admin/blog/entry/add/">{% trans "Add Entry" %}</a></li>
+    {% endif %}
+</div>
+
+{% endblock sidemenu %}
+
+{% block maincontent %}
+{% if results %}
+    <h3>{% trans "Search results for query " %}"{{ query }}":</h3>
+    {% for entry in results %}
+        <small class="pull-right"><span class="label">{{ entry.pub_date|date:"F j, Y" }}</span></small>
+        <h3 style="margin-top:0px"><a id="blog_header" href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h3>
+        {% if entry.excerpt_html %}
+            {{ entry.excerpt_html|safe }}
+        {% else %}
+            {{ entry.body_html|truncatewords_html:"50"|safe }}
+        {% endif %}
+        <p><a href="{{ entry.get_absolute_url }}">{% trans "Read more..." %}</a><p>
+        <hr/>
+    {% endfor %}
+{% else %}
+    <h3>{% trans "No search results for query " %}"{{ query }}"</h3>
+{% endif %}
+
+{% endblock maincontent %}
