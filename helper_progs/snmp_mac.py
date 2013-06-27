@@ -20,6 +20,9 @@ def hex_to_decimal(mac):
 
 def get_port(ip, mac):
     '''Get port, where given mac is listetd, if any.
+       ((Tuple), String) -> Integer
+
+       ip tuple format: (ip addr, uplink ports, switch_type)
     '''
 
     port = 161
@@ -32,8 +35,17 @@ def get_port(ip, mac):
                                                   oid_tuple)
     if not errInd and not errStatus:
         port_num = str(result[0][1])
+        if ip[2] == 3:          # check if it's cisco device
+            # mapping bridge port number to ifIndex:
+            oid = '1.3.6.1.2.1.17.1.4.1.2.' + port_num
+            oid_tuple = tuple([int(i) for i in oid.split('.')])
+            errInd, errStatus, errIdx, result = cg.getCmd(comm_data, transport,
+                                                          oid_tuple)
+            if not errInd and not errStatus:
+                port_num = str(result[0][1] - 1) # silly decision, fix in future
+
         IP_PORT_DICT[ip[0]] = port_num
-        port_list = ip[1].split(',')
+        port_list = ip[1].split(',')        # list of uplinks
         for port in port_list:
             if port and port_num != port.strip():
                 print('{}, uplink on {}, queryed mac on port {}'.format(ip[0], ip[1].split(','), port_num))
@@ -43,14 +55,17 @@ def get_port(ip, mac):
 
 def get_switches():
     '''Function for parsing switches from the database.
-        None -> List
+        None -> List of Tuples (ip, uplink, switch_type)
+
+       switch_type is for special cisco port numbering, to
+       filter those switches
     '''
 
     raw_switch_list = db.fetchdata()
     switch_list = []
     for switch in raw_switch_list:
         if switch[1]:
-            switch_list.append((switch[0],switch[7]))
+            switch_list.append((switch[0],switch[7],switch[2]))
     return switch_list
 
 

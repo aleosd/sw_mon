@@ -4,7 +4,7 @@ from django.shortcuts import render
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 # from django.utils.translation import activate
