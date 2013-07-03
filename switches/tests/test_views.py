@@ -112,8 +112,10 @@ class SwitchViewsTest(TestCase):
     def test_mon_status_views(self):
         response_warn = self.client.get('/mon/status/warnings/')
         response_err = self.client.get('/mon/status/errors/')
+        response_disabled = self.client.get('/mon/status/disabled/')
         self.assertEqual(response_warn.status_code, 200)
         self.assertEqual(response_err.status_code, 200)
+        self.assertEqual(response_disabled.status_code, 200)
 
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):

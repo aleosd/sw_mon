@@ -3,48 +3,52 @@ from datetime import timedelta
 from django.shortcuts import render
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
-# from django.utils.translation import activate
 
 import helper_progs.switch_ping as ping
 
 @login_required
 def index(request, status=None):
-    if not status:
-        switch_list = Switch.objects.select_related(
+    switch_list = Switch.objects.select_related(
             'sw_street',
             'sw_type',
             'sw_device',
             'sw_device__dev_ven',
             'sw_device__dev_ser',
             'sw_device__dev_ser__ser_ven',
-        ).filter(sw_enabled=True)
-    if status == 'errors':
-        switch_list = Switch.objects.select_related().filter(sw_ping=None)
-    if status == 'warnings':
-        switch_list = Switch.objects.select_related().filter(
-            Q(sw_uptime__lt=86400) | Q(sw_uptime=None)
         )
+    enabled_switch_list = [switch for switch in switch_list if switch.sw_enabled]
+    sw_enabled = len(enabled_switch_list)
+    warning_switch_list = [switch for switch in enabled_switch_list if switch.sw_uptime < 86400]
+    sw_warning = len(warning_switch_list)
+    error_switch_list = [switch for switch in enabled_switch_list if switch.sw_ping == None]
+    sw_error = len(error_switch_list)
+    disabled_switch_list = [switch for switch in switch_list if switch.sw_enabled == False]
+    sw_disabled = len(disabled_switch_list)
 
-    bad_uptime = 0
-    bad_ping = 0
-    for switch in switch_list:
-        if switch.sw_enabled:
-            if switch.sw_uptime == None or switch.sw_uptime < 86400:
-                bad_uptime += 1
-            if not switch.sw_ping:
-                bad_ping += 1
+    if not status:
+        switch_list = enabled_switch_list
+    elif status == 'errors':
+        switch_list = error_switch_list
+    elif status == 'warnings':
+        switch_list = warning_switch_list
+    elif status == 'disabled':
+        switch_list = disabled_switch_list
+    else:
+        raise Http404
 
     if 'instance' in request.session:
         del request.session['instance']
 
     return render(request, 'mon/index.html',
                   {'status': status,
-                   'bad_uptime': bad_uptime, 'bad_ping': bad_ping,
-                   'switch_list': switch_list})
+                   'sw_enabled': sw_enabled,
+                   'sw_warning': sw_warning,
+                   'sw_error': sw_error,
+                   'switch_list': switch_list,
+                   'sw_disabled': sw_disabled})
 
 @login_required
 def edit(request, id=None):
