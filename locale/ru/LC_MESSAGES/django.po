@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-21 16:22+0600\n"
+"POT-Creation-Date: 2013-07-03 17:12+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,21 +19,24 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: templates/base.html:29 templates/blog/entry_detail.html:11
-#: templates/blog/entry_index.html:11 templates/blog/search.html:11
-#: templates/mon/history.html:11 templates/mon/home.html:11
+#: templates/base.html:29 templates/blog/category_detail.html:11
+#: templates/blog/entry_detail.html:11 templates/blog/entry_index.html:11
+#: templates/blog/search.html:11 templates/mon/history.html:11
+#: templates/mon/home.html:11
 msgid "Monitor"
 msgstr "Мониторинг"
 
-#: templates/base.html:30 templates/blog/entry_detail.html:12
-#: templates/blog/entry_index.html:12 templates/blog/search.html:12
-#: templates/mon/history.html:12 templates/mon/home.html:12
+#: templates/base.html:30 templates/blog/category_detail.html:12
+#: templates/blog/entry_detail.html:12 templates/blog/entry_index.html:12
+#: templates/blog/search.html:12 templates/mon/history.html:12
+#: templates/mon/home.html:12
 msgid "Events"
 msgstr "События"
 
-#: templates/base.html:31 templates/blog/entry_detail.html:13
-#: templates/blog/entry_index.html:13 templates/blog/search.html:13
-#: templates/mon/history.html:13 templates/mon/home.html:13
+#: templates/base.html:31 templates/blog/category_detail.html:13
+#: templates/blog/entry_detail.html:13 templates/blog/entry_index.html:13
+#: templates/blog/search.html:13 templates/mon/history.html:13
+#: templates/mon/home.html:13
 msgid "Blog"
 msgstr "Блог"
 
@@ -53,20 +56,22 @@ msgstr "Войти"
 msgid "Lang"
 msgstr "Язык"
 
-#: templates/blog/entry_index.html:5 templates/blog/entry_index.html.py:29
-#: templates/blog/search.html:22
+#: templates/blog/category_detail.html:29 templates/blog/entry_index.html:5
+#: templates/blog/entry_index.html.py:29 templates/blog/search.html:29
 msgid "All Entries"
 msgstr "Все записи"
 
-#: templates/blog/entry_index.html:30 templates/blog/search.html:23
+#: templates/blog/category_detail.html:30 templates/blog/entry_index.html:30
+#: templates/blog/search.html:30
 msgid "By Category"
 msgstr "По категориям"
 
-#: templates/blog/entry_index.html:36 templates/blog/search.html:29
+#: templates/blog/category_detail.html:40 templates/blog/entry_index.html:36
+#: templates/blog/search.html:36
 msgid "Add Entry"
 msgstr "Добавить запись"
 
-#: templates/blog/entry_index.html:52 templates/blog/search.html:46
+#: templates/blog/entry_index.html:52 templates/blog/search.html:53
 msgid "Read more..."
 msgstr "Читать далее..."
 
@@ -82,33 +87,30 @@ msgstr "След"
 msgid "Search Results"
 msgstr "Результаты поиска"
 
-#: templates/blog/search.html:37
+#: templates/blog/search.html:44
 msgid "Search results for query "
 msgstr "Результаты поиска по запросу "
 
-#: templates/blog/search.html:50
+#: templates/blog/search.html:57
 msgid "No search results for query "
 msgstr "Нет результатов поиска по запросу "
 
-#: templates/mon/history.html:23 templates/mon/index.html:39
+#: templates/mon/history.html:23 templates/mon/index.html:45
 msgid "Status"
 msgstr "Статус"
 
 #: templates/mon/history.html:25 templates/mon/history.html.py:29
-#: templates/mon/history.html:33 templates/mon/index.html:42
-#: templates/mon/index.html.py:50 templates/mon/index.html:54
+#: templates/mon/history.html:33 templates/mon/index.html:47
 msgid "All"
 msgstr "Все"
 
 #: templates/mon/history.html:26 templates/mon/history.html.py:30
-#: templates/mon/history.html:34 templates/mon/index.html:44
-#: templates/mon/index.html.py:51 templates/mon/index.html:55
+#: templates/mon/history.html:34 templates/mon/index.html:49
 msgid "Warning"
-msgstr ""
+msgstr "Внимание"
 
 #: templates/mon/history.html:27 templates/mon/history.html.py:31
-#: templates/mon/history.html:35 templates/mon/index.html:46
-#: templates/mon/index.html.py:52 templates/mon/index.html:56
+#: templates/mon/history.html:35 templates/mon/index.html:51
 msgid "Error"
 msgstr "Ошибка"
 
@@ -120,9 +122,13 @@ msgstr "Мониторинг"
 msgid "Статистика пинга основного шлюза (10.1.10.1)"
 msgstr ""
 
-#: templates/mon/index.html:37
+#: templates/mon/index.html:43
 msgid "Search"
 msgstr "Поиск"
+
+#: templates/mon/index.html:55 templates/mon/view.html:81
+msgid "Disabled"
+msgstr "Отключен"
 
 #: templates/mon/index.html:59
 msgid "Add Switch"
@@ -144,11 +150,11 @@ msgstr "Работает"
 msgid "Type"
 msgstr "Тип"
 
-#: templates/mon/index.html:97 templates/mon/view.html:77
+#: templates/mon/index.html:99 templates/mon/view.html:77
 msgid "Model"
 msgstr "Модель"
 
-#: templates/mon/index.html:100 templates/mon/view.html:73
+#: templates/mon/index.html:102 templates/mon/view.html:73
 msgid "Comment"
 msgstr "Комментарий"
 
@@ -187,10 +193,6 @@ msgstr "Статус"
 #: templates/mon/view.html:80
 msgid "Enabled"
 msgstr "Включен"
-
-#: templates/mon/view.html:81
-msgid "Disabled"
-msgstr "Отключен"
 
 #: templates/mon/view.html:82
 msgid "Ping, ms"
