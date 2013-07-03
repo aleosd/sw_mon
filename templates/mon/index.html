@@ -22,11 +22,12 @@ $(function(){
 <script>
 $(document).ready(function()
     {
-       $('#{{ status }}').addClass('active');
-       if ('{{ status }}' == 'disabled') {
-            $('#errors a').attr("href", "/mon/status/errors/");
-            $('#warnings a').attr("href", "/mon/status/warnings/");
-            }
+        $('#{{ status }}').addClass('active');
+        // $('#sw_table tbody tr').each(function(e) {
+        //    if ($(this).hasClass('tr_disabled'))
+        //        $(this).hide();
+        // });
+
        $("#sw_table").tablesorter({sortList: [[0,0]]});
     }
 );
@@ -51,7 +52,7 @@ $(document).ready(function()
             <span class="pull-right">{{ sw_error }}</span></a>
         </li>
         <li id="disabled" class="clearfix">
-            <a href="/mon/status/disabled/">{% trans "Disabled" %}
+            <a href="#">{% trans "Disabled" %}
             <span class="pull-right">{{ sw_disabled }}</span></a>
         </li>
         <li class="divider"></li>
@@ -78,7 +79,9 @@ $(document).ready(function()
 
         <tbody>
         {% for switch in switch_list %}
-            {% if not switch.sw_ping %}
+            {% if not switch.sw_enabled %}
+            <tr class="tr_disabled">
+            {% elif not switch.sw_ping %}
             <tr class="error">
             {% elif switch.sw_uptime < 86400 or not switch.sw_uptime %}
             <tr class="warning">

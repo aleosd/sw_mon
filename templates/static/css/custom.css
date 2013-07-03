@@ -72,3 +72,7 @@ table.tablesorter thead tr .headerSortUp {
 .sw_act_btn {
     width: 150px;
 }
+
+.tr_disabled {
+    background-color: #F5F5F5;
+}

@@ -29,7 +29,7 @@ def index(request, status='all'):
     sw_disabled = len(disabled_switch_list)
 
     if status == 'all':
-        switch_list = enabled_switch_list
+        switch_list = switch_list
     elif status == 'errors':
         switch_list = error_switch_list
     elif status == 'warnings':

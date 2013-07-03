@@ -38,6 +38,18 @@ $(document).ready(function() {
                 $(this).hide();
         });
     });
+    $('#disabled').click(function() {
+        $(this).addClass('active');
+        $('#all').removeClass('active');
+        $('#warnings').removeClass('active');
+        $('#errors').removeClass('active');
+        $('#sw_table tbody tr').each(function(e) {
+            if ($(this).hasClass('tr_disabled'))
+                $(this).show();
+            else
+                $(this).hide();
+        });
+    });
 
 });
 
