@@ -22,7 +22,12 @@ $(function(){
 <script>
 $(document).ready(function()
     {
-        $("#sw_table").tablesorter({sortList: [[0,0]]});
+       $('#{{ status }}').addClass('active');
+       if ('{{ status }}' == 'disabled') {
+            $('#errors a').attr("href", "/mon/status/errors/");
+            $('#warnings a').attr("href", "/mon/status/warnings/");
+            }
+       $("#sw_table").tablesorter({sortList: [[0,0]]});
     }
 );
 </script>
@@ -32,38 +37,23 @@ $(document).ready(function()
 {% block sidemenu %}
 <div class="well well-small">
 <ul class="nav nav-list">
-    <li><p class="text-center muted{# {% if bad_ping > 0 %} text-error{% endif %} #}">
+    <li><p class="text-center muted">
         {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
     <input id="search" type="text" class="input-medium" placeholder="{% trans "Search" %}"
                                                     autofocus="autofocus" />
     <li class="nav-header">{% trans "Status" %}</li>
-    {% if not status %}
-        <li id="all" class="active clearfix">
+        <li id="all" class="clearfix">
             <a href="/mon/">{% trans "All" %}<span class="pull-right">{{ sw_enabled }}</span></a></li>
-        <li id="warn" class="clearfix">
+        <li id="warnings" class="clearfix">
             <a href="#">{% trans "Warning" %}<span class="pull-right">{{ sw_warning }}</span></a></li>
-        <li id="err" class="clearfix">
-            <a id="err" {% if bad_ping > 0 %}class="text-error" {% endif %} href="#">{% trans "Error" %}
+        <li id="errors" class="clearfix">
+            <a {% if bad_ping > 0 %}class="text-error" {% endif %} href="#">{% trans "Error" %}
             <span class="pull-right">{{ sw_error }}</span></a>
         </li>
-        <li class="clearfix">
+        <li id="disabled" class="clearfix">
             <a href="/mon/status/disabled/">{% trans "Disabled" %}
             <span class="pull-right">{{ sw_disabled }}</span></a>
         </li>
-    {% elif status == "errors" %}
-        <li><a href="/mon/">{% trans "All" %}</a></li>
-        <li><a href="/mon/status/warnings/">{% trans "Warning" %}</a></li>
-        <li class="active"><a href="/mon/status/errors/">{% trans "Error" %}</a></li>
-    {% elif status == "warnings" %}
-        <li><a href="/mon/">{% trans "All" %}</a></li>
-        <li class="active"><a href="/mon/status/warnings/">{% trans "Warning" %}</a></li>
-        <li><a href="/mon/status/errors/">{% trans "Error" %}</a></li>
-    {% elif status == "disabled" %}
-        <li><a href="/mon/">{% trans "All" %}</a></li>
-        <li><a href="/mon/status/warnings/">{% trans "Warning" %}</a></li>
-        <li><a href="/mon/status/errors/">{% trans "Error" %}</a></li>
-        <li class="active class="active""><a href="/mon/status/disabled/">{% trans "Disabled" %}</a></li>
-    {% endif %}
         <li class="divider"></li>
         <li><a href="/new/">{% trans "Add Switch" %}</a><li>
 </ul>
@@ -116,7 +106,6 @@ $(document).ready(function()
                 <td>{{ switch.sw_uptime_str|default:"Unknown" }}</td>
                 <td id="sw_type">{{ switch.sw_type }}</td>
             </tr>
-
         {% endfor %}
         </tbody>
         </table>

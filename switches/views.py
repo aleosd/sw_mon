@@ -10,7 +10,7 @@ from django.utils import timezone
 import helper_progs.switch_ping as ping
 
 @login_required
-def index(request, status=None):
+def index(request, status='all'):
     switch_list = Switch.objects.select_related(
             'sw_street',
             'sw_type',
@@ -28,7 +28,7 @@ def index(request, status=None):
     disabled_switch_list = [switch for switch in switch_list if switch.sw_enabled == False]
     sw_disabled = len(disabled_switch_list)
 
-    if not status:
+    if status == 'all':
         switch_list = enabled_switch_list
     elif status == 'errors':
         switch_list = error_switch_list

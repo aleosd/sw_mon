@@ -14,10 +14,11 @@ $(document).ready(function() {
 
 // Warn-Err views builder for table 
 $(document).ready(function() {
-    $('#warn').click(function() {
+    $('#warnings').click(function() {
         $(this).addClass('active');
         $('#all').removeClass('active');
-        $('#err').removeClass('active');
+        $('#errors').removeClass('active');
+        $('#disabled').removeClass('active');
         $('#sw_table tbody tr').each(function(e) {
             if ($(this).hasClass('warning'))
                 $(this).show();
@@ -25,10 +26,11 @@ $(document).ready(function() {
                 $(this).hide();
         });
     });
-    $('#err').click(function() {
+    $('#errors').click(function() {
         $(this).addClass('active');
         $('#all').removeClass('active');
-        $('#warn').removeClass('active');
+        $('#warnings').removeClass('active');
+        $('#disabled').removeClass('active');
         $('#sw_table tbody tr').each(function(e) {
             if ($(this).hasClass('error'))
                 $(this).show();
