@@ -21,7 +21,7 @@ def index(request, status='all'):
         )
     enabled_switch_list = [switch for switch in switch_list if switch.sw_enabled]
     sw_enabled = len(enabled_switch_list)
-    warning_switch_list = [switch for switch in enabled_switch_list if switch.sw_uptime < 86400]
+    warning_switch_list = [switch for switch in enabled_switch_list if switch.sw_uptime and switch.sw_uptime < 86400]
     sw_warning = len(warning_switch_list)
     error_switch_list = [switch for switch in enabled_switch_list if switch.sw_ping == None]
     sw_error = len(error_switch_list)
@@ -49,6 +49,7 @@ def index(request, status='all'):
                    'sw_error': sw_error,
                    'switch_list': switch_list,
                    'sw_disabled': sw_disabled})
+
 
 @login_required
 def edit(request, id=None):
@@ -110,7 +111,7 @@ def home_view(request):
 
 
 @login_required
-def view(request, id):
+def switch_view(request, id):
     events = Event.objects.filter(ev_switch=id)[:30]
     switch = Switch.objects.select_related().get(id=id)
     return render(request, 'mon/view.html', {'switch': switch,

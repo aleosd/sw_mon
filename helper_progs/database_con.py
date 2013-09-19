@@ -21,11 +21,14 @@ def makeconnection():
 
 # lock = Lock()
 
-def fetchdata():
+def fetchdata(all=False):
     conn = makeconnection()
     c = conn.cursor()
-    c.execute("""SELECT ip_addr, sw_enabled, sw_type_id,
-              sw_id, sw_uptime, sw_ping, id, sw_uplink FROM switches_switch""")
+    if not all:
+        c.execute("""SELECT ip_addr, sw_enabled, sw_type_id, sw_id, sw_uptime,
+                  sw_ping, id, sw_uplink FROM switches_switch""")
+    else:
+        c.execute("""SELECT * FROM switches_switch""")
     data = c.fetchall()
     data_list = []
     for row in data:

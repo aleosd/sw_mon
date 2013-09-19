@@ -16,12 +16,12 @@ def validate_build(value):
             raise ValidationError('{} is not allowed build number'.format(value))
 
 
-# Create your models here.
 class SwitchType(models.Model):
     sw_type = models.CharField(max_length=100, verbose_name='switch type')
 
     def __str__(self):
         return self.sw_type
+
 
 class Street(models.Model):
     street = models.CharField(max_length=100, verbose_name='street')
@@ -57,7 +57,6 @@ class Switch(models.Model):
                                   verbose_name='Comments')
     
     sw_device = models.ForeignKey(Device, blank=True, null=True)
-
 
     class Meta:
         verbose_name_plural = "Switches"
@@ -129,7 +128,7 @@ class Event(models.Model):
 
 @receiver(post_save, sender=Switch)
 def dev_changed(sender, **kwargs):
-    '''Function called to change FK Device save method of Switch object.
+    '''Function called to change ForeignKey Device save method of Switch object.
     '''
     sw = kwargs['instance']
     if sw.sw_device:
