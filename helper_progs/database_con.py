@@ -22,6 +22,9 @@ def makeconnection():
 # lock = Lock()
 
 def fetchdata(all=False):
+    '''Function for fetching data from the database. By default fetches only
+    particular fields, if all=True - fetches all data.
+    '''
     conn = makeconnection()
     c = conn.cursor()
     if not all:

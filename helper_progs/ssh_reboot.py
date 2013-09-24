@@ -108,7 +108,7 @@ def ssh_reboot_snr(channel):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('{0} usage: {0} <ip_addr>'.format(sys.argv[0]), file=sys.stderr)
+        print('{0} usage: {0} <ip_addr>'.format(sys.argv[0], file=sys.stderr))
         sys.exit(2)
 
     query = """SELECT sw_id, sw_type_id from switches_switch 
