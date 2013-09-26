@@ -48,6 +48,7 @@ class Switch(models.Model):
     sw_type = models.ForeignKey(SwitchType, verbose_name='switch type')
     sw_id = models.IntegerField(unique=True)
     sw_enabled = models.BooleanField(default=True, verbose_name='Enabled')
+    sw_backup_conf = models.BooleanField(default=False, verbose_name='Configuration Backup')
     sw_ping = models.FloatField(blank=True, null=True, editable=False)
     sw_uptime = models.IntegerField(blank=True, null=True, editable=False)
     sw_uplink = models.CharField(max_length=200, blank=True, null=True,

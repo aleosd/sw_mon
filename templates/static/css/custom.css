@@ -76,3 +76,16 @@ table.tablesorter thead tr .headerSortUp {
 .tr_disabled {
     background-color: #F5F5F5;
 }
+
+/* checkbox alignment in switch form */
+#id_sw_enabled {
+    margin: 0px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    }
+
+#id_sw_backup_conf {
+    margin: 0px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    }

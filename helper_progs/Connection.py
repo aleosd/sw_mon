@@ -26,7 +26,6 @@ class SSHConnection(Connection):
        
         Function for rebooting switches via ssh. 
         SNR-S2940-8G, SNR-S2940-24G and SNR-S2940-48G.
-
         '''
 
         # Create and connect a new socket.
@@ -61,7 +60,7 @@ class SSHConnection(Connection):
                 # Put terminal attached to stdin into raw mode.
                 if TTY:
                     tty.setraw(sys.stdin)
-                return channel, sock
+                return channel, sock, attrs
             except Exception as e:
                 print('Error getting channel: {}'.format(e))
 

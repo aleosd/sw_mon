@@ -65,7 +65,7 @@ class SNR(Switch):
     def reboot(self):
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
-        channel, sock = sh(self.username, self.password)
+        channel, sock, attrs = sh(self.username, self.password)
         channel.write('reload\r\n'.encode())
         channel.write('Y\r\n'.encode())
         sock.close()
@@ -76,23 +76,38 @@ class Allied(Switch):
         super(Allied, self).__init__(*args, **kw)
         self.username = secure.allied_user
 
-    def reboot(self):
+    def login(self):
         conn = Connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"login: ")
         tn.write(secure.allied_user.encode('ascii') + b"\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\n")
+        return tn
+ 
+    def reboot(self):
+        tn = self.login()
         tn.write(b"restart reboot\n")
         # debug_info = tn.read_all().decode('ascii')
         tn.close()
 
+    def backup(self):
+        tn = self.login()
+        print('backup {}'.format(self.ip_addr))
+        command = "upload server=10.1.7.204 file=boot.cfg method=tftp destfile={}.cfg\n".format(self.sw_id)
+        tn.write(command.encode('ascii'))
+        tn.close()
+
 
 class DLink(Switch):
-    def reboot(self):
+    def login(self):
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel, sock = sh(self.username, self.password)
+        return channel, sock
+
+    def reboot(self):
+        channel, sock = self.login() 
         channel.write('reboot\r\n'.encode())
         time.sleep(1)
         channel.write('y\r\n'.encode())
@@ -100,15 +115,18 @@ class DLink(Switch):
 
 
 class Com3(Switch):
-    def reboot(self):
+    def login(self):
         conn = Connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
-        print('Rebooting 3com, ip: {}'.format(self.ip_addr))
         tn.read_until(b"Login: ")
         tn.write(secure.user.encode('ascii') + b"\r\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\r\n")
-        tn.write(b"\r\n")   # in case of some alerts, to pass them
+        tn.write(b"\r\n") # in case of some alerts, to pass them
+        return tn
+
+    def reboot(self):
+        tn = self.login()
         tn.write(b"system\r\n")
         tn.write(b"control\r\n")
         tn.write(b"reboot\r\n")
@@ -119,6 +137,20 @@ class Com3(Switch):
         # print(debug_info)
         tn.close()
         print('Rebooted 3com, ip: {}'.format(self.ip_addr))
+
+    def backup(self):
+        tn = self.login()
+        tn.write(b"system\r\n")
+        tn.write(b"backupConfig\r\n")
+        tn.write(b"save\r\n")
+        time.sleep(1)
+        tn.write(b"10.1.7.204\r\n")
+        tn.write(str(self.sw_id).encode('ascii') + b".cfg\r\n")
+        tn.write(b"\r\n")
+        tn.read_until(b"Select menu option (system/backupConfig): ")
+        # debug_info = tn.read_all().decode('ascii')
+        # print(debug_info)
+        tn.close()
 
 
 class Cisco(Switch):
@@ -135,6 +167,13 @@ class Cisco(Switch):
         # print(debug_info)
         tn.close()
 
+
+class AlliedL2(Switch):
+    def reboot(self):
+        print('To be implemented')
+
+    def backup(self):
+        print('Implement later')
 
 class Unmanaged(Switch):
     def __init__(self, *args, **kw):
