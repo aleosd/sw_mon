@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 
 
+import sys
 import argparse
 import Switch
 import database_con as db
@@ -21,17 +22,33 @@ switch_types = {
     }
 
 
-def get_switch_list():
-    raw_data = db.fetchdata(all=True)
+def get_switch_list(ip):
+    # fetch all or given by ip switch info from db
+    if ip == 'all':
+        raw_data = db.fetchdata(all=True)
+    else:
+        query = """SELECT * from switches_switch
+                   WHERE ip_addr=('{}')""".format(ip)
+        raw_data = db.ex_query(query)
+
+    if len(raw_data) == 0:
+        print('IP-address not found in the database')
+        sys.exit(1)
+
     switch_list = []
     for row in raw_data:
-        sw = switch_types[int(row[5])](row[0], row[1], row[2], row[6],
+        sw_type_id = int(row[5])
+        sw = switch_types[sw_type_id](row[0], row[1], row[2], row[6],
                                        row[7], row[8], row[13],
-                                       row[9], row[5])
+                                       row[9], sw_type_id)
         switch_list.append(sw)
     return switch_list
 
 def can_reboot(sw):
+    '''Switch -> Bool
+
+    Check if switch is alive and allowed to reboot.
+    '''
     if ((sw.sw_enabled and sw.sw_uptime) and
         sw.sw_ping):
         return True
@@ -43,37 +60,24 @@ def can_backup(sw):
     return False
 
 def reboot(ip):
-    switch_list = get_switch_list()
+    switch_list = get_switch_list(ip)
     for sw in switch_list:
         if ip == 'all':
             if can_reboot(sw) and sw.sw_uptime > UPTIME:
                 sw.reboot()
         else:
-            if can_reboot(sw) and sw.ip_addr == ip:
+            if can_reboot(sw):
                 sw.reboot()
-            else:
-                print('The switch is dasabled or not responding')
 
 def backup(ip):
-    print('calling backup with ip {}'.format(ip))
-    switch_list = get_switch_list()
+    switch_list = get_switch_list(ip)
     for sw in switch_list:
-        if ip == 'all':
-            if can_backup(sw):
-                try:
-                    sw.backup()
-                except Exception as e:
-                    print('Error occured: {}'.format(e))
-                    print(sw)
-        else:
-            if can_backup(sw) and sw.ip_addr == ip:
-                print('switch found')
-                try:
-                    print('Starting backup for {}'.format(ip))
-                    sw.backup()
-                except Exception as e:
-                    print('Error occured: {}'.format(e))
-                    print(sw)
+        if can_backup(sw):
+            try:
+                sw.backup()
+            except Exception as e:
+                print('Error occured: {}'.format(e))
+                print(sw)
 
 
 if __name__ == '__main__':
@@ -90,7 +94,6 @@ if __name__ == '__main__':
     if args.reboot:
         reboot(args.reboot)
     elif args.backup:
-        print('backuping {}'.format(args.backup))
         backup(args.backup)
     else:
         parser.print_help()
