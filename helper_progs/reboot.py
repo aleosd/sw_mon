@@ -60,7 +60,11 @@ def backup(ip):
     for sw in switch_list:
         if ip == 'all':
             if can_backup(sw):
-                sw.backup()
+                try:
+                    sw.backup()
+                except Exception as e:
+                    print('Error occured: {}'.format(e))
+                    print(sw)
         else:
             if can_backup(sw) and sw.ip_addr == ip:
                 print('switch found')

@@ -93,7 +93,6 @@ class Allied(Switch):
 
     def backup(self):
         tn = self.login()
-        print('backup {}'.format(self.ip_addr))
         command = "upload server=10.1.7.204 file=boot.cfg method=tftp destfile={}.cfg\n".format(self.sw_id)
         tn.write(command.encode('ascii'))
         tn.close()
@@ -140,15 +139,18 @@ class Com3(Switch):
 
     def backup(self):
         tn = self.login()
+        print('starting backup for 3com')
         tn.write(b"system\r\n")
         tn.write(b"backupConfig\r\n")
         tn.write(b"save\r\n")
         time.sleep(1)
         tn.write(b"10.1.7.204\r\n")
         tn.write(str(self.sw_id).encode('ascii') + b".cfg\r\n")
+        time.sleep(1)
         tn.write(b"\r\n")
         tn.read_until(b"Select menu option (system/backupConfig): ")
-        # debug_info = tn.read_all().decode('ascii')
+        time.sleep(1)
+        debug_info = tn.read_all().decode('ascii')
         # print(debug_info)
         tn.close()
 

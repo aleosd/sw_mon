@@ -74,7 +74,7 @@ def create_switch(request):
             form.save()
             if 'instance' in request.session:
                 del request.session['instance']
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/mon/')
         else:
             return render(request, 'mon/edit.html', {'form': form})
 
