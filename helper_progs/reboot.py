@@ -105,7 +105,7 @@ if __name__ == '__main__':
                         nargs='?')
     parser.add_argument('-l', '--log', help='Set the logging level',
                         metavar='log-level', default=logging.WARNING,
-                        const=logging.INFO)
+                        const=logging.INFO, nargs='?')
     args = parser.parse_args()
 
     if args.reboot:
