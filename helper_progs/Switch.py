@@ -1,10 +1,11 @@
+import logging
 import time
 import Connection
 import secure
 
 
 class Switch():
-    '''
+    """
     Basic class for switch representation. On initialization takes n
     arguments:
         id_ - unique number in database, 'id';
@@ -17,7 +18,7 @@ class Switch():
         sw_uptime - uptime of the switch, in seconds;
         username, password - data for making telnet or ssh connections;
         sw_type_id - id of the switch type, used for proper reboot command;
-    '''
+    """
 
     def __init__(self, id_, ip_addr, sw_district, sw_id, sw_enabled, sw_ping,
                  sw_backup_conf, sw_uptime, sw_type_id):
@@ -63,6 +64,7 @@ class Switch():
 
 class SNR(Switch):
     def reboot(self):
+        logging.INFO('Starting reboot for SNR {}'.format(self.ip_addr))
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel, sock, attrs = sh(self.username, self.password)
@@ -86,12 +88,15 @@ class Allied(Switch):
         return tn
  
     def reboot(self):
+        logging.INFO('Started reboot for L3 Allied {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"restart reboot\n")
-        # debug_info = tn.read_all().decode('ascii')
+        debug_info = tn.read_all().decode('ascii')
+        logging.DEBUG(debug_info)
         tn.close()
 
     def backup(self):
+        logging.INFO('Started backup for Allied {}'.format(self.ip_addr))
         tn = self.login()
         command = "upload server=10.1.7.204 file=boot.cfg method=tftp destfile={}.cfg\n".format(self.sw_id)
         tn.write(command.encode('ascii'))
@@ -106,6 +111,7 @@ class DLink(Switch):
         return channel, sock
 
     def reboot(self):
+        logging.INFO('Starting reboot for DLink {}'.format(self.ip_addr))
         channel, sock = self.login() 
         channel.write('reboot\r\n'.encode())
         time.sleep(1)
@@ -125,21 +131,21 @@ class Com3(Switch):
         return tn
 
     def reboot(self):
+        logging.INFO('Starting reboot for 3Com {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"system\r\n")
         tn.write(b"control\r\n")
         tn.write(b"reboot\r\n")
         time.sleep(1)
         tn.write(b"yes\r\n")
-        # for future success chek, or history/log records
         debug_info = tn.read_all().decode('ascii')
-        # print(debug_info)
+        logging.DEBUG(debug_info)
         tn.close()
-        print('Rebooted 3com, ip: {}'.format(self.ip_addr))
+        logging.INFO('Rebooted 3com, ip: {}'.format(self.ip_addr))
 
     def backup(self):
+        logging.INFO('Starting backup for 3com {}'.format(self.ip_addr))
         tn = self.login()
-        print('starting backup for 3com')
         tn.write(b"system\r\n")
         tn.write(b"backupConfig\r\n")
         tn.write(b"save\r\n")
@@ -151,12 +157,13 @@ class Com3(Switch):
         tn.read_until(b"Select menu option (system/backupConfig): ")
         time.sleep(1)
         debug_info = tn.read_all().decode('ascii')
-        # print(debug_info)
+        logging.DEBUG(debug_info)
         tn.close()
 
 
 class Cisco(Switch):
     def reboot(self):
+        logging.INFO('Starting reboot for Cisco {}'.format(self.ip_addr))
         conn = Connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"Username: ")
@@ -166,7 +173,7 @@ class Cisco(Switch):
         tn.write(b"reload\n")
         tn.write(b"\n")
         debug_info = tn.read_all().decode('ascii')
-        # print(debug_info)
+        logging.DEBUG(debug_info)
         tn.close()
 
 
