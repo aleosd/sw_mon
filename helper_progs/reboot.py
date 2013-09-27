@@ -3,6 +3,7 @@
 
 import sys
 import argparse
+import logging
 import Switch
 import database_con as db
 
@@ -14,12 +15,12 @@ switch_types = {
     3: Switch.Cisco,
     4: Switch.SNR,
     5: Switch.SNR,
-    6: Switch.Unmanaged, # Passing this case
+    6: Switch.Unmanaged,  # Passing this case
     7: Switch.SNR,
     8: Switch.DLink,
     9: Switch.SNR,
-    10:Switch.AlliedL2,
-    }
+    10: Switch.AlliedL2,
+}
 
 
 def get_switch_list(ip):
@@ -37,27 +38,39 @@ def get_switch_list(ip):
 
     switch_list = []
     for row in raw_data:
+        # fancy names, just for better look
+        id_ = int(row[0])
+        ip_addr = row[1]
+        sw_district = row[2]
         sw_type_id = int(row[5])
-        sw = switch_types[sw_type_id](row[0], row[1], row[2], row[6],
-                                       row[7], row[8], row[13],
-                                       row[9], sw_type_id)
+        sw_id = row[6]
+        sw_enabled = row[7]
+        sw_ping = float(row[8])
+        sw_uptime = int(row[9])
+        sw_backup_conf = row[13]
+        sw = switch_types[sw_type_id](id_, ip_addr, sw_district, sw_id,
+                                      sw_enabled, sw_ping, sw_backup_conf,
+                                      sw_uptime, sw_type_id)
         switch_list.append(sw)
     return switch_list
 
+
 def can_reboot(sw):
-    '''Switch -> Bool
+    """Switch -> Bool
 
     Check if switch is alive and allowed to reboot.
-    '''
+    """
     if ((sw.sw_enabled and sw.sw_uptime) and
-        sw.sw_ping):
+            sw.sw_ping):
         return True
     return False
+
 
 def can_backup(sw):
     if can_reboot(sw) and sw.sw_backup_conf:
         return True
     return False
+
 
 def reboot(ip):
     switch_list = get_switch_list(ip)
@@ -69,6 +82,7 @@ def reboot(ip):
             if can_reboot(sw):
                 sw.reboot()
 
+
 def backup(ip):
     switch_list = get_switch_list(ip)
     for sw in switch_list:
@@ -76,8 +90,8 @@ def backup(ip):
             try:
                 sw.backup()
             except Exception as e:
-                print('Error occured: {}'.format(e))
-                print(sw)
+                logging.error('Error occured: {} from {}'.format(e, sw.ip_addr))
+                logging.info(sw)
 
 
 if __name__ == '__main__':
@@ -89,6 +103,9 @@ if __name__ == '__main__':
                                      If IP omitted - backup all switches''',
                         metavar='<ip-address>', default=None, const='all',
                         nargs='?')
+    parser.add_argument('-l', '--log', help='Set the logging level',
+                        metavar='log-level', default=logging.WARNING,
+                        const=logging.INFO)
     args = parser.parse_args()
 
     if args.reboot:

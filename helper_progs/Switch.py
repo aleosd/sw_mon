@@ -7,7 +7,7 @@ class Switch():
     '''
     Basic class for switch representation. On initialization takes n
     arguments:
-        id_ - unic number in database, 'id';
+        id_ - unique number in database, 'id';
         ip_addr - ip address of this switch;
         sw_district - location;
         sw_id - universal id for dividing switches on districts;
@@ -15,7 +15,7 @@ class Switch():
         sw_ping - data form last ping test, float;
         sw_backup_conf - enabled for configuration backup;
         sw_uptime - uptime of the switch, in seconds;
-        username, password - data for makling telnet or ssh connections;
+        username, password - data for making telnet or ssh connections;
         sw_type_id - id of the switch type, used for proper reboot command;
     '''
 
