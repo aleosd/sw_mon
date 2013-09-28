@@ -109,6 +109,7 @@ if __name__ == '__main__':
                         const='INFO', nargs='?')
     args = parser.parse_args()
 
+    loglevel = getattr(logging, 'INFO')
     if args.log:
         lvl = args.log.upper()
         loglevel = getattr(logging, lvl)
