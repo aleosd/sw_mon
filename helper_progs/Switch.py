@@ -70,7 +70,7 @@ class Switch():
 
 class SNR(Switch):
     def reboot(self):
-        logging.INFO('Starting reboot for SNR {}'.format(self.ip_addr))
+        logging.info('Starting reboot for SNR {}'.format(self.ip_addr))
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel, sock, attrs = sh(self.username, self.password)
@@ -94,11 +94,11 @@ class Allied(Switch):
         return tn
  
     def reboot(self):
-        logging.INFO('Started reboot for L3 Allied {}'.format(self.ip_addr))
+        logging.info('Started reboot for L3 Allied {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"restart reboot\n")
         debug_info = tn.read_all().decode('ascii')
-        logging.DEBUG(debug_info)
+        logging.debug(debug_info)
         tn.close()
 
     def backup(self):
@@ -117,7 +117,7 @@ class DLink(Switch):
         return channel, sock
 
     def reboot(self):
-        logging.INFO('Starting reboot for DLink {}'.format(self.ip_addr))
+        logging.debug('Starting reboot for DLink {}'.format(self.ip_addr))
         channel, sock = self.login() 
         channel.write('reboot\r\n'.encode())
         time.sleep(1)
@@ -137,7 +137,7 @@ class Com3(Switch):
         return tn
 
     def reboot(self):
-        logging.INFO('Starting reboot for 3Com {}'.format(self.ip_addr))
+        logging.info('Starting reboot for 3Com {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"system\r\n")
         tn.write(b"control\r\n")
@@ -145,12 +145,12 @@ class Com3(Switch):
         time.sleep(1)
         tn.write(b"yes\r\n")
         debug_info = tn.read_all().decode('ascii')
-        logging.DEBUG(debug_info)
+        logging.debug(debug_info)
         tn.close()
-        logging.INFO('Rebooted 3com, ip: {}'.format(self.ip_addr))
+        logging.info('Rebooted 3com, ip: {}'.format(self.ip_addr))
 
     def backup(self):
-        logging.INFO('Starting backup for 3com {}'.format(self.ip_addr))
+        logging.info('Starting backup for 3com {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"system\r\n")
         tn.write(b"backupConfig\r\n")
@@ -163,13 +163,13 @@ class Com3(Switch):
         tn.read_until(b"Select menu option (system/backupConfig): ")
         time.sleep(1)
         debug_info = tn.read_all().decode('ascii')
-        logging.DEBUG(debug_info)
+        logging.debug(debug_info)
         tn.close()
 
 
 class Cisco(Switch):
     def reboot(self):
-        logging.INFO('Starting reboot for Cisco {}'.format(self.ip_addr))
+        logging.info('Starting reboot for Cisco {}'.format(self.ip_addr))
         conn = Connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"Username: ")
@@ -179,7 +179,7 @@ class Cisco(Switch):
         tn.write(b"reload\n")
         tn.write(b"\n")
         debug_info = tn.read_all().decode('ascii')
-        logging.DEBUG(debug_info)
+        logging.debug(debug_info)
         tn.close()
 
 

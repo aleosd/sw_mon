@@ -33,7 +33,7 @@ def get_switch_list(ip):
         raw_data = db.ex_query(query)
 
     if len(raw_data) == 0:
-        print('IP-address not found in the database')
+        logging.error('IP-address not found in the database')
         sys.exit(1)
 
     switch_list = []
@@ -109,6 +109,7 @@ if __name__ == '__main__':
                         const=logging.INFO, nargs='?')
     args = parser.parse_args()
 
+    logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s')
     if args.log:
         lvl = args.log.upper()
         loglevel = getattr(logging, lvl)
