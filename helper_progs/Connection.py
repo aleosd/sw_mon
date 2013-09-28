@@ -5,6 +5,7 @@ import libssh2
 import termios
 import tty
 import telnetlib
+import logging
 
 
 class Connection():
@@ -16,7 +17,6 @@ class Connection():
 class TelnetConnection(Connection):
     def connect(self):
         tn = telnetlib.Telnet(self.ip_addr, timeout=self.TIMEOUT)
-        print(self.ip_addr)
         return tn
 
 
@@ -34,13 +34,13 @@ class SSHConnection(Connection):
         try:
             sock.connect((self.ip_addr, 22))
         except Exception as e:
-            print('Error while connecting to {}, {}'.format(self.ip_addr, e)) 
+            logging.error('Error while connecting to {}, {}'.format(self.ip_addr, e))
             sys.exit(1)
         TTY = os.isatty(sys.stdin.fileno())
                  
         # Create a new SSH session using that socket and login
         # using basic password authentication.
-        print('Connecting to {}...'.format(self.ip_addr))
+        logging.info('Connecting to {}...'.format(self.ip_addr))
 
         def channel_maker(user, password):
             session = libssh2.Session()
@@ -62,6 +62,6 @@ class SSHConnection(Connection):
                     tty.setraw(sys.stdin)
                 return channel, sock, attrs
             except Exception as e:
-                print('Error getting channel: {}'.format(e))
+                logging.error('Error getting channel: {}'.format(e))
 
         return channel_maker

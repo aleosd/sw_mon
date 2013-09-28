@@ -109,11 +109,10 @@ if __name__ == '__main__':
                         const='INFO', nargs='?')
     args = parser.parse_args()
 
-    logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s')
     if args.log:
         lvl = args.log.upper()
         loglevel = getattr(logging, lvl)
-        logging.basicConfig(level=loglevel)
+        logging.basicConfig(level=loglevel, format='%(asctime)s:%(loglevel)s:%(message)s')
 
     if args.reboot:
         reboot(args.reboot)
