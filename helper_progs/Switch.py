@@ -1,5 +1,6 @@
 import logging
 import time
+import datetime
 import Connection
 import secure
 
@@ -60,6 +61,11 @@ class Switch():
         else:
             password = secure.vkz_pass
         return password
+
+    def make_uptime(self):
+        if self.sw_uptime:
+            return str(datetime.timedelta(seconds=self.sw_uptime))
+        return 'Unknown'
 
 
 class SNR(Switch):

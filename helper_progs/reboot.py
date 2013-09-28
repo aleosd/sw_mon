@@ -46,7 +46,7 @@ def get_switch_list(ip):
         sw_id = row[6]
         sw_enabled = row[7]
         sw_ping = row[8]
-        sw_uptime = int(row[9])
+        sw_uptime = row[9]
         sw_backup_conf = row[13]
         sw = switch_types[sw_type_id](id_, ip_addr, sw_district, sw_id,
                                       sw_enabled, sw_ping, sw_backup_conf,
@@ -107,6 +107,11 @@ if __name__ == '__main__':
                         metavar='log-level', default=logging.WARNING,
                         const=logging.INFO, nargs='?')
     args = parser.parse_args()
+
+    if args.log:
+        lvl = args.log.upper()
+        loglevel = getattr(logging, lvl)
+        logging.basicConfig(level=loglevel)
 
     if args.reboot:
         reboot(args.reboot)
