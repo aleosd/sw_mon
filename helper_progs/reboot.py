@@ -84,6 +84,7 @@ def reboot(ip):
 
 
 def backup(ip):
+    logging.debug('Starting global backup function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
     for sw in switch_list:
         if can_backup(sw):

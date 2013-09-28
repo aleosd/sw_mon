@@ -102,7 +102,7 @@ class Allied(Switch):
         tn.close()
 
     def backup(self):
-        logging.INFO('Started backup for Allied {}'.format(self.ip_addr))
+        logging.info('Started backup for Allied {}'.format(self.ip_addr))
         tn = self.login()
         command = "upload server=10.1.7.204 file=boot.cfg method=tftp destfile={}.cfg\n".format(self.sw_id)
         tn.write(command.encode('ascii'))
