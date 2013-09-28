@@ -45,7 +45,7 @@ def get_switch_list(ip):
         sw_type_id = int(row[5])
         sw_id = row[6]
         sw_enabled = row[7]
-        sw_ping = float(row[8])
+        sw_ping = row[8]
         sw_uptime = int(row[9])
         sw_backup_conf = row[13]
         sw = switch_types[sw_type_id](id_, ip_addr, sw_district, sw_id,
