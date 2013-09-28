@@ -97,6 +97,10 @@ def backup(ip):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Script for switch management')
+
+    # setting arguments for command-line args
+    # const is used when flag added without parameter
+    # default is used when flag is omitted
     parser.add_argument('-r', '--reboot', nargs='?', default=None, const='all',
                         help='Reboot all switches, if no IP specified',
                         metavar='<ip-address>')
