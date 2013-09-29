@@ -105,7 +105,7 @@ if __name__ == '__main__':
                         metavar='<ip-address>', default=None, const='all',
                         nargs='?')
     parser.add_argument('-l', '--log', help='Set the logging level',
-                        metavar='log-level', default=logging.WARNING,
+                        metavar='log-level', default='WARNING',
                         const='INFO', nargs='?')
     args = parser.parse_args()
 
