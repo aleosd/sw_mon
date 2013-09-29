@@ -53,7 +53,7 @@ class Switch():
                 Password: {}.
                """.format(str(self.sw_id), self.ip_addr, str(self.sw_enabled),
                           str(self.sw_backup_conf), str(self.sw_ping),
-                          str(self.sw_uptime), self.username, self.password)
+                          self.make_uptime(), self.username, self.password)
 
     def pass_chooser(self):
         if self.sw_id < 2000000:             # choosing proper password
@@ -133,7 +133,7 @@ class Com3(Switch):
         tn.write(secure.user.encode('ascii') + b"\r\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\r\n")
-        tn.write(b"\r\n") # in case of some alerts, to pass them
+        tn.write(b"\r\n")  # in case of some alerts, to pass them
         return tn
 
     def reboot(self):
