@@ -89,6 +89,7 @@ def backup(ip):
     for sw in switch_list:
         if can_backup(sw):
             try:
+                logging.debug('Trying backup for ip {}'.format(sw.ip_addr))
                 sw.backup()
             except Exception as e:
                 logging.error('Error occured: {} from {}'.format(e, sw.ip_addr))
