@@ -69,10 +69,12 @@ def can_reboot(sw):
 def can_backup(sw):
     if sw.isalive() and sw.sw_backup_conf:
         return True
+    logging.warning('The switch cannot be backuped: {}'.format(sw))
     return False
 
 
 def reboot(ip):
+    logging.debug('Starting global reboot function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
     for sw in switch_list:
         if ip == 'all':

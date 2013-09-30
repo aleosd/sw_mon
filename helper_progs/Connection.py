@@ -55,10 +55,10 @@ class SSHConnection(Connection):
             session.userauth_password(user, password)
              
             # Put the session into non-blocking mode.
-            channel = session.channel()
-            channel.request_pty('vt100')
-            channel.shell()
-            session.blocking = False
+            self.channel = session.channel()
+            self.channel.request_pty('vt100')
+            self.channel.shell()
+            session.blocking = True
             if self.TTY:
                 self.attrs = termios.tcgetattr(sys.stdin)
             else:
@@ -67,10 +67,9 @@ class SSHConnection(Connection):
                 # Put terminal attached to stdin into raw mode.
                 if self.TTY:
                     tty.setraw(sys.stdin)
-                return channel, self.sock, self.attrs
+                return self.channel, self.sock, self.attrs
             except Exception as e:
                 logging.error('Error getting channel: {}'.format(e))
-
         return channel_maker
 
     def close(self):

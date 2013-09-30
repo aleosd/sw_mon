@@ -95,7 +95,7 @@ class Switch():
 
 class SNR(Switch):
     def pass_chooser(self):
-        self.password = secure.ssh_password
+        return secure.ssh_password
 
     def reboot(self):
         logging.info('Starting reboot for SNR {}'.format(self.ip_addr))
@@ -111,9 +111,19 @@ class SNR(Switch):
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel, sock, attrs = sh(self.username, self.password)
-        command = 'copy running-config tftp://10.1.7.204/{}\r\n'.format(self.ip_addr)
-        channel.write(command.encode('ascii'))
+        logging.debug('Connected to {} with ssh'.format(self.ip_addr))
+        command = 'copy running-config tftp://10.1.7.204/{}.cfg\r\n'.format(self.sw_id)
+        channel.write(command.encode())
         channel.write('Y\r\n'.encode('ascii'))
+        # waiting for success message
+        raw_data = channel.read(1024)
+        i = 0
+        while not 'close tftp client' in raw_data.decode():
+            raw_data = channel.read(1024)
+            i += 1
+            # in case of error, to escape infinite loop
+            if i > 10:
+                break
         conn.close()
 
 
