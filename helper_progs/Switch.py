@@ -6,7 +6,6 @@ import datetime
 import Connection
 import secure
 import unittest
-import sys
 
 
 class Switch():
@@ -40,7 +39,7 @@ class Switch():
         self.password = self.pass_chooser()
 
     def isalive(self):
-        p = subprocess.Popen(["fping", self.ip_addr],stdout=subprocess.PIPE)
+        p = subprocess.Popen(["fping", self.ip_addr], stdout=subprocess.PIPE)
         result = p.communicate()
         logging.debug("The raw result is: {}".format(result))
         result = result[0].decode()
@@ -159,7 +158,7 @@ class Com3(Switch):
         tn.write(secure.user.encode('ascii') + b"\r\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\r\n")
-        tn.write(b"\r\n") # in case of some alerts, to pass them
+        tn.write(b"\r\n")  # in case of some alerts, to pass them
         return tn
 
     def reboot(self):
@@ -220,12 +219,14 @@ class AlliedL2(Switch):
     def backup(self):
         print('Implement later')
 
+
 class Unmanaged(Switch):
     def __init__(self, *args, **kw):
         self.sw_enabled = False
 
     def __str__(self):
         return 'The switch is unmanaged, cannot operate it.'
+
 
 class TestSwitch(unittest.TestCase):
 
