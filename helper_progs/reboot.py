@@ -64,14 +64,6 @@ def can_reboot(sw):
             sw.sw_ping):
         return True
     logging.warning('The switch cannot be rebooted: {}'.format(sw))
-    return False
-
-
-def can_backup(sw):
-    if sw.isalive() and sw.sw_backup_conf:
-        return True
-    logging.warning('The switch cannot be backuped: {}'.format(sw))
-    return False
 
 
 def reboot(ip):
@@ -79,11 +71,13 @@ def reboot(ip):
     switch_list = get_switch_list(ip)
     for sw in switch_list:
         if ip == 'all':
-            if can_reboot(sw) and sw.sw_uptime > UPTIME:
+            if sw.can_reboot() and sw.sw_uptime > UPTIME:
                 sw.reboot()
         else:
-            if can_reboot(sw):
+            if sw.can_reboot():
                 sw.reboot()
+            else:
+                logging.warning('The switch cannot be rebooted: {}'.format(sw))
 
 
 def backup(ip):
