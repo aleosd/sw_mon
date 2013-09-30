@@ -1,8 +1,12 @@
+import re
 import logging
+import subprocess
 import time
 import datetime
 import Connection
 import secure
+import unittest
+import sys
 
 
 class Switch():
@@ -35,6 +39,28 @@ class Switch():
         self.username = secure.user
         self.password = self.pass_chooser()
 
+    def isalive(self):
+        p = subprocess.Popen(["fping", self.ip_addr],stdout=subprocess.PIPE)
+        result = p.communicate()
+        logging.debug("The raw result is: {}".format(result))
+        result = result[0].decode()
+        if result:
+            alive = re.search('alive', result)
+            if alive:
+                return True
+
+    def ping(self):
+        p = subprocess.Popen(["ping", "-c", "3", "-i", "0.2", self.ip_addr], stdout=subprocess.PIPE)
+        result = p.communicate()
+        result = result[0].decode()
+        if result:
+            m2 = re.search('rtt min/avg/max/mdev = (.*) ms', result)
+            if m2:
+                avgtime = m2.group(1).split('/')[1]
+                return float(avgtime)
+        else:
+            return None
+
     def reboot(self):
         print('Function must be implemented in subclasses')
 
@@ -48,7 +74,7 @@ class Switch():
                 Cheking is enabled: {},
                 Backup is enabled: {},
                 Ping: {} ms,
-                Uptime: {} sec;
+                Uptime: {};
                 Username: {}.
                 Password: {}.
                """.format(str(self.sw_id), self.ip_addr, str(self.sw_enabled),
@@ -200,3 +226,24 @@ class Unmanaged(Switch):
 
     def __str__(self):
         return 'The switch is unmanaged, cannot operate it.'
+
+class TestSwitch(unittest.TestCase):
+
+    def setUp(self):
+        self.google_dns = Switch(1, "8.8.8.8", 2, 100000, True, 236, False, 592, 2)
+        self.error_device = Switch(1, "1.1.1.1", 2, 200000, True, 237, False, None, 2)
+
+    def test_is_alive(self):
+        self.assertTrue(self.google_dns.isalive())
+        self.assertFalse(self.error_device.isalive())
+
+    def test_ping(self):
+        self.assertIsInstance(self.google_dns.ping(), float)
+        self.assertIsNone(self.error_device.ping())
+
+    def test_make_uptime(self):
+        self.assertEqual(self.google_dns.make_uptime(), "0:09:52")
+        self.assertEqual(self.error_device.make_uptime(), "Unknown")
+
+if __name__ == '__main__':
+    unittest.main()
