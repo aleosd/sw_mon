@@ -29,9 +29,9 @@ class SSHConnection(Connection):
         self.TTY = None
 
     def connect(self):
-        '''(ipaddress, switch_id, password, DEBUG) -> function
+        '''(Connection) -> function
        
-        Function for rebooting switches via ssh. 
+        Function for connecting to switches via ssh.
         SNR-S2940-8G, SNR-S2940-24G and SNR-S2940-48G.
         '''
 
@@ -67,7 +67,7 @@ class SSHConnection(Connection):
                 # Put terminal attached to stdin into raw mode.
                 if self.TTY:
                     tty.setraw(sys.stdin)
-                return self.channel, self.sock, self.attrs
+                return self.channel
             except Exception as e:
                 logging.error('Error getting channel: {}'.format(e))
         return channel_maker
@@ -75,4 +75,5 @@ class SSHConnection(Connection):
     def close(self):
         self.sock.close()
         if self.TTY:
+            # reset terminal (console) to it's basic state
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.attrs)

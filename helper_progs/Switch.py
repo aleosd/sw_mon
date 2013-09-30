@@ -110,7 +110,7 @@ class SNR(Switch):
         logging.info('Starting backup for SNR {}'.format(self.ip_addr))
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
-        channel, sock, attrs = sh(self.username, self.password)
+        channel = sh(self.username, self.password)
         logging.debug('Connected to {} with ssh'.format(self.ip_addr))
         command = 'copy running-config tftp://10.1.7.204/{}.cfg\r\n'.format(self.sw_id)
         channel.write(command.encode())

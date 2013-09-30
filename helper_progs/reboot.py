@@ -63,6 +63,7 @@ def can_reboot(sw):
     if ((sw.sw_enabled and sw.sw_uptime) and
             sw.sw_ping):
         return True
+    logging.warning('The switch cannot be rebooted: {}'.format(sw))
     return False
 
 
