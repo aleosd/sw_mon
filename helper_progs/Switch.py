@@ -94,6 +94,9 @@ class Switch():
 
 
 class SNR(Switch):
+    def pass_chooser(self):
+        self.password = secure.ssh_password
+
     def reboot(self):
         logging.info('Starting reboot for SNR {}'.format(self.ip_addr))
         conn = Connection.SSHConnection(self.ip_addr)
@@ -101,7 +104,7 @@ class SNR(Switch):
         channel, sock, attrs = sh(self.username, self.password)
         channel.write('reload\r\n'.encode())
         channel.write('Y\r\n'.encode())
-        sock.close()
+        conn.close()
 
     def backup(self):
         logging.info('Starting backup for SNR {}'.format(self.ip_addr))
