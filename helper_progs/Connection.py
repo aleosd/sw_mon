@@ -21,6 +21,13 @@ class TelnetConnection(Connection):
 
 
 class SSHConnection(Connection):
+    def __init__(self, ip_addr):
+        super(SSHConnection, self).__init__(ip_addr)
+        self.socket = None
+        self.attrs = None
+        self.channel = None
+        self.TTY
+
     def connect(self):
         '''(ipaddress, switch_id, password, DEBUG) -> function
        
@@ -29,14 +36,14 @@ class SSHConnection(Connection):
         '''
 
         # Create and connect a new socket.
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(3)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(3)
         try:
-            sock.connect((self.ip_addr, 22))
+            self.sock.connect((self.ip_addr, 22))
         except Exception as e:
             logging.error('Error while connecting to {}, {}'.format(self.ip_addr, e))
             sys.exit(1)
-        TTY = os.isatty(sys.stdin.fileno())
+        self.TTY = os.isatty(sys.stdin.fileno())
                  
         # Create a new SSH session using that socket and login
         # using basic password authentication.
@@ -44,7 +51,7 @@ class SSHConnection(Connection):
 
         def channel_maker(user, password):
             session = libssh2.Session()
-            session.startup(sock)
+            session.startup(self.sock)
             session.userauth_password(user, password)
              
             # Put the session into non-blocking mode.
@@ -52,16 +59,21 @@ class SSHConnection(Connection):
             channel.request_pty('vt100')
             channel.shell()
             session.blocking = False
-            if TTY:
-                attrs = termios.tcgetattr(sys.stdin)
+            if self.TTY:
+                self.attrs = termios.tcgetattr(sys.stdin)
             else:
-                attrs = sys.stdin.readline().rstrip()
+                self.attrs = sys.stdin.readline().rstrip()
             try:
                 # Put terminal attached to stdin into raw mode.
-                if TTY:
+                if self.TTY:
                     tty.setraw(sys.stdin)
-                return channel, sock, attrs
+                return channel, self.sock, self.attrs
             except Exception as e:
                 logging.error('Error getting channel: {}'.format(e))
 
         return channel_maker
+
+    def close(self):
+        self.sock.close()
+        if self.TTY:
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.attrs)

@@ -103,6 +103,16 @@ class SNR(Switch):
         channel.write('Y\r\n'.encode())
         sock.close()
 
+    def backup(self):
+        logging.info('Starting backup for SNR {}'.format(self.ip_addr))
+        conn = Connection.SSHConnection(self.ip_addr)
+        sh = conn.connect()
+        channel, sock, attrs = sh(self.username, self.password)
+        command = 'copy running-config tftp://10.1.7.204/{}\r\n'.format(self.ip_addr)
+        channel.write(command.encode('ascii'))
+        channel.write('Y\r\n'.encode('ascii'))
+        conn.close()
+
 
 class Allied(Switch):
     def __init__(self, *args, **kw):
