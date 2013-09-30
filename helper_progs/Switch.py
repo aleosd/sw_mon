@@ -60,6 +60,9 @@ class Switch():
         else:
             return None
 
+    def can_backup(self):
+        return self.sw_backup_conf and self.isalive()
+
     def reboot(self):
         print('Function must be implemented in subclasses')
 
@@ -254,7 +257,7 @@ class Unmanaged(Switch):
 class TestSwitch(unittest.TestCase):
 
     def setUp(self):
-        self.google_dns = Switch(1, "8.8.8.8", 2, 100000, True, 236, False, 592, 2)
+        self.google_dns = Switch(1, "8.8.8.8", 2, 100000, True, 236, True, 592, 2)
         self.error_device = Switch(1, "1.1.1.1", 2, 200000, True, 237, False, None, 2)
 
     def test_is_alive(self):
@@ -268,6 +271,10 @@ class TestSwitch(unittest.TestCase):
     def test_make_uptime(self):
         self.assertEqual(self.google_dns.make_uptime(), "0:09:52")
         self.assertEqual(self.error_device.make_uptime(), "Unknown")
+
+    def test_can_backup(self):
+        self.assertTrue(self.google_dns.can_backup())
+        self.assertFalse(self.error_device.can_backup())
 
 if __name__ == '__main__':
     unittest.main()

@@ -90,13 +90,15 @@ def backup(ip):
     logging.debug('Starting global backup function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
     for sw in switch_list:
-        if can_backup(sw):
+        if sw.can_backup():
             try:
                 logging.debug('Trying backup for ip {}'.format(sw.ip_addr))
                 sw.backup()
             except Exception as e:
-                logging.error('Error occured: {} from {}'.format(e, sw.ip_addr))
+                logging.error('Error occurred while making config backup: {} from {}'.format(e, sw.ip_addr))
                 logging.info(sw)
+        else:
+            logging.warning('The switch cannot be backuped: {}'.format(sw))
 
 
 if __name__ == '__main__':
