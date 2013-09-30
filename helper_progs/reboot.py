@@ -67,7 +67,7 @@ def can_reboot(sw):
 
 
 def can_backup(sw):
-    if can_reboot(sw) and sw.sw_backup_conf:
+    if sw.isalive() and sw.sw_backup_conf:
         return True
     return False
 

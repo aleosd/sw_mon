@@ -57,7 +57,7 @@ class Switch():
             m2 = re.search('rtt min/avg/max/mdev = (.*) ms', result)
             if m2:
                 avgtime = m2.group(1).split('/')[1]
-                return avgtime
+                return float(avgtime)
         else:
             return None
 
@@ -74,7 +74,7 @@ class Switch():
                 Cheking is enabled: {},
                 Backup is enabled: {},
                 Ping: {} ms,
-                Uptime: {} sec;
+                Uptime: {};
                 Username: {}.
                 Password: {}.
                """.format(str(self.sw_id), self.ip_addr, str(self.sw_enabled),
@@ -227,14 +227,19 @@ class TestSwitch(unittest.TestCase):
 
     def setUp(self):
         self.google_dns = Switch(1, "8.8.8.8", 2, 100000, True, 236, False, 592, 2)
-        self.error_device = Switch(1, "1.1.1.1", 2, 200000, True, 237, False, 650, 2)
+        self.error_device = Switch(1, "1.1.1.1", 2, 200000, True, 237, False, None, 2)
 
     def test_is_alive(self):
         self.assertTrue(self.google_dns.isalive())
         self.assertFalse(self.error_device.isalive())
 
     def test_ping(self):
-        pass
+        self.assertIsInstance(self.google_dns.ping(), float)
+        self.assertIsNone(self.error_device.ping())
+
+    def test_make_uptime(self):
+        self.assertEqual(self.google_dns.make_uptime(), "0:09:52")
+        self.assertEqual(self.error_device.make_uptime(), "Unknown")
 
 if __name__ == '__main__':
     unittest.main()
