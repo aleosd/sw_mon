@@ -26,7 +26,7 @@ class SSHConnection(Connection):
         self.socket = None
         self.attrs = None
         self.channel = None
-        self.TTY
+        self.TTY = None
 
     def connect(self):
         '''(ipaddress, switch_id, password, DEBUG) -> function
