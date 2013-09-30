@@ -22,7 +22,7 @@ switch_types = {
     10: Switch.AlliedL2,
 }
 
-
+# TODO: change get_switch_list to use Database class
 def get_switch_list(ip):
     # fetch all or given by ip switch info from db
     if ip == 'all':
@@ -54,7 +54,7 @@ def get_switch_list(ip):
         switch_list.append(sw)
     return switch_list
 
-
+# TODO: remove can_reboot if all works
 def can_reboot(sw):
     """Switch -> Bool
 
