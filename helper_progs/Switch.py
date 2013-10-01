@@ -256,14 +256,19 @@ class AlliedL2(Switch):
         tn.write(secure.allied_user.encode('ascii') + b"\r\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\r\n")
+        logging.debug('Successfully logged in to {}'.format(self.ip_addr))
         return tn
 
     def reboot(self):
+        logging.warning("Telnet misfunction on switch, reboot disabled")
+        '''
         logging.info("Starting reboot for Allied L2 {}".format(self.ip_addr))
         tn = self.login()
         tn.write(b"C\r\n")
-        tn.write(b"restart")
+        tn.write(b"restart switch\r\n")
+        tn.write(b"Y\r\n")
         tn.close()
+        '''
 
     def backup(self):
         print('Implement later')
