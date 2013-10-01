@@ -245,8 +245,25 @@ class Cisco(Switch):
 
 
 class AlliedL2(Switch):
+    def __init__(self, *args, **kw):
+        super(AlliedL2, self).__init__(*args, **kw)
+        self.username = secure.allied_user
+
+    def login(self):
+        conn = Connection.TelnetConnection(self.ip_addr)
+        tn = conn.connect()
+        tn.read_until(b"Login: ")
+        tn.write(secure.allied_user.encode('ascii') + b"\r\n")
+        tn.read_until(b"Password: ")
+        tn.write(self.password.encode('ascii') + b"\r\n")
+        return tn
+
     def reboot(self):
-        print('To be implemented')
+        logging.info("Starting reboot for Allied L2 {}".format(self.ip_addr))
+        tn = self.login()
+        tn.write(b"C\r\n")
+        tn.write(b"restart")
+        tn.close()
 
     def backup(self):
         print('Implement later')
@@ -286,6 +303,13 @@ class TestSwitch(unittest.TestCase):
     def test_can_reboot(self):
         self.assertTrue(self.google_dns.can_reboot())
         self.assertFalse(self.error_device.can_reboot())
+
+class TestAlliedL2Switch(unittest.TestCase):
+    def setUp(self):
+        self.alliedl2_switch = AlliedL2(1, "10.100.33.254", 3, 2010300, True, 5, False, 9000, 2)
+
+    def test_login(self):
+        self.assertIsNotNone(self.alliedl2_switch.login())
 
 if __name__ == '__main__':
     unittest.main()
