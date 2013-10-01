@@ -6,7 +6,7 @@ import argparse
 import logging
 import Switch
 import Database
-import database_con as db
+import secure
 
 
 UPTIME = 1209600
@@ -23,10 +23,9 @@ switch_types = {
     10: Switch.AlliedL2,
 }
 
-# TODO: change get_switch_list to use Database class
 def get_switch_list(flag):
     # fetch all or given by ip switch info from db
-    db = Database(secure.DBNAME, secure.USER, secure.PASS)
+    db = Database.Database(secure.DBNAME, secure.USER, secure.PASS)
     if flag == 'backup':
         raw_data = db.get_switch_list(backup=True)
     elif flag == 'reboot':
