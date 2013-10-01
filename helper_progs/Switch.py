@@ -164,6 +164,9 @@ class Allied(Switch):
 
 
 class DLink(Switch):
+    def pass_chooser(self):
+        return secure.ssh_password
+
     def login(self):
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
