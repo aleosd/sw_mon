@@ -252,6 +252,7 @@ class AlliedL2(Switch):
 class Unmanaged(Switch):
     def __init__(self, *args, **kw):
         self.sw_enabled = False
+        self.sw_backup_conf = False
 
     def __str__(self):
         return 'The switch is unmanaged, cannot operate it.'

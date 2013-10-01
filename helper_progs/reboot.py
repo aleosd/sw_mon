@@ -5,6 +5,7 @@ import sys
 import argparse
 import logging
 import Switch
+import Database
 import database_con as db
 
 
@@ -23,14 +24,15 @@ switch_types = {
 }
 
 # TODO: change get_switch_list to use Database class
-def get_switch_list(ip):
+def get_switch_list(flag):
     # fetch all or given by ip switch info from db
-    if ip == 'all':
-        raw_data = db.fetchdata(all=True)
+    db = Database(secure.DBNAME, secure.USER, secure.PASS)
+    if flag == 'backup':
+        raw_data = db.get_switch_list(backup=True)
+    elif flag == 'reboot':
+        raw_data = db.get_switch_list(reboot=True)
     else:
-        query = """SELECT * from switches_switch
-                   WHERE ip_addr=('{}')""".format(ip)
-        raw_data = db.ex_query(query)
+        raw_data = db.get_switch_list(ip=flag)
 
     if len(raw_data) == 0:
         logging.error('IP-address not found in the database')
@@ -54,30 +56,19 @@ def get_switch_list(ip):
         switch_list.append(sw)
     return switch_list
 
-# TODO: remove can_reboot if all works
-def can_reboot(sw):
-    """Switch -> Bool
-
-    Check if switch is alive and allowed to reboot.
-    """
-    if ((sw.sw_enabled and sw.sw_uptime) and
-            sw.sw_ping):
-        return True
-    logging.warning('The switch cannot be rebooted: {}'.format(sw))
-
 
 def reboot(ip):
     logging.debug('Starting global reboot function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
     for sw in switch_list:
-        if ip == 'all':
-            if sw.can_reboot() and sw.sw_uptime > UPTIME:
+        if sw.can_reboot():
+            try:
+                logging.debug('Trying reboot the switch {}'.format(sw.ip_addr))
                 sw.reboot()
+            except Exception as e:
+                logging.error('Error while rebooting switch {}: {}'.format(sw, e))
         else:
-            if sw.can_reboot():
-                sw.reboot()
-            else:
-                logging.warning('The switch cannot be rebooted: {}'.format(sw))
+            logging.warning('The switch cannot be rebooted: {}'.format(sw))
 
 
 def backup(ip):
@@ -101,12 +92,12 @@ if __name__ == '__main__':
     # setting arguments for command-line args
     # const is used when flag added without parameter
     # default is used when flag is omitted
-    parser.add_argument('-r', '--reboot', nargs='?', default=None, const='all',
+    parser.add_argument('-r', '--reboot', nargs='?', default=None, const='reboot',
                         help='Reboot all switches, if no IP specified',
                         metavar='<ip-address>')
     parser.add_argument('-b', '--backup', help='''Backup given by ip switch.
                                      If IP omitted - backup all switches''',
-                        metavar='<ip-address>', default=None, const='all',
+                        metavar='<ip-address>', default=None, const='backup',
                         nargs='?')
     parser.add_argument('-l', '--log', help='Set the logging level',
                         metavar='log-level', default='WARNING',
