@@ -7,7 +7,7 @@ import Connection
 import secure
 import unittest
 
-
+# TODO: Add try-except clauses to all network functions
 class Switch():
     """
     Basic class for switch representation. On initialization takes n
@@ -103,20 +103,26 @@ class SNR(Switch):
     def pass_chooser(self):
         return secure.ssh_password
 
-    def reboot(self):
-        logging.info('Starting reboot for SNR {}'.format(self.ip_addr))
-        conn = Connection.SSHConnection(self.ip_addr)
-        sh = conn.connect()
-        channel, sock, attrs = sh(self.username, self.password)
-        channel.write('reload\r\n'.encode())
-        channel.write('Y\r\n'.encode())
-        conn.close()
-
-    def backup(self):
-        logging.info('Starting backup for SNR {}'.format(self.ip_addr))
+    def login(self):
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel = sh(self.username, self.password)
+        return channel, conn
+
+    def reboot(self):
+        logging.info('Starting reboot for SNR {}'.format(self.ip_addr))
+        channel, conn = self.login()
+        try:
+            channel.write('reload\r\n'.encode())
+            channel.write('Y\r\n'.encode())
+        except Exception as e:
+            logging.error("Error {} while rebooting SNR switch: {}".format(e, self.ip_addr))
+        finally:
+            conn.close()
+
+    def backup(self):
+        logging.info('Starting backup for SNR {}'.format(self.ip_addr))
+        channel, conn = self.login()
         logging.debug('Connected to {} with ssh'.format(self.ip_addr))
         command = 'copy running-config tftp://10.1.7.204/{}.cfg\r\n'.format(self.sw_id)
         channel.write(command.encode())
@@ -229,14 +235,18 @@ class Com3(Switch):
 
 
 class Cisco(Switch):
-    def reboot(self):
-        logging.info('Starting reboot for Cisco {}'.format(self.ip_addr))
+    def login(self):
         conn = Connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"Username: ")
         tn.write(b"admin\r\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\n")
+        return tn
+
+    def reboot(self):
+        logging.info('Starting reboot for Cisco {}'.format(self.ip_addr))
+        tn = self.login()
         tn.write(b"reload\n")
         tn.write(b"\n")
         debug_info = tn.read_all().decode('ascii')
