@@ -8,8 +8,25 @@ import secure
 import unittest
 
 
+class Host():
+    def __init__(self, ip_addr):
+        self.ip_addr = ip_addr
+
+    def ping(self):
+        p = subprocess.Popen(["ping", "-c", "3", "-i", "0.2", self.ip_addr], stdout=subprocess.PIPE)
+        result = p.communicate()
+        result = result[0].decode()
+        if result:
+            m2 = re.search('rtt min/avg/max/mdev = (.*) ms', result)
+            if m2:
+                avgtime = m2.group(1).split('/')[1]
+                return float(avgtime)
+        else:
+            return None
+
+
 # TODO: Add try-except clauses to all network functions
-class Switch():
+class Switch(Host):
     """
     Basic class for switch representation. On initialization takes n
     arguments:
@@ -27,8 +44,9 @@ class Switch():
 
     def __init__(self, id_, ip_addr, sw_district, sw_id, sw_enabled, sw_ping,
                  sw_backup_conf, sw_uptime, sw_type_id):
+        super(Switch, self).__init__(ip_addr)
         self.id_ = id_
-        self.ip_addr = ip_addr
+        # self.ip_addr = ip_addr
         self.sw_district = sw_district
         self.sw_id = sw_id
         self.sw_enabled = sw_enabled
@@ -49,17 +67,6 @@ class Switch():
             if alive:
                 return True
 
-    def ping(self):
-        p = subprocess.Popen(["ping", "-c", "3", "-i", "0.2", self.ip_addr], stdout=subprocess.PIPE)
-        result = p.communicate()
-        result = result[0].decode()
-        if result:
-            m2 = re.search('rtt min/avg/max/mdev = (.*) ms', result)
-            if m2:
-                avgtime = m2.group(1).split('/')[1]
-                return float(avgtime)
-        else:
-            return None
 
     def can_backup(self):
         return self.sw_backup_conf and self.isalive()
