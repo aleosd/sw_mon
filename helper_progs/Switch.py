@@ -130,7 +130,7 @@ class SNR(Switch):
         # waiting for success message
         raw_data = channel.read(1024)
         i = 0
-        while not 'close tftp client' in raw_data.decode():
+        while not ('close tftp client' in raw_data.decode()):
             raw_data = channel.read(1024)
             i += 1
             # in case of error, to escape infinite loop
@@ -187,7 +187,7 @@ class DLink(Switch):
             time.sleep(1)
             channel.write('y\r\n'.encode())
         except Exception as e:
-            logging.error('error while rebooting switch {}'.format(self.ip_addr))
+            logging.error('Error while rebooting DLink switch {}: {}'.format(self.ip_addr, e))
         finally:
             conn.close()
 
@@ -195,11 +195,14 @@ class DLink(Switch):
         logging.info('Starting backup for Dlink switch {}'.format(self.ip_addr))
         channel, conn = self.login()
         try:
-            command = 'upload cfg_toTFTP {} dest_file {}\r\n'.format(secure.TFTP_SERVER, self.sw_id)
+            command = 'upload cfg_toTFTP {} dest_file {}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
             channel.write(command.encode())
+            raw_data = channel.read(1024)
+            while not ('Success' in raw_data.decode()):
+                raw_data = channel.read(1024)
             channel.write('logout\r\n'.encode())
         except Exception as e:
-            logging.error('Error while backuping DLink switch {}'.format(self.ip_addr))
+            logging.error('Error while backuping DLink switch {}: {}'.format(self.ip_addr, e))
         finally:
             conn.close()
 
