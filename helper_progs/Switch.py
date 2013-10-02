@@ -176,17 +176,32 @@ class DLink(Switch):
     def login(self):
         conn = Connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
-        channel, sock = sh(self.username, self.password)
-        return channel, sock
+        channel = sh(self.username, self.password)
+        return channel, conn
 
     def reboot(self):
         logging.debug('Starting reboot for DLink {}'.format(self.ip_addr))
-        channel, sock = self.login() 
-        channel.write('reboot\r\n'.encode())
-        time.sleep(1)
-        channel.write('y\r\n'.encode())
-        sock.close()
+        channel, conn = self.login()
+        try:
+            channel.write('reboot\r\n'.encode())
+            time.sleep(1)
+            channel.write('y\r\n'.encode())
+        except Exception as e:
+            logging.error('error while rebooting switch {}'.format(self.ip_addr))
+        finally:
+            conn.close()
 
+    def backup(self):
+        logging.info('Starting backup for Dlink switch {}'.format(self.ip_addr))
+        channel, conn = self.login()
+        try:
+            command = 'upload cfg_toTFTP {} dest_file {}\r\n'.format(secure.TFTP_SERVER, self.sw_id)
+            channel.write(command.encode())
+            channel.write('logout\r\n'.encode())
+        except Exception as e:
+            logging.error('Error while backuping DLink switch {}'.format(self.ip_addr))
+        finally:
+            conn.close()
 
 class Com3(Switch):
     def login(self):
@@ -318,13 +333,6 @@ class TestSwitch(unittest.TestCase):
     def test_can_reboot(self):
         self.assertTrue(self.google_dns.can_reboot())
         self.assertFalse(self.error_device.can_reboot())
-
-class TestAlliedL2Switch(unittest.TestCase):
-    def setUp(self):
-        self.alliedl2_switch = AlliedL2(1, "10.100.33.254", 3, 2010300, True, 5, False, 9000, 2)
-
-    def test_login(self):
-        self.assertIsNotNone(self.alliedl2_switch.login())
 
 if __name__ == '__main__':
     unittest.main()
