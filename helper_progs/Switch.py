@@ -7,6 +7,7 @@ import Connection
 import secure
 import unittest
 
+
 # TODO: Add try-except clauses to all network functions
 class Switch():
     """
@@ -124,7 +125,7 @@ class SNR(Switch):
         logging.info('Starting backup for SNR {}'.format(self.ip_addr))
         channel, conn = self.login()
         logging.debug('Connected to {} with ssh'.format(self.ip_addr))
-        command = 'copy running-config tftp://10.1.7.204/{}.cfg\r\n'.format(self.sw_id)
+        command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
         channel.write(command.encode())
         channel.write('Y\r\n'.encode('ascii'))
         # waiting for success message
@@ -164,7 +165,7 @@ class Allied(Switch):
     def backup(self):
         logging.info('Started backup for Allied {}'.format(self.ip_addr))
         tn = self.login()
-        command = "upload server=10.1.7.204 file=boot.cfg method=tftp destfile={}.cfg\n".format(self.sw_id)
+        command = "upload server={} file=boot.cfg method=tftp destfile={}.cfg\n".format(secure.TFTP_SERVER, self.sw_id)
         tn.write(command.encode('ascii'))
         tn.close()
 
@@ -239,7 +240,8 @@ class Com3(Switch):
         tn.write(b"backupConfig\r\n")
         tn.write(b"save\r\n")
         time.sleep(1)
-        tn.write(b"10.1.7.204\r\n")
+        command = '{}\r\n'.format(secure.TFTP_SERVER)
+        tn.write(command)
         tn.write(str(self.sw_id).encode('ascii') + b".cfg\r\n")
         time.sleep(1)
         tn.write(b"\r\n")
