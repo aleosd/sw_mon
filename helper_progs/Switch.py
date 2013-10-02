@@ -197,9 +197,7 @@ class DLink(Switch):
         try:
             command = 'upload cfg_toTFTP {} dest_file {}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
             channel.write(command.encode())
-            raw_data = channel.read(1024)
-            while not ('Success' in raw_data.decode()):
-                raw_data = channel.read(1024)
+            conn.read_until('Success')
             channel.write('logout\r\n'.encode())
         except Exception as e:
             logging.error('Error while backuping DLink switch {}: {}'.format(self.ip_addr, e))

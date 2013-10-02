@@ -77,3 +77,11 @@ class SSHConnection(Connection):
         if self.TTY:
             # reset terminal (console) to it's basic state
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.attrs)
+
+    def read_until(self, word):
+        if self.channel == None:
+            logging.error('Cannot read on empty channel')
+            return None
+        raw_data = self.channel.read(1024)
+        while not (word in raw_data):
+            raw_data = self.channel.read(1024)
