@@ -83,5 +83,5 @@ class SSHConnection(Connection):
             logging.error('Cannot read on empty channel')
             return None
         raw_data = self.channel.read(1024)
-        while not (word in raw_data):
+        while not (word.decode() in raw_data):
             raw_data = self.channel.read(1024)
