@@ -3,26 +3,39 @@ import logging
 import subprocess
 import time
 import datetime
+import unittest
 import Connection
 import secure
-import unittest
 
 
 class Host():
     def __init__(self, ip_addr):
         self.ip_addr = ip_addr
 
-    def ping(self):
-        p = subprocess.Popen(["ping", "-c", "3", "-i", "0.2", self.ip_addr], stdout=subprocess.PIPE)
+    def ping(self, packet_count = 3):
+        """func(int) -> [float, int]
+
+        Method for host ping. Returns list of two items:
+        - average round trip time
+        - packet loss
+        If host is not responding, avg rtt is None.
+        """
+        global avgtime
+        p = subprocess.Popen(["ping", "-c", str(packet_count), "-i", "0.2", self.ip_addr], stdout=subprocess.PIPE)
         result = p.communicate()
         result = result[0].decode()
+        pl = None
+        avg = None
         if result:
-            m2 = re.search('rtt min/avg/max/mdev = (.*) ms', result)
-            if m2:
-                avgtime = m2.group(1).split('/')[1]
-                return float(avgtime)
-        else:
-            return None
+            avg = re.search('rtt min/avg/max/mdev = (.*) ms', result)
+            pl = re.search('[0-9]+% packet loss', result)
+            if pl:
+                pl = int(pl.group(0).split('%')[0])
+            if avg:
+                avg = float(avg.group(1).split('/')[1])
+            return [avg, pl]
+
+        return [avg, pl]
 
 
 # TODO: Add try-except clauses to all network functions
@@ -329,8 +342,10 @@ class TestSwitch(unittest.TestCase):
         self.assertFalse(self.error_device.isalive())
 
     def test_ping(self):
-        self.assertIsInstance(self.google_dns.ping(), float)
-        self.assertIsNone(self.error_device.ping())
+        self.assertIsInstance(self.google_dns.ping()[0], float)
+        self.assertIsInstance(self.google_dns.ping()[1], int)
+        self.assertIsNone(self.error_device.ping()[0])
+        self.assertEqual(self.error_device.ping()[1], 100)
 
     def test_make_uptime(self):
         self.assertEqual(self.google_dns.make_uptime(), "0:09:52")
