@@ -62,23 +62,21 @@ def graph():
                    'CDEF:PL25=packetloss,10,25,LIMIT,UN,UNKN,INF,IF',
                    'CDEF:PL50=packetloss,25,50,LIMIT,UN,UNKN,INF,IF',
                    'CDEF:PL100=packetloss,50,100,LIMIT,UN,UNKN,INF,IF',
+                   'LINE1:ydx_rtp#FF0000:yndx_ping(ms)\t',
+                   'GPRINT:ydx_rtp:LAST:Cur\: %5.2lf',
+                   'GPRINT:ydx_rtp:AVERAGE:Avg\: %5.2lf',
+                   'GPRINT:ydx_rtp:MAX:Max\: %5.2lf',
+                   'GPRINT:ydx_rtp:MIN:Min\: %5.2lf\t\t\t\\n',
                    'LINE1:gtw_rtp#0000FF:gtw_ping(ms)\t',
                    'GPRINT:gtw_rtp:LAST:Cur\: %5.2lf',
                    'GPRINT:gtw_rtp:AVERAGE:Avg\: %5.2lf',
                    'GPRINT:gtw_rtp:MAX:Max\: %5.2lf',
                    'GPRINT:gtw_rtp:MIN:Min\: %5.2lf\t\t\t',
                    'COMMENT:pckt loss\:',
-                   'AREA:PLNone#FFFFFF:0%:STACK',
                    'AREA:PL10#FFFF00:1-10%:STACK',
                    'AREA:PL25#FFCC00:10-25%:STACK',
                    'AREA:PL50#FF8000:25-50%:STACK',
                    'COMMENT:\\n',
-                   'LINE2:ydx_rtp#FF0000:yndx_ping(ms)\t',
-                   'GPRINT:ydx_rtp:LAST:Cur\: %5.2lf',
-                   'GPRINT:ydx_rtp:AVERAGE:Avg\: %5.2lf',
-                   'GPRINT:ydx_rtp:MAX:Max\: %5.2lf',
-                   'GPRINT:ydx_rtp:MIN:Min\: %5.2lf\t\t\t\\n',
-
                    )
 
 
