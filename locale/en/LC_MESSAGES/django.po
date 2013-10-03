@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-03 17:12+0600\n"
+"POT-Creation-Date: 2013-10-03 14:32+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,8 +117,8 @@ msgid "Home Page"
 msgstr ""
 
 #: templates/mon/home.html:18
-msgid "Статистика пинга основного шлюза (10.1.10.1)"
-msgstr "Main gateway ping statistic (10.1.10.1)"
+msgid "Статистика пинга основного шлюза и yandex:"
+msgstr "Ping statistic for main gateway and yandex:"
 
 #: templates/mon/index.html:43
 msgid "Search"
@@ -128,31 +128,51 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
+#: templates/mon/index.html:58 templates/mon/view.html:70
+msgid "District"
+msgstr ""
+
 #: templates/mon/index.html:59
+msgid "Mashzavod"
+msgstr ""
+
+#: templates/mon/index.html:60
+msgid "Gagarina"
+msgstr ""
+
+#: templates/mon/index.html:61
+msgid "Vokzal"
+msgstr ""
+
+#: templates/mon/index.html:62
+msgid "Severo-Zapad"
+msgstr ""
+
+#: templates/mon/index.html:64
 msgid "Add Switch"
 msgstr ""
 
-#: templates/mon/index.html:72 templates/mon/view.html:71
+#: templates/mon/index.html:77 templates/mon/view.html:71
 msgid "Address"
 msgstr ""
 
-#: templates/mon/index.html:74 templates/mon/view.html:13
+#: templates/mon/index.html:79 templates/mon/view.html:13
 msgid "Ping"
 msgstr ""
 
-#: templates/mon/index.html:75 templates/mon/view.html:87
+#: templates/mon/index.html:80 templates/mon/view.html:87
 msgid "Uptime"
 msgstr ""
 
-#: templates/mon/index.html:76 templates/mon/view.html:75
+#: templates/mon/index.html:81 templates/mon/view.html:75
 msgid "Type"
 msgstr ""
 
-#: templates/mon/index.html:99 templates/mon/view.html:77
+#: templates/mon/index.html:104 templates/mon/view.html:77
 msgid "Model"
 msgstr ""
 
-#: templates/mon/index.html:102 templates/mon/view.html:73
+#: templates/mon/index.html:107 templates/mon/view.html:73
 msgid "Comment"
 msgstr ""
 
@@ -178,10 +198,6 @@ msgstr ""
 
 #: templates/mon/view.html:69
 msgid "IP-address"
-msgstr ""
-
-#: templates/mon/view.html:70
-msgid "District"
 msgstr ""
 
 #: templates/mon/view.html:79
