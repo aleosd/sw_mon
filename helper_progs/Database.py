@@ -11,7 +11,7 @@ import secure
 DBNAME = secure.DBNAME
 USER = secure.USER
 PASS = secure.PASS
-HOST = '10.1.7.204'
+HOST = secure.DB_SERVER
 
 UPTIME = 1209600
 
