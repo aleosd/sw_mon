@@ -45,9 +45,10 @@ class Database():
             logging.error('Error while executing query: {}'.format(e))
             return None
         data = c.fetchall()
+        conn.close()
         return data
 
-    def get_switch_list(self, ip=None, reboot=False, backup=False):
+    def get_switch_list(self, ip=None, action=None):
         """Function for fetching info from the switches database. If all
         arguments omitted returns list of all switches in table.
 
@@ -61,12 +62,12 @@ class Database():
                     WHERE ip_addr=('{}')""".format(ip)
             data = self.execute_query(query)
             return data
-        elif reboot:
+        elif action=='reboot':
             query = """SELECT * from switches_switch
                     WHERE sw_uptime>('{}') AND sw_enabled""".format(UPTIME)
             data = self.execute_query(query)
             return data
-        elif backup:
+        elif action=='backup':
             query = """SELECT * from switches_switch
                     WHERE sw_backup_conf"""
             data = self.execute_query(query)
@@ -75,6 +76,18 @@ class Database():
             query = "SELECT * from switches_switch"
             data = self.execute_query(query)
             return data
+
+    def set_ping(self, dict):
+        conn = self.connect()
+        c = conn.cursor()
+        for id_ in dict:
+            c.execute("""UPDATE switches_switch SET sw_ping=(%s) WHERE id=(%s)""",
+                      (dict[id_]['ping'], id_))
+        conn.commit()
+        conn.close()
+
+    def set_uptime(self):
+        pass
 
     # TODO: data storing to database
 

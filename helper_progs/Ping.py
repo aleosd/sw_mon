@@ -25,12 +25,14 @@
 
     More editions by Alex Osadchuk:
 	Got from here: http://pastebin.com/4ZHR61BH#
+	Changed to OOP
 
     ===========================================================================
 """
 
 
 import os, sys, socket, struct, select, time, signal
+import logging
 
 
 # ICMP parameters
@@ -111,17 +113,16 @@ class Ping():
             mySocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.getprotobyname("icmp"))
         except socket.error as e: #, (errno, msg)):
             if e.errno == 93:
-                print(destIP)
+                logging.debug('Host {} reported: Protocol not supported'.format(destIP))
+                delay = None
+                return delay
             if e.errno == 1:
                 # Operation not permitted - Add more information to traceback
                 etype, evalue, etb = sys.exc_info()
-                evalue = etype(
-                    "%s - Note that ICMP messages can only be sent from processes running as root." % evalue
-                )
-                raise Exception(etype, evalue, etb)
-
+                logging.error("%s - Note that ICMP messages can only be sent from processes running as root." % evalue)
+                sys.exit(1)
             print("failed. (socket error: '%s')" % e.strerror)
-            raise # raise the original error
+            # raise # raise the original error
 
         my_ID = os.getpid() & 0xFFFF
 

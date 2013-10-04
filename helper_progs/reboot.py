@@ -23,13 +23,14 @@ switch_types = {
     10: Switch.AlliedL2,
 }
 
+
 def get_switch_list(flag):
     # fetch all or given by ip switch info from db
     db = Database.Database(secure.DBNAME, secure.USER, secure.PASS)
     if flag == 'backup':
-        raw_data = db.get_switch_list(backup=True)
+        raw_data = db.get_switch_list(action='backup')
     elif flag == 'reboot':
-        raw_data = db.get_switch_list(reboot=True)
+        raw_data = db.get_switch_list(action='reboot')
     else:
         raw_data = db.get_switch_list(ip=flag)
 
