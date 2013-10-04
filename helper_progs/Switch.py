@@ -33,9 +33,9 @@ class Host():
                 pl = int(pl.group(0).split('%')[0])
             if avg:
                 avg = float(avg.group(1).split('/')[1])
-            return [avg, pl]
+            return avg, pl
 
-        return [avg, pl]
+        return avg, pl
 
 
 # TODO: Add try-except clauses to all network functions

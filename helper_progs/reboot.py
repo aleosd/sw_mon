@@ -4,12 +4,14 @@
 import sys
 import argparse
 import logging
+from threading import Thread
+
 import Switch
 import Database
 import secure
+from timer import Timer
 
 
-UPTIME = 1209600
 switch_types = {
     1: Switch.Allied,
     2: Switch.Com3,
@@ -26,11 +28,13 @@ switch_types = {
 
 def get_switch_list(flag):
     # fetch all or given by ip switch info from db
-    db = Database.Database(secure.DBNAME, secure.USER, secure.PASS)
+    db = Database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
     if flag == 'backup':
         raw_data = db.get_switch_list(action='backup')
     elif flag == 'reboot':
         raw_data = db.get_switch_list(action='reboot')
+    elif flag == 'ping':
+        raw_data = db.get_switch_list(action='ping')
     else:
         raw_data = db.get_switch_list(ip=flag)
 
@@ -70,6 +74,47 @@ def reboot(ip):
         else:
             logging.warning('The switch cannot be rebooted: {}'.format(sw))
 
+def ping():
+    logging.debug('Starting global ping function')
+    switch_list = get_switch_list('ping')
+    threads = []
+    ping_dict = {}
+    event_dict = {}
+
+    def ping_worker(sw):
+        avg = sw.ping()[0]
+        ping_dict[sw.id_] = {}
+        ping_dict[sw.id_]['old_ping'] = sw.sw_ping
+        ping_dict[sw.id_]['new_ping'] = avg
+
+        if sw.sw_ping and not avg:
+            event_dict[sw.id_] = {}
+            event_dict[sw.id_]['ev_type'] = 'err'
+            event_dict[sw.id_]['ev_event'] = 'Switch is not responding'
+        elif avg and not sw.sw_ping:
+            event_dict[sw.id_] = {}
+            event_dict[sw.id_]['ev_type'] = 'info'
+            event_dict[sw.id_]['ev_event'] = 'Switch is up and running'
+
+    for sw in switch_list:
+        t = Thread(target=ping_worker, args=(sw,))
+        threads.append(t)
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    logging.debug(event_dict)
+    logging.info('Starting database update...')
+
+    Database.lock.acquire()
+    db = Database.Database()
+    db.set_ping(ping_dict)
+    if len(event_dict) > 0:
+        db.set_events(event_dict)
+    Database.lock.release()
 
 def backup(ip):
     logging.debug('Starting global backup function with ip {}'.format(ip))
@@ -102,6 +147,8 @@ if __name__ == '__main__':
     parser.add_argument('-l', '--log', help='Set the logging level',
                         metavar='log-level', default='WARNING',
                         const='INFO', nargs='?')
+    parser.add_argument('-p', '--ping', action='store_true',
+                        help='Ping all enabled switches')
     args = parser.parse_args()
 
     if args.log:
@@ -113,5 +160,9 @@ if __name__ == '__main__':
         reboot(args.reboot)
     elif args.backup:
         backup(args.backup)
+    elif args.ping:
+        with Timer() as t:
+            ping()
+        print("Ping running time: {} ms".format(t.secs))
     else:
         parser.print_help()

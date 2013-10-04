@@ -5,6 +5,7 @@ import datetime
 import logging
 import sys
 import unittest
+from threading import Lock
 import secure
 
 
@@ -14,6 +15,7 @@ PASS = secure.PASS
 HOST = secure.DB_SERVER
 
 UPTIME = 1209600
+lock = Lock()
 
 class Database():
     def __init__(self, dbname, username, password, host='localhost'):
@@ -61,28 +63,41 @@ class Database():
             query = """SELECT * from switches_switch
                     WHERE ip_addr=('{}')""".format(ip)
             data = self.execute_query(query)
-            return data
         elif action=='reboot':
             query = """SELECT * from switches_switch
                     WHERE sw_uptime>('{}') AND sw_enabled""".format(UPTIME)
             data = self.execute_query(query)
-            return data
         elif action=='backup':
             query = """SELECT * from switches_switch
                     WHERE sw_backup_conf"""
             data = self.execute_query(query)
-            return data
+        elif action=='ping':
+            query = """SELECT * FROM switches_switch
+                    WHERE sw_enabled"""
+            data = self.execute_query(query)
         else:
             query = "SELECT * from switches_switch"
             data = self.execute_query(query)
-            return data
+        return data
 
     def set_ping(self, dict):
         conn = self.connect()
         c = conn.cursor()
         for id_ in dict:
             c.execute("""UPDATE switches_switch SET sw_ping=(%s) WHERE id=(%s)""",
-                      (dict[id_]['ping'], id_))
+                      (dict[id_]['new_ping'], id_))
+        conn.commit()
+        conn.close()
+
+    def set_events(self, dict):
+        conn = self.connect()
+        c = conn.cursor()
+        for id_ in dict:
+            c.execute("""INSERT INTO switches_event (ev_datetime, ev_type,
+                                                     ev_switch_id, ev_event)
+                      VALUES (%s, %s, %s, %s, %s)""",
+                      (datetime.datetime.now(), dict[id_]['ev_type'], id_,
+                       dict[id_]['ev_event']))
         conn.commit()
         conn.close()
 
