@@ -96,21 +96,22 @@ def ping():
             event_dict[sw.id_]['ev_type'] = 'info'
             event_dict[sw.id_]['ev_event'] = 'Switch is up and running'
 
+    logging.debug('Adding threads')
     for sw in switch_list:
         t = Thread(target=ping_worker, args=(sw,))
         threads.append(t)
 
+    logging.debug('Starting threads')
     for thread in threads:
         thread.start()
 
     for thread in threads:
         thread.join()
 
-    logging.debug(event_dict)
     logging.info('Starting database update...')
 
     Database.lock.acquire()
-    db = Database.Database()
+    db = Database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
     db.set_ping(ping_dict)
     if len(event_dict) > 0:
         db.set_events(event_dict)
@@ -161,8 +162,6 @@ if __name__ == '__main__':
     elif args.backup:
         backup(args.backup)
     elif args.ping:
-        with Timer() as t:
-            ping()
-        print("Ping running time: {} ms".format(t.secs))
+        ping()
     else:
         parser.print_help()
