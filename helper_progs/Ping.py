@@ -45,7 +45,7 @@ ICMP_MAX_RECV = 2048 # Max size of incoming buffer
 SYS_gettid = 186
 libc = ctypes.cdll.LoadLibrary('libc.so.6')
 
-MAX_SLEEP = 1000
+MAX_SLEEP = 100
 
 class MyStats():
     def __init__(self):
