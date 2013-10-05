@@ -110,7 +110,7 @@ def ping():
 
     logging.info('Starting database update...')
     logging.debug(ping_dict)
-    return 0
+
     Database.lock.acquire()
     db = Database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
     db.set_ping(ping_dict)
