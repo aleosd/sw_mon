@@ -117,8 +117,9 @@ class TestDatabase(unittest.TestCase):
     def test_get_switch_list(self):
         self.assertIsNotNone(self.db.get_switch_list(ip='10.1.0.98'))
         self.assertEqual(len(self.db.get_switch_list(ip='10.1.0.98')), 1)
-        self.assertIsNotNone(self.db.get_switch_list(reboot=True))
-        self.assertIsNotNone(self.db.get_switch_list(backup=True))
+        self.assertIsNotNone(self.db.get_switch_list(action='reboot'))
+        self.assertIsNotNone(self.db.get_switch_list(action='backup'))
+        self.assertIsNotNone(self.db.get_switch_list(action='ping'))
         self.assertIsNotNone(self.db.get_switch_list())
 
 if __name__ == '__main__':
