@@ -31,7 +31,7 @@
 """
 
 
-import os, sys, socket, struct, select, time, signal
+import sys, socket, struct, select, time, signal
 import logging
 import ctypes
 

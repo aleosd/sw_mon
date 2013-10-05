@@ -16,4 +16,4 @@ class Timer():
         self.secs = self.end - self.start
         self.msecs = self.secs * 1000
         if self.verbose:
-            print('Running time {} ms'.format(self.msecs))
+            print('Running time {} s'.format(self.secs))

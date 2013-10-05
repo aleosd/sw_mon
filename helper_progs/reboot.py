@@ -6,11 +6,10 @@ import argparse
 import logging
 from threading import Thread
 
-import Switch_test as Switch
+import Switch
 import Database
 import secure
 # from timer import Timer
-import time
 
 
 switch_types = {
@@ -84,8 +83,6 @@ def ping():
 
     def ping_worker(sw):
         avg = sw.ping()[0]
-        if avg == None:
-            print(sw.ip_addr)
         ping_dict[sw.id_] = {}
         ping_dict[sw.id_]['old_ping'] = sw.sw_ping
         ping_dict[sw.id_]['new_ping'] = avg
