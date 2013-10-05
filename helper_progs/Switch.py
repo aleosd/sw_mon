@@ -12,7 +12,6 @@ import secure
 class Host():
     def __init__(self, ip_addr):
         self.ip_addr = ip_addr
-        self.pinger = Ping.Ping(self.ip_addr)
         # self.pinger = None
 
     def ping(self, packet_count = 3):
@@ -23,6 +22,7 @@ class Host():
         - packet loss
         If host is not responding, avg rtt is None.
         """
+        self.pinger = Ping.Ping(self.ip_addr, packet_count=packet_count)
         avg, pl = self.pinger.pyng()
         return avg, pl
 

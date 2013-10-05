@@ -65,7 +65,6 @@ class Ping():
         self.verbose = verbose
         self.packet_count = packet_count
         self.myStats = MyStats()
-        self.avg = None
 
     def checksum(self, source_string):
         """
@@ -112,7 +111,6 @@ class Ping():
         """
         Returns either the delay (in ms) or None on timeout.
         """
-        # global myStats
 
         delay = None
 
@@ -132,8 +130,6 @@ class Ping():
             # raise # raise the original error
 
         # my_ID = os.getpid() & 0xFFFF
-
-
         my_ID = libc.syscall(SYS_gettid)
 
         sentTime = self.send_one_ping(mySocket, destIP, my_ID, mySeqNumber, numDataBytes)
@@ -252,7 +248,6 @@ class Ping():
         """
         Show stats when pings are done
         """
-        # global myStats
         if self.verbose:
             print("\n----%s PYTHON PING Statistics----" % (self.myStats.thisIP))
 
@@ -270,10 +265,10 @@ class Ping():
         else:
             pck_loss = round(self.myStats.fracLoss * 100.0, 3)
             if self.myStats.pktsRcvd > 0:
-                self.avg = round(self.myStats.totTime / self.myStats.pktsRcvd, 3)
+                avg = round(self.myStats.totTime / self.myStats.pktsRcvd, 3)
             else:
-                self.avg = None
-            return [self.avg, pck_loss]
+                avg = None
+            return [avg, pck_loss]
 
 
     def signal_handler(self, signum, frame):
@@ -290,8 +285,6 @@ class Ping():
         Send >count< ping to >destIP< with the given >timeout< and display
         the result.
         """
-        # global myStats
-
         try:
             signal.signal(signal.SIGINT, self.signal_handler)   # Handle Ctrl-C
         except ValueError:
@@ -300,8 +293,6 @@ class Ping():
         if hasattr(signal, "SIGBREAK"):
             # Handle Ctrl-Break e.g. under Windows
             signal.signal(signal.SIGBREAK, self.signal_handler)
-
-        # myStats = MyStats() # Reset the stats
 
         mySeqNumber = 0 # Starting value
 

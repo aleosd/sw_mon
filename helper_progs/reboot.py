@@ -95,7 +95,6 @@ def ping():
             event_dict[sw.id_] = {}
             event_dict[sw.id_]['ev_type'] = 'info'
             event_dict[sw.id_]['ev_event'] = 'Switch is up and running'
-        return
 
     logging.debug('Adding threads')
     for sw in switch_list:
