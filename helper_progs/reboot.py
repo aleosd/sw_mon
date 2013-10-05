@@ -10,6 +10,7 @@ import Switch
 import Database
 import secure
 # from timer import Timer
+import time
 
 
 switch_types = {
@@ -83,6 +84,8 @@ def ping():
 
     def ping_worker(sw):
         avg = sw.ping()[0]
+        if avg == None:
+            print(sw.ip_addr)
         ping_dict[sw.id_] = {}
         ping_dict[sw.id_]['old_ping'] = sw.sw_ping
         ping_dict[sw.id_]['new_ping'] = avg
@@ -95,6 +98,7 @@ def ping():
             event_dict[sw.id_] = {}
             event_dict[sw.id_]['ev_type'] = 'info'
             event_dict[sw.id_]['ev_event'] = 'Switch is up and running'
+        return
 
     logging.debug('Adding threads')
     for sw in switch_list:
@@ -109,7 +113,8 @@ def ping():
         thread.join()
 
     logging.info('Starting database update...')
-
+    logging.debug(ping_dict)
+    return 0
     Database.lock.acquire()
     db = Database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
     db.set_ping(ping_dict)
