@@ -95,7 +95,7 @@ class Database():
         for id_ in dict:
             c.execute("""INSERT INTO switches_event (ev_datetime, ev_type,
                                                      ev_switch_id, ev_event)
-                      VALUES (%s, %s, %s, %s, %s)""",
+                      VALUES (%s, %s, %s, %s)""",
                       (datetime.datetime.now(), dict[id_]['ev_type'], id_,
                        dict[id_]['ev_event']))
         conn.commit()
