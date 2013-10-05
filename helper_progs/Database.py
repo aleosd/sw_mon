@@ -104,7 +104,7 @@ class Database():
     def set_uptime(self):
         pass
 
-    # TODO: data storing to database
+    # TODO: add uptime storing function
 
 
 class TestDatabase(unittest.TestCase):
