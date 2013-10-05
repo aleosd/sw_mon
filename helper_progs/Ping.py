@@ -44,6 +44,7 @@ ICMP_MAX_RECV = 2048 # Max size of incoming buffer
 
 MAX_SLEEP = 100
 
+'''
 class MyStats:
     thisIP = "0.0.0.0"
     pktsSent = 0
@@ -52,14 +53,25 @@ class MyStats:
     maxTime = 0
     totTime = 0
     fracLoss = 1.0
+'''
 
-myStats = MyStats # Used globally
 
 class Ping():
     def __init__(self, hostname, packet_count = 3, verbose=False):
         self.hostname = hostname
         self.verbose = verbose
         self.packet_count = packet_count
+        # self. = MyStats # Used globally
+        self.thisIP = "0.0.0.0"
+        self.pktsSent = 0
+        self.pktsRcvd = 0
+        self.minTime = 999999999
+        self.maxTime = 0
+        self.totTime = 0
+        self.fracLoss = 1.0
+        self.avg = None
+        self.pck_loss = None
+
 
     def checksum(self, source_string):
         """
@@ -106,8 +118,6 @@ class Ping():
         """
         Returns either the delay (in ms) or None on timeout.
         """
-        global myStats
-
         delay = None
 
         try: # One could use UDP here, but it's obscure
@@ -132,7 +142,7 @@ class Ping():
             mySocket.close()
             return delay
 
-        myStats.pktsSent += 1;
+        self.pktsSent += 1;
 
         recvTime, dataSize, iphSrcIP, icmpSeqNumber, iphTTL = self.receive_one_ping(mySocket, my_ID, timeout)
 
@@ -144,12 +154,12 @@ class Ping():
                 print("%d bytes from %s: icmp_seq=%d ttl=%d time=%.2f ms" % (
                 dataSize, socket.inet_ntoa(struct.pack("!I", iphSrcIP)), icmpSeqNumber, iphTTL, delay)
             )
-            myStats.pktsRcvd += 1;
-            myStats.totTime += delay
-            if myStats.minTime > delay:
-                myStats.minTime = delay
-            if myStats.maxTime < delay:
-                myStats.maxTime = delay
+            self.pktsRcvd += 1;
+            self.totTime += delay
+            if self.minTime > delay:
+                self.minTime = delay
+            if self.maxTime < delay:
+                self.maxTime = delay
         else:
             delay = None
             if self.verbose:
@@ -241,28 +251,27 @@ class Ping():
         """
         Show stats when pings are done
         """
-        global myStats
         if self.verbose:
-            print("\n----%s PYTHON PING Statistics----" % (myStats.thisIP))
+            print("\n----%s PYTHON PING Statistics----" % (self.thisIP))
 
-            if myStats.pktsSent > 0:
-                myStats.fracLoss = (myStats.pktsSent - myStats.pktsRcvd) / myStats.pktsSent
+            if self.pktsSent > 0:
+                self.fracLoss = (self.pktsSent - self.pktsRcvd) / self.pktsSent
 
             print("%d packets transmitted, %d packets received, %0.1f%% packet loss" % (
-                myStats.pktsSent, myStats.pktsRcvd, 100.0 * myStats.fracLoss
+                self.pktsSent, self.pktsRcvd, 100.0 * self.fracLoss
             ))
 
-            if myStats.pktsRcvd > 0:
+            if self.pktsRcvd > 0:
                 print("round-trip (ms)  min/avg/max = %d/%0.1f/%d" % (
-                    myStats.minTime, myStats.totTime / myStats.pktsRcvd, myStats.maxTime
+                    self.minTime, self.totTime / self.pktsRcvd, self.maxTime
                 ))
         else:
-            pck_loss = round(myStats.fracLoss * 100.0, 3)
-            if myStats.pktsRcvd > 0:
-                avg = round(myStats.totTime / myStats.pktsRcvd, 3)
+            self.pck_loss = round(self.fracLoss * 100.0, 3)
+            if self.pktsRcvd > 0:
+                self.avg = round(self.totTime / self.pktsRcvd, 3)
             else:
-                avg = None
-            return [avg, pck_loss]
+                self.avg = None
+            return [self.avg, self.pck_loss]
 
 
     def signal_handler(self, signum, frame):
@@ -274,13 +283,11 @@ class Ping():
         sys.exit(0)
 
 
-    def pyng(self, timeout=1000, numDataBytes=55):
+    def pyng(self, timeout=1000, count=3, numDataBytes=55):
         """
         Send >count< ping to >destIP< with the given >timeout< and display
         the result.
         """
-        global myStats
-
         try:
             signal.signal(signal.SIGINT, self.signal_handler)   # Handle Ctrl-C
         except ValueError:
@@ -290,7 +297,7 @@ class Ping():
             # Handle Ctrl-Break e.g. under Windows
             signal.signal(signal.SIGBREAK, self.signal_handler)
 
-        myStats = MyStats() # Reset the stats
+        # self. = MyStats() # Reset the stats
 
         mySeqNumber = 0 # Starting value
 
@@ -302,9 +309,9 @@ class Ping():
             print("\nPYTHON-PING: Unknown host: %s (%s)\n" % (self.hostname, e.args[1]))
             sys.exit(0)
 
-        myStats.thisIP = destIP
+        self.thisIP = destIP
 
-        for i in range(self.packet_count):
+        for i in range(count):
             delay = self.do_one(destIP, timeout, mySeqNumber, numDataBytes)
 
             if delay == None:
@@ -313,7 +320,7 @@ class Ping():
             mySeqNumber += 1
 
             # Pause for the remainder of the MAX_SLEEP period (if applicable)
-            if (MAX_SLEEP > delay and mySeqNumber < self.packet_count):
+            if (MAX_SLEEP > delay and mySeqNumber < count):
                 time.sleep((MAX_SLEEP - delay) / 1000)
 
         return self.dump_stats()
@@ -326,6 +333,7 @@ class TestPing(unittest.TestCase):
 
     def test_ping(self):
         self.assertIsInstance(self.gtw_ping.pyng()[0], float)
+        print(self.gtw_ping.pyng()[0])
         self.assertIsNone(self.unk_ping.pyng()[0])
 
 if __name__ == '__main__':
