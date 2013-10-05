@@ -9,7 +9,7 @@ from threading import Thread
 import Switch
 import Database
 import secure
-from timer import Timer
+# from timer import Timer
 
 
 switch_types = {

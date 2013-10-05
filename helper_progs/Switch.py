@@ -5,6 +5,7 @@ import time
 import datetime
 import unittest
 import Connection
+import Ping
 import secure
 
 
@@ -20,21 +21,8 @@ class Host():
         - packet loss
         If host is not responding, avg rtt is None.
         """
-        global avgtime
-        p = subprocess.Popen(["ping", "-c", str(packet_count), "-i", "0.2", self.ip_addr], stdout=subprocess.PIPE)
-        result = p.communicate()
-        result = result[0].decode()
-        pl = None
-        avg = None
-        if result:
-            avg = re.search('rtt min/avg/max/mdev = (.*) ms', result)
-            pl = re.search('[0-9]+% packet loss', result)
-            if pl:
-                pl = int(pl.group(0).split('%')[0])
-            if avg:
-                avg = float(avg.group(1).split('/')[1])
-            return avg, pl
-
+        ping = Ping.Ping(self.ip_addr)
+        avg, pl = ping.pyng()
         return avg, pl
 
 
@@ -343,7 +331,7 @@ class TestSwitch(unittest.TestCase):
 
     def test_ping(self):
         self.assertIsInstance(self.google_dns.ping()[0], float)
-        self.assertIsInstance(self.google_dns.ping()[1], int)
+        self.assertIsInstance(self.google_dns.ping()[1], float)
         self.assertIsNone(self.error_device.ping()[0])
         self.assertEqual(self.error_device.ping()[1], 100)
 

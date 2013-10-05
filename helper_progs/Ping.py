@@ -56,9 +56,10 @@ class MyStats:
 myStats = MyStats # Used globally
 
 class Ping():
-    def __init__(self, hostname, verbose=False):
+    def __init__(self, hostname, packet_count = 3, verbose=False):
         self.hostname = hostname
         self.verbose = verbose
+        self.packet_count = packet_count
 
     def checksum(self, source_string):
         """
@@ -256,9 +257,9 @@ class Ping():
                     myStats.minTime, myStats.totTime / myStats.pktsRcvd, myStats.maxTime
                 ))
         else:
-            pck_loss = myStats.fracLoss * 100.0
+            pck_loss = round(myStats.fracLoss * 100.0, 3)
             if myStats.pktsRcvd > 0:
-                avg = myStats.totTime / myStats.pktsRcvd
+                avg = round(myStats.totTime / myStats.pktsRcvd, 3)
             else:
                 avg = None
             return [avg, pck_loss]
@@ -273,7 +274,7 @@ class Ping():
         sys.exit(0)
 
 
-    def pyng(self, timeout=1000, count=3, numDataBytes=55):
+    def pyng(self, timeout=1000, numDataBytes=55):
         """
         Send >count< ping to >destIP< with the given >timeout< and display
         the result.
@@ -303,7 +304,7 @@ class Ping():
 
         myStats.thisIP = destIP
 
-        for i in range(count):
+        for i in range(self.packet_count):
             delay = self.do_one(destIP, timeout, mySeqNumber, numDataBytes)
 
             if delay == None:
@@ -312,7 +313,7 @@ class Ping():
             mySeqNumber += 1
 
             # Pause for the remainder of the MAX_SLEEP period (if applicable)
-            if (MAX_SLEEP > delay and mySeqNumber < count):
+            if (MAX_SLEEP > delay and mySeqNumber < self.packet_count):
                 time.sleep((MAX_SLEEP - delay) / 1000)
 
         return self.dump_stats()
