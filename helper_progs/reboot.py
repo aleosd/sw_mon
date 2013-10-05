@@ -6,7 +6,7 @@ import argparse
 import logging
 from threading import Thread
 
-import Switch
+import Switch_test as Switch
 import Database
 import secure
 # from timer import Timer
