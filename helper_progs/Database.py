@@ -80,6 +80,15 @@ class Database():
             data = self.execute_query(query)
         return data
 
+    def set_query_decorator(self, method):
+        def wrapped_method(self, dict):
+            conn = self.connect()
+            c = conn.cursor()
+            method(self, dict)
+            conn.commit()
+            conn.close()
+        return wrapped_method
+
     def set_ping(self, dict):
         conn = self.connect()
         c = conn.cursor()
@@ -101,8 +110,11 @@ class Database():
         conn.commit()
         conn.close()
 
-    def set_uptime(self):
-        pass
+    @set_query_decorator
+    def set_uptime(self, dict):
+        for id_ in dict:
+            c.execute("""UPDATE switches_switch SET sw_uptime=(%s) WHERE id=(%s)""",
+                (dict[id_], id_))
 
     # TODO: add uptime storing function
 
@@ -113,6 +125,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_connect(self):
         self.assertIsNotNone(self.db.connect())
+        self.db.set_uptime({1, 23000})
 
     def test_get_switch_list(self):
         self.assertIsNotNone(self.db.get_switch_list(ip='10.1.0.98'))
