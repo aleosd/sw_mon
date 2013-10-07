@@ -80,9 +80,10 @@ class Database():
             data = self.execute_query(query)
         return data
 
-    def set_query_decorator(self, method):
+    def set_query_decorator(method):
         def wrapped_method(self, dict):
             conn = self.connect()
+            global c
             c = conn.cursor()
             method(self, dict)
             conn.commit()
@@ -125,7 +126,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_connect(self):
         self.assertIsNotNone(self.db.connect())
-        self.db.set_uptime({1, 23000})
+        # self.db.set_uptime({1: 23000,})
 
     def test_get_switch_list(self):
         self.assertIsNotNone(self.db.get_switch_list(ip='10.1.0.98'))
