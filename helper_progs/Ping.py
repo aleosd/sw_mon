@@ -263,11 +263,13 @@ class Ping():
                     self.myStats.minTime, self.myStats.totTime / self.myStats.pktsRcvd, self.myStats.maxTime
                 ))
         else:
-            pck_loss = round(self.myStats.fracLoss * 100.0, 3)
             if self.myStats.pktsRcvd > 0:
+                self.myStats.fracLoss = (self.myStats.pktsSent - self.myStats.pktsRcvd) / self.myStats.pktsSent
+                pck_loss = round(self.myStats.fracLoss * 100.0, 3)
                 avg = round(self.myStats.totTime / self.myStats.pktsRcvd, 3)
             else:
                 avg = None
+                pck_loss = 100.0
             return [avg, pck_loss]
 
 
@@ -329,6 +331,8 @@ class TestPing(unittest.TestCase):
     def test_ping(self):
         self.assertIsInstance(self.gtw_ping.pyng()[0], float)
         self.assertIsNone(self.unk_ping.pyng()[0])
+        self.assertEqual(self.gtw_ping.pyng()[1], 0.0)
+        self.assertEqual(self.unk_ping.pyng()[1], 100.0)
 
 def manual_ping(ip):
     pinger = Ping(ip, packet_count=4, verbose=True)
