@@ -5,6 +5,7 @@ import logging
 import os.path
 import sys
 import datetime
+import time
 
 import secure
 import rrdtool
@@ -30,6 +31,10 @@ def initialize():
 
 
 def update():
+    # To exclude running by crone two scripts with ping same time,
+    # making sleep for 20 seconds.
+    time.sleep(20)
+
     logging.info('Updating rrd database')
     gateway_ping = Switch.Host('10.1.10.1').ping(packet_count=8)
     yandex_ping = Switch.Host('ya.ru').ping(packet_count=8)
@@ -76,6 +81,7 @@ def graph():
                    'AREA:PL10#FFFF00:1-10%:STACK',
                    'AREA:PL25#FFCC00:10-25%:STACK',
                    'AREA:PL50#FF8000:25-50%:STACK',
+                   'AREA:PL100#FF0000:50-100%:STACK',
                    'COMMENT:\\n',
                    )
 
