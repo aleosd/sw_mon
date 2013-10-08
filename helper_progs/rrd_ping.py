@@ -31,13 +31,9 @@ def initialize():
 
 
 def update():
-    # To exclude running by crone two scripts with ping same time,
-    # making sleep for 20 seconds.
-    time.sleep(20)
-
     logging.info('Updating rrd database')
-    gateway_ping = Switch.Host('10.1.10.1').ping(packet_count=8)
-    yandex_ping = Switch.Host('ya.ru').ping(packet_count=8)
+    gateway_ping = Switch.Host('10.1.10.1').sys_ping(packet_count=8)
+    yandex_ping = Switch.Host('ya.ru').sys_ping(packet_count=8)
     rrdtool.update(FILE_PATH + FILE_NAME,
                    'N:{}:{}:{}'.format(gateway_ping[1], gateway_ping[0], yandex_ping[0]))
 

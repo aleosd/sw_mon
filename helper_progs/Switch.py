@@ -21,9 +21,38 @@ class Host():
         - average round trip time
         - packet loss
         If host is not responding, avg rtt is None.
+
+        Using pure python implementation of ping. Fast, but results
+        depend on cpu load. While running with other scripts, results
+        are 4 ms higher.
         """
         self.pinger = Ping.Ping(self.ip_addr, packet_count=packet_count)
         avg, pl = self.pinger.pyng()
+        return avg, pl
+
+    def sys_ping(self, packet_count=3):
+        """func(int) -> [float, int]
+
+        Method for host ping. Returns list of two items:
+        - average round trip time
+        - packet loss
+        If host is not responding, avg rtt is None.
+
+        Using subprocess with system ping utility. Takes more resources,
+        but less depends on cpu load, more accurate results.
+        """
+        p = subprocess.Popen(["ping", "-c", str(packet_count), "-i", "0,2", self.ip_addr],
+                             stdout=subprocess.PIPE)
+        result = p.communicate()
+        result = result[0].decode()
+        pl = 100.0  # packet loss
+        avg = None  # average round trip time
+        if result:
+            avg = re.search('rtt min/avg/max/mdev = (.*) ms', result)
+            pl = re.search('[0-9]+% packet loss', result)
+            if (pl and avg):
+                pl = float(pl.group(0).split('%')[0])
+                avg = float(avg.group(1).split('/')[1])
         return avg, pl
 
 
