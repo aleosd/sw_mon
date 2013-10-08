@@ -330,7 +330,13 @@ class TestPing(unittest.TestCase):
         self.assertIsInstance(self.gtw_ping.pyng()[0], float)
         self.assertIsNone(self.unk_ping.pyng()[0])
 
+def manual_ping(ip):
+    pinger = Ping(ip, packet_count=4, verbose=True)
+    pinger.pyng()
+
 if __name__ == '__main__':
-    unittest.main()
-    # lets be a bit more interactive:
-    # ping = Ping()
+    if len(sys.argv) == 2:
+        manual_ping(sys.argv[1])
+    else:
+        unittest.main()
+
