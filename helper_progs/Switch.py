@@ -243,6 +243,7 @@ class DLink(Switch):
         finally:
             conn.close()
 
+
 class Com3(Switch):
     def login(self):
         conn = Connection.TelnetConnection(self.ip_addr)
