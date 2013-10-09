@@ -102,7 +102,7 @@ class Database():
     def set_ping(self, data_dict):
         for id_ in data_dict:
             self.cursor.execute("""UPDATE {} SET sw_ping=(%s) WHERE id=(%s)""".format(self.table_name),
-                                (data_dict[id_]['new_ping'], id_))
+                                (data_dict[id_], id_))
 
     @set_query_decorator
     def set_events(self, data_dict):
@@ -222,7 +222,7 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(old_pig[0][9], 0.1)
 
         # setting new ping value and checking that it correctly changed
-        self.db.set_ping({3: {'new_ping': 0.9}})
+        self.db.set_ping({3: 0.9})
         new_ping = self.db.get_switch_list(ip='192.168.1.3')
         self.assertEqual(new_ping[0][9], 0.9)
 

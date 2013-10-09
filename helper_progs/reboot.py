@@ -83,9 +83,7 @@ def ping():
 
     def ping_worker(sw):
         avg = sw.ping()[0]
-        ping_dict[sw.id_] = {}
-        ping_dict[sw.id_]['old_ping'] = sw.sw_ping
-        ping_dict[sw.id_]['new_ping'] = avg
+        ping_dict[sw.id_] = avg
 
         if sw.sw_ping and not avg:
             event_dict[sw.id_] = {}
