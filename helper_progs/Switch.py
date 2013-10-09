@@ -12,10 +12,10 @@ import secure
 class Host():
     def __init__(self, ip_addr):
         self.ip_addr = ip_addr
-        # self.pinger = None
+        self.pinger = None
 
     def ping(self, packet_count = 3):
-        """func(int) -> [float, int]
+        """Switch.ping(int) -> [float, int]
 
         Method for host ping. Returns list of two items:
         - average round trip time
@@ -31,7 +31,7 @@ class Host():
         return avg, pl
 
     def sys_ping(self, packet_count=3):
-        """func(int) -> [float, int]
+        """Switch.sys_ping(int) -> [float, int]
 
         Method for host ping. Returns list of two items:
         - average round trip time
@@ -50,7 +50,7 @@ class Host():
         if result:
             avg = re.search('rtt min/avg/max/mdev = (.*) ms', result)
             pl = re.search('[0-9]+% packet loss', result)
-            if (pl and avg):
+            if pl and avg:
                 pl = float(pl.group(0).split('%')[0])
                 avg = float(avg.group(1).split('/')[1])
         return avg, pl
@@ -77,7 +77,6 @@ class Switch(Host):
                  sw_backup_conf, sw_uptime, sw_type_id):
         super(Switch, self).__init__(ip_addr)
         self.id_ = id_
-        # self.ip_addr = ip_addr
         self.sw_district = sw_district
         self.sw_id = sw_id
         self.sw_enabled = sw_enabled
@@ -89,6 +88,9 @@ class Switch(Host):
         self.password = self.pass_chooser()
 
     def isalive(self):
+        """ Switch.isalive() -> Bool
+        Check if device is reachable over network.
+        """
         p = subprocess.Popen(["fping", self.ip_addr], stdout=subprocess.PIPE)
         result = p.communicate()
         logging.debug("The raw result is: {}".format(result))
@@ -97,7 +99,7 @@ class Switch(Host):
             alive = re.search('alive', result)
             if alive:
                 return True
-
+        return False
 
     def can_backup(self):
         return self.sw_backup_conf and self.isalive()
@@ -126,7 +128,8 @@ class Switch(Host):
                           self.make_uptime(), self.username, self.password)
 
     def pass_chooser(self):
-        if self.sw_id < 2000000:             # choosing proper password
+        # method to choose password, according to district
+        if self.sw_id < 2000000:
             password = secure.mzv_pass
         else:
             password = secure.vkz_pass
@@ -327,15 +330,14 @@ class AlliedL2(Switch):
         return tn
 
     def reboot(self):
-        logging.warning("Telnet misfunction on switch, reboot disabled")
-        '''
-        logging.info("Starting reboot for Allied L2 {}".format(self.ip_addr))
-        tn = self.login()
-        tn.write(b"C\r\n")
-        tn.write(b"restart switch\r\n")
-        tn.write(b"Y\r\n")
-        tn.close()
-        '''
+        logging.warning("Telnet malfunction on switch, reboot disabled")
+
+        #logging.info("Starting reboot for Allied L2 {}".format(self.ip_addr))
+        #tn = self.login()
+        #tn.write(b"C\r\n")
+        #tn.write(b"restart switch\r\n")
+        #tn.write(b"Y\r\n")
+        #tn.close()
 
     def backup(self):
         print('Implement later')
