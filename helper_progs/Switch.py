@@ -7,8 +7,10 @@ import subprocess
 import time
 import datetime
 import unittest
+
 import Connection
 import Ping
+import SNMP
 import secure
 
 
@@ -57,6 +59,10 @@ class Host():
                 pl = float(pl.group(0).split('%')[0])
                 avg = float(avg.group(1).split('/')[1])
         return avg, pl
+
+    def snmpget(self, oid):
+        snmp_conn = SNMP.Snmp(self.ip_addr)
+        return snmp_conn.snmpget(oid)
 
 
 # TODO: Add try-except clauses to all network functions
