@@ -18,12 +18,16 @@ def initialize():
     pass
 
 def update():
-    port_nums = {4: None, 5: None, 6: None}
+    port_data = {4: {}, 5: {}, 6: {}}
     bgp_gateway = Switch.Host(secure.BGP_SERVER)
-    for port in port_nums:
-        in_bytes = bgp_gateway.snmpget(snmp_oids.IN_BYTES + str(port))
-        out_bytes = bgp_gateway.snmpget(snmp_oids.OUT_BYTES + str(port))
-        print(in_bytes, out_bytes)
+
+    for port in port_data:
+        in_bytes = int(bgp_gateway.snmpget(snmp_oids.IN_BYTES + str(port))[0][1])
+        out_bytes = int(bgp_gateway.snmpget(snmp_oids.OUT_BYTES + str(port))[0][1])
+        port_data[port]['in_bytes'] = in_bytes
+        port_data[port]['out_bytes'] = out_bytes
+
+    print(port_data)
 
 def graph():
     pass
