@@ -283,7 +283,7 @@ class Com3(Switch):
         tn.write(b"save\r\n")
         time.sleep(1)
         command = '{}\r\n'.format(secure.TFTP_SERVER)
-        tn.write(command)
+        tn.write(command.encode('ascii'))
         tn.write(str(self.sw_id).encode('ascii') + b".cfg\r\n")
         time.sleep(1)
         tn.write(b"\r\n")

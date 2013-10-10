@@ -5,7 +5,6 @@ import logging
 import os.path
 import sys
 import datetime
-import time
 
 import secure
 import rrdtool

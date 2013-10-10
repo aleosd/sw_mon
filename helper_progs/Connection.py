@@ -11,7 +11,7 @@ import logging
 class Connection():
     def __init__(self, ip_addr):
         self.ip_addr = ip_addr
-        self.TIMEOUT = 5
+        self.TIMEOUT = 10
 
 
 class TelnetConnection(Connection):
