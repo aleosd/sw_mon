@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import re
 import logging
 import subprocess
@@ -312,6 +315,20 @@ class Cisco(Switch):
         debug_info = tn.read_all().decode('ascii')
         logging.debug(debug_info)
         tn.close()
+
+    def backup(self):
+        logging.info('Starting backup for cisco {}'.format(self.ip_addr))
+        tn = self.login()
+        command = 'copy running-config tftp://{}/{}.cfg\n'.format(secure.TFTP_SERVER, self.sw_id)
+        try:
+            tn.write(command.encode())
+            tn.write(b'\r\n')
+            tn.write(b'\r\n')
+            tn.read_until(b'bytes copied')  # indicates success
+        except Exception as e:
+            logging.error('Error while backuping cisco {}: {}'.format(self.ip_addr, e))
+        finally:
+            tn.close()
 
 
 class AlliedL2(Switch):

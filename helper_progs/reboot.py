@@ -156,11 +156,11 @@ if __name__ == '__main__':
         loglevel = getattr(logging, lvl)
         logging.basicConfig(level=loglevel, format='%(asctime)s:%(levelname)s:%(message)s')
 
-    if args.reboot:
-        reboot(args.reboot)
+    if args.ping:
+        ping()
     elif args.backup:
         backup(args.backup)
-    elif args.ping:
-        ping()
+    elif args.reboot:
+        reboot(args.reboot)
     else:
         parser.print_help()
