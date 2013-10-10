@@ -19,7 +19,7 @@ def initialize():
 
 def update():
     port_nums = {4: None, 5: None, 6: None}
-    bgp_gateway = Switch.Host()
+    bgp_gateway = Switch.Host(secure.BGP_SERVER)
     for port in port_nums:
         in_bytes = bgp_gateway.snmpget(snmp_oids.IN_BYTES + str(port))
         out_bytes = bgp_gateway.snmpget(snmp_oids.OUT_BYTES + str(port))
@@ -29,4 +29,4 @@ def graph():
     pass
 
 if __name__ == '__main__':
-    pass
+    update()
