@@ -46,7 +46,7 @@ class Host():
         Using subprocess with system ping utility. Takes more resources,
         but less depends on cpu load, more accurate results.
         """
-        p = subprocess.Popen(["ping", "-c", str(packet_count), "-i", "0,2", self.ip_addr],
+        p = subprocess.Popen(["ping", "-c", str(packet_count), "-i", "0.2", self.ip_addr],
                              stdout=subprocess.PIPE)
         result = p.communicate()
         result = result[0].decode()
@@ -55,8 +55,9 @@ class Host():
         if result:
             avg = re.search('rtt min/avg/max/mdev = (.*) ms', result)
             pl = re.search('[0-9]+% packet loss', result)
-            if pl and avg:
+            if pl:
                 pl = float(pl.group(0).split('%')[0])
+            if avg:
                 avg = float(avg.group(1).split('/')[1])
         return avg, pl
 
@@ -380,6 +381,7 @@ class TestSwitch(unittest.TestCase):
     def setUp(self):
         self.google_dns = Switch(1, "8.8.8.8", 2, 100000, True, 236, True, 592, 2)
         self.error_device = Switch(1, "1.1.1.1", 2, 200000, False, 237, False, None, 2)
+        self.wrong_domain = Host('qwewqe')
 
     def test_is_alive(self):
         self.assertTrue(self.google_dns.isalive())
@@ -390,6 +392,13 @@ class TestSwitch(unittest.TestCase):
         self.assertIsInstance(self.google_dns.ping()[1], float)
         self.assertIsNone(self.error_device.ping()[0])
         self.assertEqual(self.error_device.ping()[1], 100)
+
+    def test_sys_ping(self):
+        self.assertIsInstance(self.google_dns.sys_ping()[0], float)
+        self.assertIsInstance(self.google_dns.sys_ping()[1], float)
+        self.assertIsNone(self.error_device.sys_ping()[0])
+        self.assertEqual(self.error_device.sys_ping()[1], 100.0)
+        self.assertIsNone(self.wrong_domain.sys_ping()[0])
 
     def test_make_uptime(self):
         self.assertEqual(self.google_dns.make_uptime(), "0:09:52")
