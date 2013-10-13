@@ -8,9 +8,9 @@ import time
 import datetime
 import unittest
 
-import Connection
-import Ping
-import SNMP
+import connection
+import ping
+import snmp
 import secure
 
 
@@ -31,7 +31,7 @@ class Host():
         depend on cpu load. While running with other scripts, results
         are 4 ms higher.
         """
-        self.pinger = Ping.Ping(self.ip_addr, packet_count=packet_count)
+        self.pinger = ping.Ping(self.ip_addr, packet_count=packet_count)
         avg, pl = self.pinger.pyng()
         return avg, pl
 
