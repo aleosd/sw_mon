@@ -62,7 +62,7 @@ class Host():
         return avg, pl
 
     def snmpget(self, oid):
-        snmp_conn = SNMP.Snmp(self.ip_addr)
+        snmp_conn = snmp.Snmp(self.ip_addr)
         return snmp_conn.snmpget(oid)
 
 

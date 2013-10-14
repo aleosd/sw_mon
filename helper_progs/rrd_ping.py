@@ -8,7 +8,7 @@ import datetime
 
 import secure
 import rrdtool
-import Switch
+import switch
 
 FILE_PATH = secure.RRDPING_FILE_PATH
 FILE_NAME = secure.RRDPING_FILE_NAME
@@ -31,8 +31,8 @@ def initialize():
 
 def update():
     logging.info('Updating rrd database')
-    gateway_ping = Switch.Host('10.1.10.1').sys_ping(packet_count=8)
-    yandex_ping = Switch.Host('ya.ru').sys_ping(packet_count=8)
+    gateway_ping = switch.Host('10.1.10.1').sys_ping(packet_count=8)
+    yandex_ping = switch.Host('ya.ru').sys_ping(packet_count=8)
     rrdtool.update(FILE_PATH + FILE_NAME,
                    'N:{}:{}:{}'.format(gateway_ping[1], gateway_ping[0], yandex_ping[0]))
 

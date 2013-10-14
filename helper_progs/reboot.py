@@ -6,29 +6,29 @@ import argparse
 import logging
 from threading import Thread
 
-import Switch
-import Database
+import switch
+import database
 import secure
 # from timer import Timer
 
 
 switch_types = {
-    1: Switch.Allied,
-    2: Switch.Com3,
-    3: Switch.Cisco,
-    4: Switch.SNR,
-    5: Switch.SNR,
-    6: Switch.Unmanaged,  # Passing this case
-    7: Switch.SNR,
-    8: Switch.DLink,
-    9: Switch.SNR,
-    10: Switch.AlliedL2,
+    1: switch.Allied,
+    2: switch.Com3,
+    3: switch.Cisco,
+    4: switch.SNR,
+    5: switch.SNR,
+    6: switch.Unmanaged,  # Passing this case
+    7: switch.SNR,
+    8: switch.DLink,
+    9: switch.SNR,
+    10: switch.AlliedL2,
 }
 
 
 def get_switch_list(flag):
     # fetch all or given by ip switch info from db
-    db = Database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+    db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
     if flag == 'backup':
         raw_data = db.get_switch_list(action='backup')
     elif flag == 'reboot':
@@ -109,12 +109,12 @@ def ping():
     logging.info('Starting database update...')
     logging.debug(ping_dict)
 
-    Database.lock.acquire()
-    db = Database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+    database.lock.acquire()
+    db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
     db.set_ping(ping_dict)
     if len(event_dict) > 0:
         db.set_events(event_dict)
-    Database.lock.release()
+    database.lock.release()
 
 def backup(ip):
     logging.debug('Starting global backup function with ip {}'.format(ip))
