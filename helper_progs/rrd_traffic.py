@@ -42,6 +42,7 @@ def initialize():
 
 
 def update():
+    logging.info('Updating database')
     bgp_gateway = switch.Host(secure.BGP_SERVER)
 
     # 4 port - TTK
@@ -59,12 +60,36 @@ def update():
         total_in += in_bytes
         total_out += out_bytes
 
-
-
+    rrdtool.update(FILE_PATH + FILE_NAME, 'N:{}:{}:{}:{}:{}:{}:{}:{}'.format(
+        total_in, total_out,
+        port_data[5]['in_bytes'], port_data[5]['out_bytes'],
+        port_data[4]['in_bytes'], port_data[4]['out_bytes'],
+        port_data[6]['in_bytes'], port_data[6]['out_bytes']))
 
 
 def graph():
     pass
 
+
+def main():
+    logging.basicConfig(level=logging.WARNING, format='%(asctime)s:%(levelname)s:%(message)s')
+    parser = argparse.ArgumentParser(description='Script for rrd_ping database manipulation')
+    parser.add_argument('-i', '--initialize', action='store_true',
+                        help='Initialize database')
+    parser.add_argument('-u', '--update', action='store_true',
+                        help='Update database')
+    parser.add_argument('-g', '--graph', action='store_true',
+                        help='Draw graph')
+    args = parser.parse_args()
+
+    if args.initialize:
+        initialize()
+    elif args.update:
+        update()
+    elif args.graph:
+        graph()
+    else:
+        parser.print_help()
+
 if __name__ == '__main__':
-    initialize()
+    main()
