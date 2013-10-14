@@ -68,7 +68,26 @@ def update():
 
 
 def graph():
-    pass
+    logging.info('Drawing graph')
+    time_now = datetime.datetime.today().ctime()
+
+    rrdtool.graph(FILE_PATH + GRAPH_NAME,
+                  '-w', '785', '-h', '120', '-a', 'PNG',
+                  '--slope-mode',
+                  '--start', '-1d', '--end', 'now',
+                  '--font', 'DEFAULT:7:',
+                  '--title', 'Traffic monitor',
+                  '--watermark', time_now,
+                  '--vertical-label', 'Kb/sec',
+                  '--right-axis-label', 'Kb/sec',
+                  '--lower-limit', '0',
+                  '--right-axis', '1:0',
+                  '--x-grid', 'MINUTE:10:HOUR:1:MINUTE:120:0:%R',
+                  '--alt-y-grid', '--rigid',
+                  'DEF:tot_in={}{}:traffic_total_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'DEF:tot_out={}{}:traffic_total_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'AREA:tot_in#00FF00:In traffic',
+                  'LINE1:tot_out#0000FF:Out traffic\\r')
 
 
 def main():
