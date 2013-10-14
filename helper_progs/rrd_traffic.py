@@ -42,7 +42,7 @@ def initialize():
 
 
 def update():
-    bgp_gateway = Switch.Host(secure.BGP_SERVER)
+    bgp_gateway = switch.Host(secure.BGP_SERVER)
 
     # 4 port - TTK
     # 5 port - Megafon
@@ -67,4 +67,4 @@ def graph():
     pass
 
 if __name__ == '__main__':
-    update()
+    initialize()
