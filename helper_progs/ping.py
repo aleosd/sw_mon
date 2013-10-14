@@ -145,8 +145,6 @@ class Ping():
 
         if recvTime:
             delay = (recvTime - sentTime) * 1000
-            if self.myStats.thisIP == '10.1.0.107':
-                print(delay)
             if self.verbose:
                 print("%d bytes from %s: icmp_seq=%d ttl=%d time=%.2f ms" % (
                 dataSize, socket.inet_ntoa(struct.pack("!I", iphSrcIP)), icmpSeqNumber, iphTTL, delay)
