@@ -13,9 +13,20 @@ import rrdtool
 import Switch
 import snmp_oids
 
+FILE_PATH = secure.RRDTRAF_FILE_PATH
+FILE_NAME = secure.RRDTRAF_FILE_NAME
+GRAPH_NAME = secure.RRDTRAF_GRAPH_NAME
+
 
 def initialize():
-    pass
+    if os.path.isfile(FILE_PATH + FILE_NAME):
+        logging.warning('The file is already exists, cannot overwrite!')
+        sys.exit(1)
+
+    logging.info('Initializing rrd database')
+    rrdtool.create(FILE_PATH + FILE_NAME,)
+    logging.info('RRD database successfully initialized')
+
 
 def update():
     port_data = {4: {}, 5: {}, 6: {}}
@@ -28,6 +39,7 @@ def update():
         port_data[port]['out_bytes'] = out_bytes
 
     print(port_data)
+
 
 def graph():
     pass
