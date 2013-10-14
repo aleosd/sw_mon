@@ -8,9 +8,9 @@ import time
 import datetime
 import unittest
 
-import Connection
-import Ping
-import SNMP
+import connection
+import ping
+import snmp
 import secure
 
 
@@ -155,7 +155,7 @@ class SNR(Switch):
         return secure.ssh_password
 
     def login(self):
-        conn = Connection.SSHConnection(self.ip_addr)
+        conn = connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel = sh(self.username, self.password)
         return channel, conn
@@ -196,7 +196,7 @@ class Allied(Switch):
         self.username = secure.allied_user
 
     def login(self):
-        conn = Connection.TelnetConnection(self.ip_addr)
+        conn = connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"login: ")
         tn.write(secure.allied_user.encode('ascii') + b"\n")
@@ -225,7 +225,7 @@ class DLink(Switch):
         return secure.ssh_password
 
     def login(self):
-        conn = Connection.SSHConnection(self.ip_addr)
+        conn = connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel = sh(self.username, self.password)
         return channel, conn
@@ -258,7 +258,7 @@ class DLink(Switch):
 
 class Com3(Switch):
     def login(self):
-        conn = Connection.TelnetConnection(self.ip_addr)
+        conn = connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"Login: ")
         tn.write(secure.user.encode('ascii') + b"\r\n")
@@ -305,7 +305,7 @@ class Com3(Switch):
 
 class Cisco(Switch):
     def login(self):
-        conn = Connection.TelnetConnection(self.ip_addr)
+        conn = connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"Username: ")
         tn.write(b"admin\r\n")
@@ -343,7 +343,7 @@ class AlliedL2(Switch):
         self.username = secure.allied_user
 
     def login(self):
-        conn = Connection.TelnetConnection(self.ip_addr)
+        conn = connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"Login: ")
         tn.write(secure.allied_user.encode('ascii') + b"\r\n")
