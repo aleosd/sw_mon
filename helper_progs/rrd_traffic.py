@@ -25,14 +25,12 @@ def initialize():
 
     logging.info('Initializing rrd database')
     rrdtool.create(FILE_PATH + FILE_NAME, '--step', '300',
-                   'DS:traffic_total_in:COUNTER:600:U:U',
-                   'DS:traffic_total_out:COUNTER:600:U:U',
                    'DS:traffic_megafon_in:COUNTER:600:U:U',
                    'DS:traffic_megafon_out:COUNTER:600:U:U',
                    'DS:traffic_ttk_in:COUNTER:600:U:U',
                    'DS:traffic_ttk_out:COUNTER:600:U:U',
                    'DS:traffic_rtk_in:COUNTER:600:U:U',
-                   'DS:traffci_rtk_out:COUNTER:600:U:U',
+                   'DS:traffic_rtk_out:COUNTER:600:U:U',
                    'RRA:AVERAGE:0.5:1:288',    # one day of 5 min averages
                    'RRA:AVERAGE:0.5:6:336',    # one week of 30 min averages
                    'RRA:AVERAGE:0.5:24:732',   # two month of 2 hours averages
@@ -60,8 +58,7 @@ def update():
         total_in += in_bytes
         total_out += out_bytes
 
-    rrdtool.update(FILE_PATH + FILE_NAME, 'N:{}:{}:{}:{}:{}:{}:{}:{}'.format(
-        total_in, total_out,
+    rrdtool.update(FILE_PATH + FILE_NAME, 'N:{}:{}:{}:{}:{}:{}'.format(
         port_data[5]['in_bytes'], port_data[5]['out_bytes'],
         port_data[4]['in_bytes'], port_data[4]['out_bytes'],
         port_data[6]['in_bytes'], port_data[6]['out_bytes']))
@@ -78,16 +75,27 @@ def graph():
                   '--font', 'DEFAULT:7:',
                   '--title', 'Traffic monitor',
                   '--watermark', time_now,
-                  '--vertical-label', 'Kb/sec',
-                  '--right-axis-label', 'Kb/sec',
+                  '--vertical-label', 'Mb/sec',
+                  '--right-axis-label', 'Mb/sec',
                   '--lower-limit', '0',
                   '--right-axis', '1:0',
                   '--x-grid', 'MINUTE:10:HOUR:1:MINUTE:120:0:%R',
                   '--alt-y-grid', '--rigid',
-                  'DEF:tot_in={}{}:traffic_total_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
-                  'DEF:tot_out={}{}:traffic_total_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
-                  'AREA:tot_in#00FF00:In traffic',
-                  'LINE1:tot_out#0000FF:Out traffic\\r')
+                  'DEF:tot_ttk_in={}{}:traffic_ttk_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'DEF:tot_megafon_in={}{}:traffic_megafon_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'DEF:tot_rtk_in={}{}:traffic_rtk_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'DEF:tot_ttk_out={}{}:traffic_ttk_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'DEF:tot_megafon_out={}{}:traffic_megafon_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'DEF:tot_rtk_out={}{}:traffic_rtk_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                  'CDEF:total_in=tot_ttk_in,tot_megafon_in,+,tot_rtk_in,+,8,*,1000000,/',
+                  'CDEF:total_out=tot_ttk_out,tot_megafon_out,+,tot_rtk_out,+,8,*,1000000,/',
+                  # 'CDEF:tot_ttk_in_ps=tot_ttk_in,8,*',
+                  # 'CDEF:tot_ttk_out_ps=tot_ttk_out,8,*',
+                  'AREA:total_in#00FF00:In traffic',
+                  'LINE1:total_out#0000FF:Out traffic\\r',
+                  'COMMENT:\\n',
+                  'GPRINT:total_in:AVERAGE:Avg In traffic\: %6.2lf %SMbps',
+                 )
 
 
 def main():
