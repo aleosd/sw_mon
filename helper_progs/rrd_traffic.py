@@ -6,10 +6,9 @@ import logging
 import os.path
 import sys
 import datetime
-import time
+import rrdtool
 
 import secure
-import rrdtool
 import switch
 import snmp_oids
 
@@ -91,12 +90,12 @@ def graph():
                   'CDEF:total_out=tot_ttk_out,tot_megafon_out,+,tot_rtk_out,+,8,*,1000000,/',
                   # 'CDEF:tot_ttk_in_ps=tot_ttk_in,8,*',
                   # 'CDEF:tot_ttk_out_ps=tot_ttk_out,8,*',
-                  'AREA:total_in#00FF00:In traffic\t',
+                  'AREA:total_in#00FF00:In traffic (Mbps)\t',
                   'GPRINT:total_in:LAST:Cur\: %5.2lf',
                   'GPRINT:total_in:AVERAGE:Avg\: %5.2lf',
                   'GPRINT:total_in:MAX:Max\: %5.2lf',
                   'GPRINT:total_in:MIN:Min\: %5.2lf\t\t\t\\n',
-                  'LINE1:total_out#0000FF:Out traffic\\r',
+                  'LINE1:total_out#0000FF:Out traffic (Mbps)\t',
                   'GPRINT:total_out:LAST:Cur\: %5.2lf',
                   'GPRINT:total_out:AVERAGE:Avg\: %5.2lf',
                   'GPRINT:total_out:MAX:Max\: %5.2lf',
