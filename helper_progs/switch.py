@@ -15,6 +15,10 @@ import secure
 
 
 def log_decorator(f):
+    """Decorator for switch objects, to print debug string
+    at the beginning of execution of function
+    """
+
     def wrapper(*args):
         logging.info("Strating {} for {}:{}".format(f.__name__,
                                                     args[0].__class__.__name__,
@@ -170,8 +174,8 @@ class SNR(Switch):
         channel = sh(self.username, self.password)
         return channel, conn
 
+    @log_decorator
     def reboot(self):
-        logging.info('Starting reboot for SNR {}'.format(self.ip_addr))
         channel, conn = self.login()
         try:
             channel.write('reload\r\n'.encode())
@@ -183,7 +187,6 @@ class SNR(Switch):
 
     @log_decorator
     def backup(self):
-        # logging.info('Starting backup for SNR {}'.format(self.ip_addr))
         channel, conn = self.login()
         logging.debug('Connected to {} with ssh'.format(self.ip_addr))
         command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
@@ -214,17 +217,17 @@ class Allied(Switch):
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\n")
         return tn
- 
+
+    @log_decorator
     def reboot(self):
-        logging.info('Started reboot for L3 Allied {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"restart reboot\n")
         debug_info = tn.read_all().decode('ascii')
         logging.debug(debug_info)
         tn.close()
 
+    @log_decorator
     def backup(self):
-        logging.info('Started backup for Allied {}'.format(self.ip_addr))
         tn = self.login()
         command = "upload server={} file=boot.cfg method=tftp destfile={}.cfg\n".format(secure.TFTP_SERVER, self.sw_id)
         tn.write(command.encode('ascii'))
@@ -241,8 +244,8 @@ class DLink(Switch):
         channel = sh(self.username, self.password)
         return channel, conn
 
+    @log_decorator
     def reboot(self):
-        logging.debug('Starting reboot for DLink {}'.format(self.ip_addr))
         channel, conn = self.login()
         try:
             channel.write('reboot\r\n'.encode())
@@ -253,8 +256,8 @@ class DLink(Switch):
         finally:
             conn.close()
 
+    @log_decorator
     def backup(self):
-        logging.info('Starting backup for Dlink switch {}'.format(self.ip_addr))
         channel, conn = self.login()
         try:
             command = 'upload cfg_toTFTP {} dest_file {}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
@@ -278,8 +281,8 @@ class Com3(Switch):
         tn.write(b"\r\n")  # in case of some alerts, to pass them
         return tn
 
+    @log_decorator
     def reboot(self):
-        logging.info('Starting reboot for 3Com {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"system\r\n")
         tn.write(b"control\r\n")
@@ -295,8 +298,8 @@ class Com3(Switch):
             tn.close()
             logging.info('Rebooted 3com, ip: {}'.format(self.ip_addr))
 
+    @log_decorator
     def backup(self):
-        logging.info('Starting backup for 3com {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"system\r\n")
         tn.write(b"backupConfig\r\n")
@@ -324,8 +327,8 @@ class Cisco(Switch):
         tn.write(self.password.encode('ascii') + b"\n")
         return tn
 
+    @log_decorator
     def reboot(self):
-        logging.info('Starting reboot for Cisco {}'.format(self.ip_addr))
         tn = self.login()
         tn.write(b"reload\n")
         tn.write(b"\n")
@@ -333,8 +336,8 @@ class Cisco(Switch):
         logging.debug(debug_info)
         tn.close()
 
+    @log_decorator
     def backup(self):
-        logging.info('Starting backup for cisco {}'.format(self.ip_addr))
         tn = self.login()
         command = 'copy running-config tftp://{}/{}.cfg\n'.format(secure.TFTP_SERVER, self.sw_id)
         try:

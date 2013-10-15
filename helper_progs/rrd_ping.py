@@ -33,8 +33,13 @@ def update():
     logging.info('Updating rrd database')
     gateway_ping = switch.Host('10.1.10.1').sys_ping(packet_count=8)
     yandex_ping = switch.Host('ya.ru').sys_ping(packet_count=8)
-    rrdtool.update(FILE_PATH + FILE_NAME,
-                   'N:{}:{}:{}'.format(gateway_ping[1], gateway_ping[0], yandex_ping[0]))
+    try:
+        rrdtool.update(FILE_PATH + FILE_NAME,
+                       'N:{}:{}:{}'.format(gateway_ping[1], gateway_ping[0], yandex_ping[0]))
+    except Exception as e:
+        logging.error("""Error while rrd_ping: {},
+                            values for gateway: {},
+                            values for yandex: {}""".format(e, gateway_ping, yandex_ping))
 
 
 def graph():
