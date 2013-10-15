@@ -14,6 +14,15 @@ import snmp
 import secure
 
 
+def log_decorator(f):
+    def wrapper(*args):
+        logging.info("Strating {} for {}:{}".format(f.__name__,
+                                                    args[0].__class__.__name__,
+                                                    args[0].ip_addr))
+        return f(*args)
+    return wrapper
+
+
 class Host():
     def __init__(self, ip_addr):
         self.ip_addr = ip_addr
@@ -172,8 +181,9 @@ class SNR(Switch):
         finally:
             conn.close()
 
+    @log_decorator
     def backup(self):
-        logging.info('Starting backup for SNR {}'.format(self.ip_addr))
+        # logging.info('Starting backup for SNR {}'.format(self.ip_addr))
         channel, conn = self.login()
         logging.debug('Connected to {} with ssh'.format(self.ip_addr))
         command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
