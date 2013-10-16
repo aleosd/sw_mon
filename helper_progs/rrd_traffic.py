@@ -67,12 +67,16 @@ def graph(period):
     logging.info('Drawing graph')
     time_now = datetime.datetime.today().ctime()
 
-    files = {'d': secure.RRDTRAF_D_GRAPH_NAME,
-             'w': secure.RRDTRAF_W_GRAPH_NAME,
-             'm': secure.RRDTRAF_M_GRAPH_NAME,
-             'y': secure.RRDTRAF_Y_GRAPH_NAME,}
+    settings = {'d': {'filename': secure.RRDTRAF_D_GRAPH_NAME,
+                      'x-grid': 'MINUTE:10:HOUR:1:MINUTE:120:0:%R'},
+                'w': {'filename': secure.RRDTRAF_W_GRAPH_NAME,
+                      'x-grid': 'MINUTE:120:HOUR:6:MINUTE:1440:0:%R'},
+                'm': {'filename': secure.RRDTRAF_M_GRAPH_NAME,
+                      'x-grid': ''},
+                'y': {'filename': secure.RRDTRAF_Y_GRAPH_NAME,
+                      'x-grid': ''}}
 
-    rrdtool.graph(FILE_PATH + files[period],
+    rrdtool.graph(FILE_PATH + settings[period]['filename'],
                   '-w', '785', '-h', '120', '-a', 'PNG',
                   '--slope-mode',
                   '--start', '-1{}'.format(period), '--end', 'now',
@@ -83,7 +87,7 @@ def graph(period):
                   '--right-axis-label', 'Mb/sec',
                   '--lower-limit', '0',
                   '--right-axis', '1:0',
-                  '--x-grid', 'MINUTE:10:HOUR:1:MINUTE:120:0:%R',
+                  '--x-grid', settings[period]['x-grid'],
                   '--alt-y-grid', '--rigid',
                   'DEF:tot_ttk_in={}{}:traffic_ttk_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
                   'DEF:tot_megafon_in={}{}:traffic_megafon_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
