@@ -74,6 +74,7 @@ def reboot(ip):
         else:
             logging.warning('The switch cannot be rebooted: {}'.format(sw))
 
+
 def ping():
     logging.debug('Starting global ping function')
     switch_list = get_switch_list('ping')
@@ -115,6 +116,7 @@ def ping():
     if len(event_dict) > 0:
         db.set_events(event_dict)
     database.lock.release()
+
 
 def backup(ip):
     logging.debug('Starting global backup function with ip {}'.format(ip))

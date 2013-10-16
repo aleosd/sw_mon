@@ -63,14 +63,19 @@ def update():
         port_data[6]['in_bytes'], port_data[6]['out_bytes']))
 
 
-def graph():
+def graph(period):
     logging.info('Drawing graph')
     time_now = datetime.datetime.today().ctime()
 
-    rrdtool.graph(FILE_PATH + GRAPH_NAME,
+    files = {'d': secure.RRDTRAF_D_GRAPH_NAME,
+             'w': secure.RRDTRAF_W_GRAPH_NAME,
+             'm': secure.RRDTRAF_M_GRAPH_NAME,
+             'y': secure.RRDTRAF_Y_GRAPH_NAME,}
+
+    rrdtool.graph(FILE_PATH + files[period],
                   '-w', '785', '-h', '120', '-a', 'PNG',
                   '--slope-mode',
-                  '--start', '-1d', '--end', 'now',
+                  '--start', '-1{}'.format(period), '--end', 'now',
                   '--font', 'DEFAULT:7:',
                   '--title', 'Traffic monitor',
                   '--watermark', time_now,
@@ -110,8 +115,12 @@ def main():
                         help='Initialize database')
     parser.add_argument('-u', '--update', action='store_true',
                         help='Update database')
-    parser.add_argument('-g', '--graph', action='store_true',
-                        help='Draw graph')
+    parser.add_argument('-g', '--graph', nargs='?', default=None, const='d', metavar='<period>',
+                        help='''Draw graph for given period. Possible parameters:
+                                    d - day (default),
+                                    w - week,
+                                    m - month,
+                                    y - year.''')
     args = parser.parse_args()
 
     if args.initialize:
@@ -119,7 +128,7 @@ def main():
     elif args.update:
         update()
     elif args.graph:
-        graph()
+        graph(args.graph)
     else:
         parser.print_help()
 
