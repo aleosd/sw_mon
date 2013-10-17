@@ -5,12 +5,13 @@ import sys
 import argparse
 import logging
 from threading import Thread
+import cProfile
 
 import switch
 import database
 import secure
 import snmp_oids
-# from timer import Timer
+from timer import Timer
 
 
 switch_types = {
@@ -130,7 +131,7 @@ def uptime():
             uptime_dict[sw.id_] = None
         else:
             sw_uptime = sw.snmpget(snmp_oids.UPTIME)
-            uptime_dict[sw.id_] = int(sw_uptime[0][1])
+            uptime_dict[sw.id_] = int(sw_uptime[0][1])/100
 
     logging.debug('Adding threads')
     for sw in switch_list:
@@ -198,7 +199,8 @@ if __name__ == '__main__':
     if args.ping:
         ping()
     elif args.uptime:
-        uptime()
+        with Timer(verbose=True) as t:
+            cProfile.run("uptime()", filename='uptime.profile')
     elif args.backup:
         backup(args.backup)
     elif args.reboot:
