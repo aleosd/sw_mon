@@ -112,12 +112,11 @@ def ping():
     logging.info('Starting database update...')
     logging.debug(ping_dict)
 
-    database.lock.acquire()
-    db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
-    db.set_ping(ping_dict)
-    if len(event_dict) > 0:
-        db.set_events(event_dict)
-    database.lock.release()
+    with database.lock:
+        db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+        db.set_ping(ping_dict)
+        if len(event_dict) > 0:
+            db.set_events(event_dict)
 
 
 def uptime():
