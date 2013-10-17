@@ -4,6 +4,10 @@ import time
 
 
 class Timer():
+    """Usage:
+    with Timer(verbose=True) as t:
+        timing_function()
+    """
     def __init__(self, verbose=False):
         self.verbose = verbose
 
