@@ -70,7 +70,7 @@ def graph(period):
     settings = {'d': {'filename': secure.RRDTRAF_D_GRAPH_NAME,
                       'x-grid': 'MINUTE:10:HOUR:1:MINUTE:120:0:%R'},
                 'w': {'filename': secure.RRDTRAF_W_GRAPH_NAME,
-                      'x-grid': 'MINUTE:120:HOUR:6:MINUTE:1440:0:%R'},
+                      'x-grid': 'HOUR:2:DAY:1:DAY:1:86400:%A'},
                 'm': {'filename': secure.RRDTRAF_M_GRAPH_NAME,
                       'x-grid': ''},
                 'y': {'filename': secure.RRDTRAF_Y_GRAPH_NAME,
