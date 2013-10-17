@@ -26,6 +26,12 @@
             {% block navbar %}
             <a class="brand" href="/">LightNet</a>
             <ul class="nav">
+                <li class="dropdown">
+                    <ul class="'dropdown-mwnu">
+                        <li><a href="/mon/">{% trans "Devices" %}</a></li>
+                        <li><a href="/mon/traf">{% trans "Traffic" %}</a>/li>
+                    </ul>
+                </li>
                 <li class="active"><a href="/mon/">{% trans "Monitor" %}</a></li>
                 <li><a href="/mon/events/all/">{% trans "Events" %}</a></li>
                 <li><a href="/blog/">{% trans "Blog" %}</a></li>

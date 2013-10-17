@@ -6,8 +6,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from switches.models import Switch, Street, SwitchType
 
-print('test_views imported!')
-
 
 def create_street(**kwargs):
     defaults = {
@@ -77,19 +75,6 @@ class SwitchViewsTest(TestCase):
         response = self.client.get('/mon/')
         self.assertIn('192.168.1.2', response.content.decode('utf-8'))
         self.assertIn('192.168.1.1', response.content.decode('utf-8'))
-        '''
-        expected_html = render_to_string(
-            'mon/index.html',
-            {'switch_list': [self.switch1, self.switch2],
-             'STATIC_URL': '/static/',
-             'user': self.user,
-             'bad_uptime': 0,
-             'bad_ping': 0,
-             'LANGUAGES': ('en',),
-            }
-        )
-        self.assertEqual((response.content.decode('utf-8')).strip(), expected_html)
-        '''
 
     def test_switch_edit_view(self):
         response1 = self.client.get('/mon/edit/{}/'.format(self.switch1.id))
@@ -116,6 +101,11 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response_warn.status_code, 200)
         self.assertEqual(response_err.status_code, 200)
         self.assertEqual(response_disabled.status_code, 200)
+
+    # ----------------- TRAFFIC PART TESTS ----------------
+    def test_traf_page_response_code(self):
+        response = self.client.get('/mon/traf/')
+        self.assertEqual(response.status_code, 200)
 
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):
