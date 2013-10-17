@@ -116,8 +116,11 @@ class Database():
     @set_query_decorator
     def set_uptime(self, data_dict):
         for id_ in data_dict:
-            self.cursor.execute("""UPDATE {} SET sw_uptime=(%s) WHERE id=(%s)""".format(self.table_name),
+            try:
+                self.cursor.execute("""UPDATE {} SET sw_uptime=(%s) WHERE id=(%s)""".format(self.table_name),
                                 (data_dict[id_], id_))
+            except Exception as e:
+                logging.error('Error while updating uptime for {} switch id with {}: {}'.format(id_, data_dict[id_], e))
 
 
 class TestDatabase(unittest.TestCase):

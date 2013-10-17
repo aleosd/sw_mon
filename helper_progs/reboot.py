@@ -126,8 +126,11 @@ def uptime():
     uptime_dict = {}
 
     def uptime_worker(sw):
-        sw_uptime = sw.snmpget(snmp_oids.UPTIME)
-        uptime_dict[sw.id_] = sw_uptime
+        if sw.sw_ping == None:
+            uptime_dict[sw.id_] = None
+        else:
+            sw_uptime = sw.snmpget(snmp_oids.UPTIME)
+            uptime_dict[sw.id_] = int(sw_uptime[0][1])
 
     logging.debug('Adding threads')
     for sw in switch_list:
@@ -194,7 +197,7 @@ if __name__ == '__main__':
 
     if args.ping:
         ping()
-    elif args.uptime():
+    elif args.uptime:
         uptime()
     elif args.backup:
         backup(args.backup)
