@@ -9,6 +9,7 @@ from threading import Thread
 import switch
 import database
 import secure
+import snmp_oids
 # from timer import Timer
 
 
@@ -118,6 +119,37 @@ def ping():
     database.lock.release()
 
 
+def uptime():
+    logging.debug('Starting global uptime function')
+    switch_list = get_switch_list('ping')
+    threads = []
+    uptime_dict = {}
+
+    def uptime_worker(sw):
+        sw_uptime = sw.snmpget(snmp_oids.UPTIME)
+        uptime_dict[sw.id_] = sw_uptime
+
+    logging.debug('Adding threads')
+    for sw in switch_list:
+        t = Thread(target=uptime_worker, args=(sw,))
+        threads.append(t)
+
+    logging.debug('Starting threads')
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    logging.info('Starting database update')
+    logging.debug(uptime_dict)
+
+    database.lock.acquire()
+    db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+    db.set_uptime(uptime_dict)
+    database.lock.release()
+
+
 def backup(ip):
     logging.debug('Starting global backup function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
@@ -151,6 +183,8 @@ if __name__ == '__main__':
                         const='INFO', nargs='?')
     parser.add_argument('-p', '--ping', action='store_true',
                         help='Ping all enabled switches')
+    parser.add_argument('-u', '--uptime', action='store_true',
+                        help='Check uptime of all enabled switches')
     args = parser.parse_args()
 
     if args.log:
@@ -160,6 +194,8 @@ if __name__ == '__main__':
 
     if args.ping:
         ping()
+    elif args.uptime():
+        uptime()
     elif args.backup:
         backup(args.backup)
     elif args.reboot:
