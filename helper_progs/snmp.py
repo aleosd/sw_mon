@@ -3,13 +3,12 @@
 
 import logging
 import subprocess
-import datetime
 from pysnmp.entity.rfc3413.oneliner import cmdgen
 import pysnmp
-import snmp_oids
 import unittest
 
 import secure
+import snmp_oids
 
 
 class Snmp():
@@ -37,28 +36,26 @@ class Snmp():
                              self.ip_addr, oid],
                              stdout = subprocess.PIPE)
         result = p.communicate()
-        print(result)
-        return 0
+        if result:
+            return result
+        else:
+            return None
 
     def asyn_snmpget(self, swl, oid):
+        """Method mostly copy-pasted from official pysnmp web-page:
+        http://pysnmp.sourceforge.net/docs/current/apps/async-command-generator.html
+        """
+
+        logging.debug("Starting syncronous snmpget call")
         result_dict = {}
+
         def cbFun(sendRequestHandle, errorIndication, errorStatus, errorIndex, varBinds, cbCtx):
-            if errorIndication:
-                print(errorIndication)
-                return
-            if errorStatus:
-                print('%s at %s' % \
-                    (errorStatus.prettyPrint(),
-                     errorIndex and varBinds[int(errorIndex)-1] or '?')
-                )
+            if errorIndication or errorStatus:
+                result_dict[sendRequestHandle]['uptime'] = None
                 return
 
             for oid, val in varBinds:
-                if val is None:
-                    print(oid.prettyPrint())
-                else:
-                    result_dict[sendRequestHandle]['uptime'] = val
-                    # print('%s = %s' % (oid.prettyPrint(), val.prettyPrint()))
+                result_dict[sendRequestHandle]['uptime'] = val
 
         cmdGen  = cmdgen.AsynCommandGenerator()
 
@@ -90,13 +87,6 @@ class TestSnmp(unittest.TestCase):
         self.assertIsNone(self.snmp_test_fail.snmpget(snmp_oids.UPTIME))
         self.assertIsNotNone(self.snmp_test_bgp.snmpget(snmp_oids.UPTIME))
 
-    def test_sys_snmpget(self):
-        raw_uptime = self.snmp_test.sys_snmpget(snmp_oids.UPTIME)
-        self.assertIsNotNone(raw_uptime)
 
 if __name__ == '__main__':
-    # unittest.main()
-    ipl = ['10.1.0.6', '10.1.0.5', '10.1.10.8']
-    oid = snmp_oids.UPTIME
-    s = Snmp()
-    s.asyn_snmpget(ipl, oid)
+    unittest.main()

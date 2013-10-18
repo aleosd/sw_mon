@@ -8,6 +8,7 @@ from threading import Thread
 import cProfile
 
 import switch
+import snmp
 import database
 import secure
 import snmp_oids
@@ -122,9 +123,17 @@ def ping():
 def uptime():
     logging.debug('Starting global uptime function')
     switch_list = get_switch_list('ping')
-    threads = []
+    s = snmp.Snmp()
+    result_dict = s.asyn_snmpget(switch_list, snmp_oids.UPTIME)
+    
     uptime_dict = {}
+    for send_rh in result_dict:
+        uptime = result_dict[send_rh]['uptime']
+        if uptime:
+            uptime = int(int(uptime)/100)
+        uptime_dict[result_dict[send_rh]['id']] = uptime
 
+    '''
     def uptime_worker(sw):
         if sw.sw_ping == None:
             uptime_dict[sw.id_] = None
@@ -143,7 +152,7 @@ def uptime():
 
     for thread in threads:
         thread.join()
-
+'''
     logging.info('Starting database update')
     logging.debug(uptime_dict)
 
@@ -151,7 +160,7 @@ def uptime():
     db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
     db.set_uptime(uptime_dict)
     database.lock.release()
-
+    
 
 def backup(ip):
     logging.debug('Starting global backup function with ip {}'.format(ip))
@@ -198,8 +207,7 @@ if __name__ == '__main__':
     if args.ping:
         ping()
     elif args.uptime:
-        with Timer(verbose=True) as t:
-            cProfile.run("uptime()", filename='uptime.profile')
+        uptime()
     elif args.backup:
         backup(args.backup)
     elif args.reboot:
