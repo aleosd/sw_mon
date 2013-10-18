@@ -13,7 +13,7 @@ import secure
 
 
 class Snmp():
-    def __init__(self, ip_addr):
+    def __init__(self, ip_addr=None):
         self.ip_addr = ip_addr
 
     def snmpget(self, oid):
@@ -40,22 +40,40 @@ class Snmp():
         print(result)
         return 0
 
-    def snmpget_test(self, oid):
-        cg = cmdgen.CommandGenerator()
-        comm_data = cmdgen.CommunityData('public')
-        transport = cmdgen.UdpTransportTarget((self.ip_addr, 161))
-        err_indication, err_status, err_index, result = cg.getCmd(comm_data, transport, oid)
+    def asyn_snmpget(self, swl, oid):
+        result_dict = {}
+        def cbFun(sendRequestHandle, errorIndication, errorStatus, errorIndex, varBinds, cbCtx):
+            if errorIndication:
+                print(errorIndication)
+                return
+            if errorStatus:
+                print('%s at %s' % \
+                    (errorStatus.prettyPrint(),
+                     errorIndex and varBinds[int(errorIndex)-1] or '?')
+                )
+                return
 
-        if err_indication:
-            logging.error('Error while snmp query from {}: {}'.format(self.ip_addr, err_indication))
-            return None
-        else:
-            if err_status:
-                logging.error('{} at {}'.format(err_status.prettyPrint(),
-                                                err_indication and result[int(err_indication)-1] or '?'))
-                return None
-        return result
+            for oid, val in varBinds:
+                if val is None:
+                    print(oid.prettyPrint())
+                else:
+                    result_dict[sendRequestHandle]['uptime'] = val
+                    # print('%s = %s' % (oid.prettyPrint(), val.prettyPrint()))
 
+        cmdGen  = cmdgen.AsynCommandGenerator()
+
+        for sw in swl:
+            rhv = cmdGen.getCmd(
+                cmdgen.CommunityData('my-manager', 'public', 0),
+                cmdgen.UdpTransportTarget((sw.ip_addr, 161)),
+                (oid,),
+                (cbFun, None)
+            )
+            result_dict[rhv] = {}
+            result_dict[rhv]['id'] = sw.id_
+
+        cmdGen.snmpEngine.transportDispatcher.runDispatcher()
+        return result_dict
 
 
 class TestSnmp(unittest.TestCase):
@@ -77,4 +95,8 @@ class TestSnmp(unittest.TestCase):
         self.assertIsNotNone(raw_uptime)
 
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+    ipl = ['10.1.0.6', '10.1.0.5', '10.1.10.8']
+    oid = snmp_oids.UPTIME
+    s = Snmp()
+    s.asyn_snmpget(ipl, oid)
