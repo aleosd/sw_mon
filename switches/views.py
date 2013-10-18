@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 
-import helper_progs as hp
+from helper_progs import switch as hp_switch
 
 @login_required
 def index(request, status='all'):
@@ -123,7 +123,7 @@ def ping_view(request):
     if request.method == 'POST':
         id = request.POST['id']
         switch = Switch.objects.select_related().get(id=id)
-        host = hp.switch.Host(switch.ip_addr)
+        host = hp_switch.Host(switch.ip_addr)
         return_data = host.sys_ping(packet_count=4, verbose=True)
         return_data = return_data.split('\n')
     else:

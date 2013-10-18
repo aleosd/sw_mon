@@ -7,7 +7,6 @@ import subprocess
 import time
 import datetime
 import unittest
-print('in switch.py import')
 try:
     from . import connection
     from . import ping
@@ -18,8 +17,6 @@ except ValueError:
     import ping
     import snmp
     import secure
-print('after switch.py import')
-
 
 
 def log_decorator(f):

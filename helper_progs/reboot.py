@@ -11,7 +11,7 @@ import snmp
 import database
 import secure
 import snmp_oids
-from timer import Timer
+# from timer import Timer
 
 
 switch_types = {
@@ -129,7 +129,7 @@ def uptime():
     for send_rh in result_dict:
         uptime_ = result_dict[send_rh]['uptime']
         if uptime_:
-            uptime_ = int(int(uptime)/100)
+            uptime_ = int(int(uptime_)/100)
         uptime_dict[result_dict[send_rh]['id']] = uptime_
 
     logging.info('Starting database update')
