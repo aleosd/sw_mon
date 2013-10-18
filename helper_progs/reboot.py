@@ -5,7 +5,6 @@ import sys
 import argparse
 import logging
 from threading import Thread
-import cProfile
 
 import switch
 import snmp
@@ -128,38 +127,17 @@ def uptime():
     
     uptime_dict = {}
     for send_rh in result_dict:
-        uptime = result_dict[send_rh]['uptime']
-        if uptime:
-            uptime = int(int(uptime)/100)
-        uptime_dict[result_dict[send_rh]['id']] = uptime
+        uptime_ = result_dict[send_rh]['uptime']
+        if uptime_:
+            uptime_ = int(int(uptime)/100)
+        uptime_dict[result_dict[send_rh]['id']] = uptime_
 
-    '''
-    def uptime_worker(sw):
-        if sw.sw_ping == None:
-            uptime_dict[sw.id_] = None
-        else:
-            sw_uptime = sw.snmpget(snmp_oids.UPTIME)
-            uptime_dict[sw.id_] = int(sw_uptime[0][1])/100
-
-    logging.debug('Adding threads')
-    for sw in switch_list:
-        t = Thread(target=uptime_worker, args=(sw,))
-        threads.append(t)
-
-    logging.debug('Starting threads')
-    for thread in threads:
-        thread.start()
-
-    for thread in threads:
-        thread.join()
-'''
     logging.info('Starting database update')
     logging.debug(uptime_dict)
 
-    database.lock.acquire()
-    db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
-    db.set_uptime(uptime_dict)
-    database.lock.release()
+    with database.lock:
+        db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+        db.set_uptime(uptime_dict)
     
 
 def backup(ip):
