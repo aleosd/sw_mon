@@ -6,8 +6,10 @@ import logging
 import sys
 import unittest
 from threading import Lock
-import secure
-
+try:
+    from . import secure
+except ValueError:
+    import secure
 
 DBNAME = secure.DBNAME
 USER = secure.USER

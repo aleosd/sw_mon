@@ -1,7 +1,10 @@
 import sys
 import os
 import socket
-import libssh2
+try:
+    import libssh2
+except ImportError:
+    from . import libssh2
 import termios
 import tty
 import telnetlib

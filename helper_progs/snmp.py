@@ -7,8 +7,12 @@ from pysnmp.entity.rfc3413.oneliner import cmdgen
 import pysnmp
 import unittest
 
-import secure
-import snmp_oids
+try:
+    from . import secure
+    from . import snmp_oids
+except ValueError:
+    import secure
+    import snmp_oids
 
 
 class Snmp():

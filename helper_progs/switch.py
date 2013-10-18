@@ -7,11 +7,19 @@ import subprocess
 import time
 import datetime
 import unittest
+print('in switch.py import')
+try:
+    from . import connection
+    from . import ping
+    from . import snmp
+    from . import secure
+except ValueError:
+    import connection
+    import ping
+    import snmp
+    import secure
+print('after switch.py import')
 
-import connection
-import ping
-import snmp
-import secure
 
 
 def log_decorator(f):
@@ -48,7 +56,7 @@ class Host():
         avg, pl = self.pinger.pyng()
         return avg, pl
 
-    def sys_ping(self, packet_count=3):
+    def sys_ping(self, packet_count=3, verbose=False):
         """Switch.sys_ping(int) -> [float, int]
 
         Method for host ping. Returns list of two items:
@@ -63,6 +71,10 @@ class Host():
                              stdout=subprocess.PIPE)
         result = p.communicate()
         result = result[0].decode()
+
+        if verbose:
+            return result
+
         pl = 100.0  # packet loss
         avg = None  # average round trip time
         if result:
