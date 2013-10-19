@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+Traffic Monitoring
+{% endblock %}
+
+
+{% block sidemenu %}
+<div class="well well-small">
+<ul class="nav nav-list">
+    <li><p class="text-center muted">
+        {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
+    <li class="nav-header">{% trans "ISP" %}</li>
+        <li><a href="/traf/ttl/">{% trans "Total" %}</a></li>
+        <li><a href="/traf/ttk/">{% trans "TTK" %}</a></li>
+        <li><a href="/traf/rtk/">{% trans "RTK" %}</a></li>
+        <li><a href="/traf/mgf/">{% trans "Megafon" %}</a></li>
+    <li class="nav-header">{% trans "Period" %}</li>
+        <li><a href="/traf/daily/">{% trans "Daily" %}</a></li>
+        <li><a href="/traf/weekly/">{% trans "Weekly" %}</a></li>
+        <li><a href="/traf/monthly/">{% trans "Monthly" %}</a></li>
+        <li><a href="/traf/yearly/">{% trans "Yearly" %}</a></li>
+</ul>
+</div>
+{% endblock %}
+
+{% block maincontent %}
+
+{% endblock %}

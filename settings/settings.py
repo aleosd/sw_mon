@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'switches',
     'blog',
     'device',
+    'graphs',
     'smart_selects',
 )
 

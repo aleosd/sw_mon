@@ -13,3 +13,12 @@ class Graph(models.Model):
     )
     period = models.CharField(max_length=1, choices=periods,
                               verbose_name='Time period')
+
+    isps = (
+        ('ttk', 'TTK'),
+        ('rtk', 'Rostelekom'),
+        ('mgf', 'Megafon'),
+        ('ttl', 'Total'),
+    )
+    isp = models.CharField(max_length=3, choices=isps,
+                           verbose_name='ISP to filter traffic')

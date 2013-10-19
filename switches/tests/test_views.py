@@ -102,11 +102,6 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response_err.status_code, 200)
         self.assertEqual(response_disabled.status_code, 200)
 
-    # ----------------- TRAFFIC PART TESTS ----------------
-    def test_traf_page_response_code(self):
-        response = self.client.get('/mon/traf/')
-        self.assertEqual(response.status_code, 200)
-
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):
         response = self.client.get('/mon/events/all/')
