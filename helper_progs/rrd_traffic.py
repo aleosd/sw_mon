@@ -68,20 +68,24 @@ def graph(period):
     time_now = datetime.datetime.today().ctime()
 
     settings = {'d': {'filename': secure.RRDTRAF_D_GRAPH_NAME,
-                      'x-grid': 'MINUTE:10:HOUR:1:MINUTE:120:0:%R'},
+                      'x-grid': 'MINUTE:10:HOUR:1:MINUTE:120:0:%R',
+                      'title': 'DAILY'},
                 'w': {'filename': secure.RRDTRAF_W_GRAPH_NAME,
-                      'x-grid': 'HOUR:2:DAY:1:DAY:1:86400:%A'},
+                      'x-grid': 'HOUR:2:DAY:1:DAY:1:86400:%A',
+                      'title': 'WEEKLY'},
                 'm': {'filename': secure.RRDTRAF_M_GRAPH_NAME,
-                      'x-grid': ''},
+                      'x-grid': '',
+                      'title': 'MONTHLY'},
                 'y': {'filename': secure.RRDTRAF_Y_GRAPH_NAME,
-                      'x-grid': ''}}
+                      'x-grid': '',
+                      'title': 'YEARLY'}}
 
     rrdtool.graph(FILE_PATH + settings[period]['filename'],
                   '-w', '785', '-h', '120', '-a', 'PNG',
                   '--slope-mode',
                   '--start', '-1{}'.format(period), '--end', 'now',
                   '--font', 'DEFAULT:7:',
-                  '--title', 'Traffic monitor',
+                  '--title', 'Traffic monitor - {}'.format(settings[period]['title']),
                   '--watermark', time_now,
                   '--vertical-label', 'Mb/sec',
                   '--right-axis-label', 'Mb/sec',
