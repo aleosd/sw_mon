@@ -18,6 +18,9 @@ class SimpleTest(TestCase):
         self.graph_ttk_d = create_graph(isp='ttk')
         self.graph_ttk_y = create_graph(isp='ttk', period='y')
 
+    # ----------------- MODEL TESTS -------------------
+    def test_graph_get_web_url(self):
+        self.assertEqual(self.graph_total_d.get_web_url(), 'img/total.png')
 
     # ----------------- VIEW TESTS --------------------
     def test_traf_page_response_code(self):

@@ -22,3 +22,6 @@ class Graph(models.Model):
     )
     isp = models.CharField(max_length=3, choices=isps,
                            verbose_name='ISP to filter traffic')
+
+    def get_web_url(self):
+        return self.path.split('static/')[-1]
