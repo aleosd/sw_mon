@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class Graph(models.Model):
-    path = models.FilePathField(path="/var/www/sw_mon/templates/static/img/", match="*.png",
+    path = models.FilePathField(path="/var/www/sw_mon/templates/static/img/", match=".*\.png$",
                                 recursive=True)
     periods = (
         ('d', 'Daily'),
