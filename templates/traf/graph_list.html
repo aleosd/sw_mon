@@ -11,20 +11,25 @@ Traffic Monitoring
 <ul class="nav nav-list">
     <li><p class="text-center muted">
         {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
-    <li class="nav-header">{% trans "ISP" %}</li>
-        <li><a href="/traf/ttl/">{% trans "Total" %}</a></li>
-        <li><a href="/traf/ttk/">{% trans "TTK" %}</a></li>
-        <li><a href="/traf/rtk/">{% trans "RTK" %}</a></li>
-        <li><a href="/traf/mgf/">{% trans "Megafon" %}</a></li>
-    <li class="nav-header">{% trans "Period" %}</li>
-        <li><a href="/traf/daily/">{% trans "Daily" %}</a></li>
-        <li><a href="/traf/weekly/">{% trans "Weekly" %}</a></li>
-        <li><a href="/traf/monthly/">{% trans "Monthly" %}</a></li>
-        <li><a href="/traf/yearly/">{% trans "Yearly" %}</a></li>
+    <li class="nav-header">{% trans "BY ISP" %}</li>
+        <li class="active"><a href="/traf/isp/ttl/">{% trans "Total" %}</a></li>
+        <li><a href="/traf/isp/ttk/">{% trans "TTK" %}</a></li>
+        <li><a href="/traf/isp/rtk/">{% trans "RTK" %}</a></li>
+        <li><a href="/traf/isp/mgf/">{% trans "Megafon" %}</a></li>
+    <li class="nav-header">{% trans "BY PERIOD" %}</li>
+        <li><a href="/traf/period/daily/">{% trans "Daily" %}</a></li>
+        <li><a href="/traf/period/weekly/">{% trans "Weekly" %}</a></li>
+        <li><a href="/traf/period/monthly/">{% trans "Monthly" %}</a></li>
+        <li><a href="/traf/period/yearly/">{% trans "Yearly" %}</a></li>
 </ul>
 </div>
-{% endblock %}
+{% endblock sidemenu%}
 
 {% block maincontent %}
 
-{% endblock %}
+    {% for img in imgs %}
+        <img src="{{ STATIC_URL}}{{ img.get_web_url }}" class="img-polaroid">
+        <p></p>
+    {% endfor %}
+
+{% endblock maincontent%}
