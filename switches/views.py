@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from helper_progs import switch as hp_switch
 
+
 @login_required
 def index(request, status='all'):
     switch_list = Switch.objects.select_related(
@@ -22,11 +23,11 @@ def index(request, status='all'):
     enabled_switch_list = [switch for switch in switch_list if switch.sw_enabled]
     sw_enabled = len(enabled_switch_list)
     warning_switch_list = [switch for switch in enabled_switch_list if (switch.sw_uptime and
-                                                                        (switch.sw_uptime < 86400 or not switch.sw_uptime))]
+                            (switch.sw_uptime < 86400 or not switch.sw_uptime))]
     sw_warning = len(warning_switch_list)
-    error_switch_list = [switch for switch in enabled_switch_list if switch.sw_ping == None]
+    error_switch_list = [switch for switch in enabled_switch_list if switch.sw_ping is None]
     sw_error = len(error_switch_list)
-    disabled_switch_list = [switch for switch in switch_list if switch.sw_enabled == False]
+    disabled_switch_list = [switch for switch in switch_list if not switch.sw_enabled]
     sw_disabled = len(disabled_switch_list)
 
     if status == 'all':
@@ -102,13 +103,21 @@ def history(request, status=None):
         event_list = paginator(paginator.num_pages)
 
     return render(request, 'mon/history.html', {'event_list': event_list,
-                                            'status' : status,
-                                            'events_per_day' : t})
+                                                'status': status,
+                                                'events_per_day': t})
 
 
 @login_required
 def home_view(request):
-    return render(request, 'mon/home.html')
+    total_switches = Switch.objects.all().count()
+    disabled_switches = Switch.objects.filter(sw_disabled=True).count()
+    error_switches = Switch.objects.filter(sw_ping=None).count()
+    warning_switches = Switch.objects.filter(sw_uptime__gt=86400)
+    return render(request, 'mon/home.html',
+        {'total_switches': total_switches,
+         'disabled_switches': disabled_switches,
+         'error_switches': error_switches,
+         'warning_switches': warning_switches})
 
 
 @login_required
