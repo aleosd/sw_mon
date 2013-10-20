@@ -110,9 +110,9 @@ def history(request, status=None):
 @login_required
 def home_view(request):
     total_switches = Switch.objects.all().count()
-    disabled_switches = Switch.objects.filter(sw_disabled=True).count()
-    error_switches = Switch.objects.filter(sw_ping=None).count()
-    warning_switches = Switch.objects.filter(sw_uptime__gt=86400)
+    disabled_switches = Switch.objects.filter(sw_enabled=False).count()
+    error_switches = Switch.objects.filter(sw_ping=None, sw_enabled=True).count()
+    warning_switches = Switch.objects.filter(sw_uptime__lt=86400).count()
     return render(request, 'mon/home.html',
         {'total_switches': total_switches,
          'disabled_switches': disabled_switches,
