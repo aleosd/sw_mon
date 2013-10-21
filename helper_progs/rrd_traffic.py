@@ -67,31 +67,20 @@ def graph(period):
     logging.info('Drawing graph')
     time_now = datetime.datetime.today().ctime()
 
-    settings = {'d': {'filename': secure.RRDTRAF_D_GRAPH_NAME,
-                      'x-grid': 'MINUTE:10:HOUR:1:MINUTE:120:0:%R',
-                      'title': 'DAILY'},
-                'w': {'filename': secure.RRDTRAF_W_GRAPH_NAME,
-                      'x-grid': 'HOUR:2:DAY:1:DAY:1:86400:%A',
-                      'title': 'WEEKLY'},
-                'm': {'filename': secure.RRDTRAF_M_GRAPH_NAME,
-                      'x-grid': '',
-                      'title': 'MONTHLY'},
-                'y': {'filename': secure.RRDTRAF_Y_GRAPH_NAME,
-                      'x-grid': '',
-                      'title': 'YEARLY'}}
-
-    rrdtool.graph(FILE_PATH + settings[period]['filename'],
+    # draw common graph, full page length
+    if period is None:
+            rrdtool.graph(FILE_PATH + GRAPH_NAME,
                   '-w', '785', '-h', '120', '-a', 'PNG',
                   '--slope-mode',
-                  '--start', '-1{}'.format(period), '--end', 'now',
+                  '--start', '-1d', '--end', 'now',
                   '--font', 'DEFAULT:7:',
-                  '--title', 'Traffic monitor - {}'.format(settings[period]['title']),
+                  '--title', 'Traffic monitor - Daily',
                   '--watermark', time_now,
                   '--vertical-label', 'Mb/sec',
                   '--right-axis-label', 'Mb/sec',
                   '--lower-limit', '0',
                   '--right-axis', '1:0',
-                  '--x-grid', settings[period]['x-grid'],
+                  '--x-grid', 'MINUTE:10:HOUR:1:MINUTE:120:0:%R',
                   '--alt-y-grid', '--rigid',
                   'DEF:tot_ttk_in={}{}:traffic_ttk_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
                   'DEF:tot_megafon_in={}{}:traffic_megafon_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
@@ -101,8 +90,6 @@ def graph(period):
                   'DEF:tot_rtk_out={}{}:traffic_rtk_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
                   'CDEF:total_in=tot_ttk_in,tot_megafon_in,+,tot_rtk_in,+,8,*,1000000,/',
                   'CDEF:total_out=tot_ttk_out,tot_megafon_out,+,tot_rtk_out,+,8,*,1000000,/',
-                  # 'CDEF:tot_ttk_in_ps=tot_ttk_in,8,*',
-                  # 'CDEF:tot_ttk_out_ps=tot_ttk_out,8,*',
                   'AREA:total_in#00FF00:In traffic (Mbps)\t',
                   'GPRINT:total_in:LAST:Cur\: %5.2lf',
                   'GPRINT:total_in:AVERAGE:Avg\: %5.2lf',
@@ -112,8 +99,76 @@ def graph(period):
                   'GPRINT:total_out:LAST:Cur\: %5.2lf',
                   'GPRINT:total_out:AVERAGE:Avg\: %5.2lf',
                   'GPRINT:total_out:MAX:Max\: %5.2lf',
-                  'GPRINT:total_out:MIN:Min\: %5.2lf\t\t\t\\n',
-                 )
+                  'GPRINT:total_out:MIN:Min\: %5.2lf\t\t\t\\n')
+
+    # draw particular graphs, length according to sidebar menu
+    else:
+        settings = {'d': {'filename': secure.RRDTRAF_D_GRAPH_NAME,
+                          'x-grid': 'MINUTE:10:HOUR:1:MINUTE:120:0:%R',
+                          'title': 'DAILY'},
+                    'w': {'filename': secure.RRDTRAF_W_GRAPH_NAME,
+                          'x-grid': 'HOUR:2:DAY:1:DAY:1:86400:%A',
+                          'title': 'WEEKLY'},
+                    'm': {'filename': secure.RRDTRAF_M_GRAPH_NAME,
+                          'x-grid': 'HOUR:12:DAY:1:WEEK:1:0:%d, %m',
+                          'title': 'MONTHLY'},
+                    'y': {'filename': secure.RRDTRAF_Y_GRAPH_NAME,
+                          'x-grid': 'WEEK:1:WEEK:2:MONTH:1:0:%b',
+                          'title': 'YEARLY'}}
+
+        isps = {'ttk': {'CDEF_IN': 'CDEF:ttk_in_ps=tot_ttk_in,8,*,1000000,/',
+                        'VAR_IN': 'ttk_in_ps',
+                        'CDEF_OUT': 'CDEF:ttk_out_ps=tot_ttk_out,8,*,1000000,/',
+                        'VAR_OUT': 'ttk_out_ps'},
+               'rtk': {'CDEF_IN': 'CDEF:rtk_in_ps=tot_rtk_in,8,*,1000000,/',
+                        'VAR_IN': 'rtk_in_ps',
+                        'CDEF_OUT': 'CDEF:ttk_out_ps=tot_rtk_out,8,*,1000000,/',
+                        'VAR_OUT': 'rtk_out_ps'},
+               'mgf': {'CDEF_IN': 'CDEF:mgf_in_ps=tot_megafon_in,8,*,1000000,/',
+                        'VAR_IN': 'mgf_in_ps',
+                        'CDEF_OUT': 'CDEF:mgf_out_ps=tot_megafon_out,8,*,1000000,/',
+                        'VAR_OUT': 'mgf_out_ps'},
+               'total': {'CDEF_IN': '',
+                        'VAR_IN': 'total_in',
+                        'CDEF_OUT': '',
+                        'VAR_OUT': 'total_out'}}
+
+        for isp in isps:
+            rrdtool.graph(FILE_PATH + isp + settings[period]['filename'],
+                          '-w', '700', '-h', '158', '-a', 'PNG',
+                          '--slope-mode',
+                          '--start', '-1{}'.format(period), '--end', 'now',
+                          '--font', 'DEFAULT:7:',
+                          '--title', 'Traffic monitor - {} {}'.format(isp. settings[period]['title']),
+                          '--watermark', time_now,
+                          '--vertical-label', 'Mb/sec',
+                          '--right-axis-label', 'Mb/sec',
+                          '--lower-limit', '0',
+                          '--right-axis', '1:0',
+                          '--x-grid', settings[period]['x-grid'],
+                          '--alt-y-grid', '--rigid',
+                          'DEF:tot_ttk_in={}{}:traffic_ttk_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                          'DEF:tot_megafon_in={}{}:traffic_megafon_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                          'DEF:tot_rtk_in={}{}:traffic_rtk_in:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                          'DEF:tot_ttk_out={}{}:traffic_ttk_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                          'DEF:tot_megafon_out={}{}:traffic_megafon_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                          'DEF:tot_rtk_out={}{}:traffic_rtk_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
+                          'CDEF:total_in=tot_ttk_in,tot_megafon_in,+,tot_rtk_in,+,8,*,1000000,/',
+                          'CDEF:total_out=tot_ttk_out,tot_megafon_out,+,tot_rtk_out,+,8,*,1000000,/',
+                          isps['isp']['CDEF_IN'],
+                          isps['isp']['CDEF_OUT'],
+                          'LINE1:total_in#FF0000:In traffic (Mbps)\t',
+                          'AREA:{}#00FF00:In traffic (Mbps)\t'.format(isps['isp']['VAR_IN']),
+                          'GPRINT:{}:LAST:Cur\: %5.2lf'.format(isps['isp']['VAR_IN']),
+                          'GPRINT:{}:AVERAGE:Avg\: %5.2lf'.format(isps['isp']['VAR_IN']),
+                          'GPRINT:{}:MAX:Max\: %5.2lf'.format(isps['isp']['VAR_IN']),
+                          'GPRINT:{}:MIN:Min\: %5.2lf\t\t\t\\n'.format(isps['isp']['VAR_IN']),
+                          'LINE1:{}#0000FF:Out traffic (Mbps)\t'.format(isps['isp']['VAR_OUT']),
+                          'GPRINT:{}:LAST:Cur\: %5.2lf'.format(isps['isp']['VAR_OUT']),
+                          'GPRINT:{}:AVERAGE:Avg\: %5.2lf'.format(isps['isp']['VAR_OUT']),
+                          'GPRINT:{}:MAX:Max\: %5.2lf'.format(isps['isp']['VAR_OUT']),
+                          'GPRINT:{]:MIN:Min\: %5.2lf\t\t\t\\n'.format(isps['isp']['VAR_OUT']),
+                         )
 
 
 def main():
@@ -123,12 +178,13 @@ def main():
                         help='Initialize database')
     parser.add_argument('-u', '--update', action='store_true',
                         help='Update database')
-    parser.add_argument('-g', '--graph', nargs='?', default=None, const='d', metavar='<period>',
+    parser.add_argument('-g', '--graph', nargs='?', default=None, const=None, metavar='<period>',
                         help='''Draw graph for given period. Possible parameters:
-                                    d - day (default),
+                                    d - day,
                                     w - week,
                                     m - month,
-                                    y - year.''')
+                                    y - year.
+                                By default draw big graph for main page,daily total traffic usage.''')
     args = parser.parse_args()
 
     if args.initialize:
