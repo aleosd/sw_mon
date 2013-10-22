@@ -50,7 +50,8 @@ def index(request, status='all'):
                    'sw_warning': sw_warning,
                    'sw_error': sw_error,
                    'switch_list': switch_list,
-                   'sw_disabled': sw_disabled})
+                   'sw_disabled': sw_disabled,
+                   'sw_all': sw_enabled + sw_disabled})
 
 
 @login_required
