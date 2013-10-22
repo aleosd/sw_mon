@@ -68,7 +68,7 @@ def graph(period):
     time_now = datetime.datetime.today().ctime()
 
     # draw common graph, full page length
-    if period is None:
+    if period == 't':
             rrdtool.graph(FILE_PATH + GRAPH_NAME,
                   '-w', '785', '-h', '120', '-a', 'PNG',
                   '--slope-mode',
@@ -110,10 +110,10 @@ def graph(period):
                           'x-grid': 'HOUR:2:DAY:1:DAY:1:86400:%A',
                           'title': 'WEEKLY'},
                     'm': {'filename': secure.RRDTRAF_M_GRAPH_NAME,
-                          'x-grid': 'HOUR:12:DAY:1:WEEK:1:0:%d, %m',
+                          'x-grid': 'HOUR:24:WEEK:1:WEEK:1:0:%d.%m',
                           'title': 'MONTHLY'},
                     'y': {'filename': secure.RRDTRAF_Y_GRAPH_NAME,
-                          'x-grid': 'WEEK:1:WEEK:2:MONTH:1:0:%b',
+                          'x-grid': 'WEEK:1:MONTH:1:MONTH:1:0:%b',
                           'title': 'YEARLY'}}
 
         isps = {'ttk': {'CDEF_IN': 'CDEF:ttk_in_ps=tot_ttk_in,8,*,1000000,/',
@@ -122,24 +122,24 @@ def graph(period):
                         'VAR_OUT': 'ttk_out_ps'},
                'rtk': {'CDEF_IN': 'CDEF:rtk_in_ps=tot_rtk_in,8,*,1000000,/',
                         'VAR_IN': 'rtk_in_ps',
-                        'CDEF_OUT': 'CDEF:ttk_out_ps=tot_rtk_out,8,*,1000000,/',
+                        'CDEF_OUT': 'CDEF:rtk_out_ps=tot_rtk_out,8,*,1000000,/',
                         'VAR_OUT': 'rtk_out_ps'},
                'mgf': {'CDEF_IN': 'CDEF:mgf_in_ps=tot_megafon_in,8,*,1000000,/',
                         'VAR_IN': 'mgf_in_ps',
                         'CDEF_OUT': 'CDEF:mgf_out_ps=tot_megafon_out,8,*,1000000,/',
                         'VAR_OUT': 'mgf_out_ps'},
-               'total': {'CDEF_IN': '',
+                'total': {'CDEF_IN': 'COMMENT: ',
                         'VAR_IN': 'total_in',
-                        'CDEF_OUT': '',
+                        'CDEF_OUT': 'COMMENT: ',
                         'VAR_OUT': 'total_out'}}
 
         for isp in isps:
-            rrdtool.graph(FILE_PATH + isp + settings[period]['filename'],
-                          '-w', '700', '-h', '158', '-a', 'PNG',
+            rrdtool.graph(FILE_PATH + isp + '_' + settings[period]['filename'],
+                          '-w', '550', '-h', '130', '-a', 'PNG',
                           '--slope-mode',
                           '--start', '-1{}'.format(period), '--end', 'now',
                           '--font', 'DEFAULT:7:',
-                          '--title', 'Traffic monitor - {} {}'.format(isp. settings[period]['title']),
+                          '--title', 'Traffic monitor - {} {}'.format(isp, settings[period]['title']),
                           '--watermark', time_now,
                           '--vertical-label', 'Mb/sec',
                           '--right-axis-label', 'Mb/sec',
@@ -155,19 +155,19 @@ def graph(period):
                           'DEF:tot_rtk_out={}{}:traffic_rtk_out:AVERAGE'.format(FILE_PATH, FILE_NAME),
                           'CDEF:total_in=tot_ttk_in,tot_megafon_in,+,tot_rtk_in,+,8,*,1000000,/',
                           'CDEF:total_out=tot_ttk_out,tot_megafon_out,+,tot_rtk_out,+,8,*,1000000,/',
-                          isps['isp']['CDEF_IN'],
-                          isps['isp']['CDEF_OUT'],
-                          'LINE1:total_in#FF0000:In traffic (Mbps)\t',
-                          'AREA:{}#00FF00:In traffic (Mbps)\t'.format(isps['isp']['VAR_IN']),
-                          'GPRINT:{}:LAST:Cur\: %5.2lf'.format(isps['isp']['VAR_IN']),
-                          'GPRINT:{}:AVERAGE:Avg\: %5.2lf'.format(isps['isp']['VAR_IN']),
-                          'GPRINT:{}:MAX:Max\: %5.2lf'.format(isps['isp']['VAR_IN']),
-                          'GPRINT:{}:MIN:Min\: %5.2lf\t\t\t\\n'.format(isps['isp']['VAR_IN']),
-                          'LINE1:{}#0000FF:Out traffic (Mbps)\t'.format(isps['isp']['VAR_OUT']),
-                          'GPRINT:{}:LAST:Cur\: %5.2lf'.format(isps['isp']['VAR_OUT']),
-                          'GPRINT:{}:AVERAGE:Avg\: %5.2lf'.format(isps['isp']['VAR_OUT']),
-                          'GPRINT:{}:MAX:Max\: %5.2lf'.format(isps['isp']['VAR_OUT']),
-                          'GPRINT:{]:MIN:Min\: %5.2lf\t\t\t\\n'.format(isps['isp']['VAR_OUT']),
+                          isps[isp]['CDEF_IN'],
+                          isps[isp]['CDEF_OUT'],
+                          'LINE1:total_in#FF0000:Total In traffic (Mbps)\\n',
+                          'AREA:{}#00FF00:In traffic (Mbps)\t'.format(isps[isp]['VAR_IN']),
+                          'GPRINT:{}:LAST:Cur\: %5.2lf'.format(isps[isp]['VAR_IN']),
+                          'GPRINT:{}:AVERAGE:Avg\: %5.2lf'.format(isps[isp]['VAR_IN']),
+                          'GPRINT:{}:MAX:Max\: %5.2lf'.format(isps[isp]['VAR_IN']),
+                          'GPRINT:{}:MIN:Min\: %5.2lf\t\t\t\\n'.format(isps[isp]['VAR_IN']),
+                          'LINE1:{}#0000FF:Out traffic (Mbps)\t'.format(isps[isp]['VAR_OUT']),
+                          'GPRINT:{}:LAST:Cur\: %5.2lf'.format(isps[isp]['VAR_OUT']),
+                          'GPRINT:{}:AVERAGE:Avg\: %5.2lf'.format(isps[isp]['VAR_OUT']),
+                          'GPRINT:{}:MAX:Max\: %5.2lf'.format(isps[isp]['VAR_OUT']),
+                          'GPRINT:{}:MIN:Min\: %5.2lf\t\t\t\\n'.format(isps[isp]['VAR_OUT']),
                          )
 
 
@@ -180,6 +180,7 @@ def main():
                         help='Update database')
     parser.add_argument('-g', '--graph', nargs='?', default=None, const=None, metavar='<period>',
                         help='''Draw graph for given period. Possible parameters:
+                                    t - total (default),
                                     d - day,
                                     w - week,
                                     m - month,
