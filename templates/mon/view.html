@@ -65,31 +65,44 @@ $('#ping_btn').click(function() {
 {% block maincontent %}
 {% if switch %}
 <p><strong>{% trans "Switch information:" %}</strong><p>
-    <ul>
-        <li><strong>{% trans "IP-address" %}:</strong> {{ switch.ip_addr }}</li>
-        <li><strong>{% trans "District" %}:</strong> {{ switch.get_sw_district_display }}</li>
-        <li><strong>{% trans "Address" %}:</strong> {{ switch.sw_addr }}</li>
-        {% if switch.sw_comment %}
-            <li><strong>{% trans "Comment" %}:</strong> {{ switch.sw_comment }}</li>
-        {% endif %}
-        <li><strong>{% trans "Type" %}:</strong> {{ switch.sw_type }}</li>
-        {% if switch.sw_device %}
-            <li><strong>{% trans "Model" %}:</strong> {{ switch.sw_device.str_for_tooltip }}</li>
-        {% endif %}
-        <li><strong>{% trans "State" %}:</strong> 
-            {% if switch.sw_enabled %}<span class="col_green">{% trans "Enabled" %}</span>
-            {% else %}<span class="col_red">{% trans "Disabled" %}<span>{% endif %}</li>
-        <li><strong>{% trans "Ping, ms" %}:</strong> 
-            {% if switch.sw_ping %}<span class="col_green">{{ switch.sw_ping }}</span>
-            {% else %}<span class="col_red">{% trans "Unknown" %}</span>
-            {% endif %}
-        </li>
-        <li><strong>{% trans "Uptime" %}:</strong>
-            {% if switch.sw_uptime %}<span class="col_green">{{ switch.sw_uptime_str }}</span>
-            {% else %}<span class="col_red">{% trans "Unknown" %}</span>
-            {% endif %}
-        </li>
-    </ul>
+
+    <div class="row">
+        <div class="span4">
+              <ul>
+                <li><strong>{% trans "IP-address" %}:</strong> {{ switch.ip_addr }}</li>
+                <li><strong>{% trans "District" %}:</strong> {{ switch.get_sw_district_display }}</li>
+                <li><strong>{% trans "Address" %}:</strong> {{ switch.sw_addr }}</li>
+                {% if switch.sw_comment %}
+                    <li><strong>{% trans "Comment" %}:</strong> {{ switch.sw_comment }}</li>
+                {% endif %}
+                <li><strong>{% trans "Type" %}:</strong> {{ switch.sw_type }}</li>
+                {% if switch.sw_device %}
+                    <li><strong>{% trans "Model" %}:</strong> {{ switch.sw_device.str_for_tooltip }}</li>
+                {% endif %}
+                <li><strong>{% trans "State" %}:</strong>
+                    {% if switch.sw_enabled %}<span class="col_green">{% trans "Enabled" %}</span>
+                    {% else %}<span class="col_red">{% trans "Disabled" %}<span>{% endif %}</li>
+                <li><strong>{% trans "Ping, ms" %}:</strong>
+                    {% if switch.sw_ping %}<span class="col_green">{{ switch.sw_ping }}</span>
+                    {% else %}<span class="col_red">{% trans "Unknown" %}</span>
+                    {% endif %}
+                </li>
+                <li><strong>{% trans "Uptime" %}:</strong>
+                    {% if switch.sw_uptime %}<span class="col_green">{{ switch.sw_uptime_str }}</span>
+                    {% else %}<span class="col_red">{% trans "Unknown" %}</span>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+        <div class="span4">
+            <ul>
+                <li><strong>{% trans "Config backup" %}:</strong>
+                    {% if switch.sw_backup_conf %}<span class="col_greeb">{% trans "Enabled" %}</span>
+                    {% else %}<span class="col_red">{% trans "Disabled" %}</span>{% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
 
     {% if events %}
     <script type="text/javascript">
