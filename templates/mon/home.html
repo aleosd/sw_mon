@@ -21,12 +21,18 @@
 {% endblock navbar %}
 
 {% block full_page_bottom %}
-<p class="well"><strong>Common Statistic</strong><br /><br />
-<a href="/mon/">Total switches:</a> {{ total_switches }}<br />
-<a href="/mon/">Disabled:</a> {{ disabled_switches }}<br />
-<a href="/mon/status/warnings/">Resently rebooted:</a> {{ warning_switches }}<br />
-<a href="/mon/status/errors">Not responding:</a> {{ error_switches }}<br /></p>
+<div class="row">
+    <div class="span3">
+        <p class="well"><strong>Common Statistic</strong><br /><br />
+        <a href="/mon/">Total switches:</a> {{ total_switches }}<br />
+        <a href="/mon/">Disabled:</a> {{ disabled_switches }}<br />
+        <a href="/mon/status/warnings/">Resently rebooted:</a> {{ warning_switches }}<br />
+        <a href="/mon/status/errors">Not responding:</a> {{ error_switches }}<br /></p>
+    </div>
+    <div class="span3">
 
+    </div>
+</div>
 <p>{% trans "Статистика пинга основного шлюза и yandex:" %}</p>
 <img src="{{ STATIC_URL}}img/switches/rrd_ping.png" class="img-polaroid">
 <p></p>

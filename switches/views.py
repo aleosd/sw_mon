@@ -22,7 +22,7 @@ def index(request, status='all'):
         )
     enabled_switch_list = [switch for switch in switch_list if switch.sw_enabled]
     sw_enabled = len(enabled_switch_list)
-    warning_switch_list = [switch for switch in enabled_switch_list if (switch.sw_uptime and
+    warning_switch_list = [switch for switch in enabled_switch_list if (switch.sw_ping and
                             (switch.sw_uptime < 86400 or not switch.sw_uptime))]
     sw_warning = len(warning_switch_list)
     error_switch_list = [switch for switch in enabled_switch_list if switch.sw_ping is None]

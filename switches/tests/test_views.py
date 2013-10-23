@@ -58,7 +58,35 @@ class SwitchViewsTest(TestCase):
             sw_id = 1000002
         )
 
- 
+        # creating switch with bad uptime
+        self.switch3 = create_switch(
+            ip_addr = '192.168.1.3',
+            sw_street = create_street(street='my_street3'),
+            sw_type = create_switch_type(sw_type='type_3'),
+            sw_id = 1000004,
+            sw_uptime = 200
+        )
+
+        # creating not responding switch (set ping to none) and bad uptime
+        self.switch3 = create_switch(
+            ip_addr = '192.168.1.4',
+            sw_street = create_street(),
+            sw_type = create_switch_type(sw_type='type_3'),
+            sw_id = 1000005,
+            sw_uptime = 200,
+            sw_ping = None
+        )
+
+        # disabled switch
+        self.switch3 = create_switch(
+            ip_addr = '192.168.1.5',
+            sw_street = create_street(),
+            sw_type = create_switch_type(),
+            sw_id = 1000006,
+            sw_uptime = 200,
+            sw_ping = None,
+            sw_enabled = False
+        )
     # ----------------- SWITCHES PART TESTS ------------------
     def test_site_root_response_code(self):
         response = self.client.get('/mon/')
@@ -69,7 +97,7 @@ class SwitchViewsTest(TestCase):
     def test_site_root_response_context(self):
         response = self.client.get('/mon/')
         self.assertTrue('switch_list' in response.context)
-        self.assertEqual(len(response.context['switch_list']), 2)
+        self.assertEqual(len(response.context['switch_list']), 5)
 
     def test_site_root_with_two_switch_obj(self):
         response = self.client.get('/mon/')
@@ -94,13 +122,37 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.switch1.ip_addr, response.content.decode('utf-8'))
 
-    def test_mon_status_views(self):
+    def test_mon_status_views_status_code(self):
         response_warn = self.client.get('/mon/status/warnings/')
         response_err = self.client.get('/mon/status/errors/')
         response_disabled = self.client.get('/mon/status/disabled/')
         self.assertEqual(response_warn.status_code, 200)
         self.assertEqual(response_err.status_code, 200)
         self.assertEqual(response_disabled.status_code, 200)
+
+    def test_mon_warning_status_page_response(self):
+        response_warn = self.client.get('/mon/status/warnings/')
+        self.assertEqual(response_warn.context['sw_all'], 5)
+        self.assertEqual(response_warn.context['sw_warning'], 1)
+        self.assertEqual(response_warn.context['sw_disabled'], 1)
+        self.assertEqual(response_warn.context['sw_error'], 1)
+        self.assertEqual(len(response_warn.context['switch_list']), 1)
+
+    def test_mon_error_status_page_response(self):
+        response_warn = self.client.get('/mon/status/errors/')
+        self.assertEqual(response_warn.context['sw_all'], 5)
+        self.assertEqual(response_warn.context['sw_warning'], 1)
+        self.assertEqual(response_warn.context['sw_disabled'], 1)
+        self.assertEqual(response_warn.context['sw_error'], 1)
+        self.assertEqual(len(response_warn.context['switch_list']), 1)
+
+    def test_mon_disabled_status_page_response(self):
+        response_warn = self.client.get('/mon/status/disabled/')
+        self.assertEqual(response_warn.context['sw_all'], 5)
+        self.assertEqual(response_warn.context['sw_warning'], 1)
+        self.assertEqual(response_warn.context['sw_disabled'], 1)
+        self.assertEqual(response_warn.context['sw_error'], 1)
+        self.assertEqual(len(response_warn.context['switch_list']), 1)
 
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):
