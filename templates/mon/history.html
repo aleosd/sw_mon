@@ -25,7 +25,7 @@ Events history
 <ul class="nav nav-list">
     <li><p class="text-center muted">
         {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
-     <li class="nav-header text-center">Last 24 hours: {{ events_per_day|length }} events</li>
+     <li class="nav-header text-center">Last 24 hours: {{ events_per_day }} events</li>
      <li class="nav-header">{% trans "Status" %}</li>
     {% if status == "all" %}
         <li class="active"><a href="/mon/events/all/">{% trans "All" %}</a></li>

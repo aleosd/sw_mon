@@ -4,9 +4,6 @@ from django.template.defaultfilters import slugify
 from blog.models import Category, Entry
 
 
-print ('blog/test/test_views.py imported')
-
-
 class BlogViewsTest(TestCase):
     def create_category(self, **kwargs):
         defaults = {

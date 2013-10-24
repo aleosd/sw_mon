@@ -12,7 +12,6 @@ def graph_by_query(request, query, type_):
               'monthly': 'm',
               'yearly': 'y'}
         imgs = Graph.objects.filter(period=pd[query])
-    print(query)
     if len(imgs) == 0:
         raise Http404
     return render(request, 'traf/graph_list.html', {'imgs': imgs})

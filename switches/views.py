@@ -83,7 +83,7 @@ def create_switch(request):
 
 @login_required
 def history(request, status=None):
-    t = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1))
+    t = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1)).count()
     # events_all = Event.objects.all()
 
     if status == "all":
@@ -112,13 +112,15 @@ def history(request, status=None):
 def home_view(request):
     total_switches = Switch.objects.all().count()
     disabled_switches = Switch.objects.filter(sw_enabled=False).count()
-    error_switches = Switch.objects.filter(sw_ping=None, sw_enabled=True).count()
+    error_switches = Switch.objects.filter(sw_ping=None, sw_enabled=True)
     warning_switches = Switch.objects.filter(sw_uptime__lt=86400).count()
+    events_per_day = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1)).count()
     return render(request, 'mon/home.html',
         {'total_switches': total_switches,
          'disabled_switches': disabled_switches,
          'error_switches': error_switches,
-         'warning_switches': warning_switches})
+         'warning_switches': warning_switches,
+         'events_per_day': events_per_day})
 
 
 @login_required

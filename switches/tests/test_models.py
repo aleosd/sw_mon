@@ -1,8 +1,6 @@
 from django.test import TestCase
 from switches.models import Switch
 
-print('test_models imported!\n')
-
 
 class SwitchModelsTest(TestCase):
 
