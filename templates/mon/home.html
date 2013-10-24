@@ -31,13 +31,25 @@
     </div>
     <div class="span3">
         <p class="well"><strong>{% trans "Not responding switches" %}:</strong><br /><br />
-            {% if error_switch|length > 0 %}
-                {% for switch in error_switch %}
-                    <a href="{% url 'view' switch.id %}">{{ switch}}</a>
-                {% endfor %}
+            {% if error_switches|length > 0 %}
+                {% if error_switches|length < 5 %}
+                    {% for switch in error_switches %}
+                        <a href="{% url 'view' switch.id %}">{{ switch}}</a>
+                    {% endfor %}
+                {% else %}
+                    {% for switch in error_switches|slice:":4" %}
+                        <a href="{% url 'view' switch.id %}">{{ switch}}</a>
+                    {% endfor %}
+                    <a href="/mon/status/errors/">     More...</a>
+                {% endif %}
             {% else %}
                 {% trans "All switches are up" %}
             {% endif %}
+        </p>
+    </div>
+    <div class="span3">
+        <p class="well"><strong>{% trans "Events for 24h" %}:</strong>
+            {{ events_per_day }}
         </p>
     </div>
 </div>
