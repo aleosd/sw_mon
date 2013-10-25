@@ -43,14 +43,16 @@
                     <a href="/mon/status/errors/">     More...</a>
                 {% endif %}
             {% else %}
-                {% trans "All switches are up" %}
+                {% trans "All switches are up!" %}
             {% endif %}
         </p>
     </div>
-    <div class="span3">
-        <p class="well"><strong>{% trans "Events for 24h" %}:</strong>
-            {{ events_per_day }}
-        </p>
+    <div class="span6">
+        <p class="well"><strong>{% trans "Events for 24h" %}:</strong>{{ events_per_day }}</p>
+        {% for event in last_events %}
+            <span class="{% if event.ev_type == 'err' %}text-error{% endif %}">{{ event.get_ev_type_display }}:</span>
+            {{ event.ev_switch }} - {{ event.ev_datetime|date:"d M, H:i" }}
+        {% endfor %}
     </div>
 </div>
 <p>{% trans "Статистика пинга основного шлюза и yandex:" %}</p>

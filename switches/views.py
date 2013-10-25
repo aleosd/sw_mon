@@ -115,12 +115,14 @@ def home_view(request):
     error_switches = Switch.objects.filter(sw_ping=None, sw_enabled=True)
     warning_switches = Switch.objects.filter(sw_uptime__lt=86400).count()
     events_per_day = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1)).count()
+    last_events = Event.objects.all()[:4]
     return render(request, 'mon/home.html',
         {'total_switches': total_switches,
          'disabled_switches': disabled_switches,
          'error_switches': error_switches,
          'warning_switches': warning_switches,
-         'events_per_day': events_per_day})
+         'events_per_day': events_per_day,
+         'last_events': last_events})
 
 
 @login_required
