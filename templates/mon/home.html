@@ -48,10 +48,10 @@
         </p>
     </div>
     <div class="span6">
-        <p class="well"><strong>{% trans "Events for 24h" %}:</strong>{{ events_per_day }}
+        <p class="well"><strong>{% trans "Events for 24h" %}:</strong>{{ events_per_day }}<br /><br />
         {% for event in last_events %}
             <span class="{% if event.ev_type == 'err' %}text-error{% endif %}">{{ event.get_ev_type_display }}:</span>
-            {{ event.ev_switch }} - {{ event.ev_datetime|date:"d M, H:i" }}<br />
+            {{ event.ev_switch }}: {{ event.ev_datetime|date:"d M, H:i" }}<br />
         {% endfor %}
         </p>
     </div>
