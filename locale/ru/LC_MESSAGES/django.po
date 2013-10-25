@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-15 09:50+0600\n"
+"POT-Creation-Date: 2013-10-25 14:07+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,67 +19,77 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: templates/base.html:29 templates/blog/category_detail.html:11
-#: templates/blog/entry_detail.html:11 templates/blog/entry_index.html:11
-#: templates/blog/search.html:11 templates/mon/history.html:11
-#: templates/mon/home.html:11
+#: templates/base.html:30 templates/blog/category_detail.html:11
+#: templates/blog/entry_detail.html:11 templates/blog/entry_index.html:12
+#: templates/blog/search.html:11 templates/mon/history.html:12
+#: templates/mon/home.html:12
 msgid "Monitor"
 msgstr "Мониторинг"
 
-#: templates/base.html:30 templates/blog/category_detail.html:12
-#: templates/blog/entry_detail.html:12 templates/blog/entry_index.html:12
-#: templates/blog/search.html:12 templates/mon/history.html:12
-#: templates/mon/home.html:12
+#: templates/base.html:32 templates/blog/entry_index.html:14
+#: templates/mon/history.html:14 templates/mon/home.html:14
+msgid "Devices"
+msgstr "Устройства"
+
+#: templates/base.html:33 templates/blog/entry_index.html:15
+#: templates/mon/history.html:15 templates/mon/home.html:15
+msgid "Traffic"
+msgstr "Трафик"
+
+#: templates/base.html:36 templates/blog/category_detail.html:12
+#: templates/blog/entry_detail.html:12 templates/blog/entry_index.html:18
+#: templates/blog/search.html:12 templates/mon/history.html:18
+#: templates/mon/home.html:18
 msgid "Events"
 msgstr "События"
 
-#: templates/base.html:31 templates/blog/category_detail.html:13
-#: templates/blog/entry_detail.html:13 templates/blog/entry_index.html:13
-#: templates/blog/search.html:13 templates/mon/history.html:13
-#: templates/mon/home.html:13
+#: templates/base.html:37 templates/blog/category_detail.html:13
+#: templates/blog/entry_detail.html:13 templates/blog/entry_index.html:19
+#: templates/blog/search.html:13 templates/mon/history.html:19
+#: templates/mon/home.html:19
 msgid "Blog"
 msgstr "Блог"
 
-#: templates/base.html:39
+#: templates/base.html:45
 msgid "Admin Panel"
 msgstr "Управление"
 
-#: templates/base.html:41
+#: templates/base.html:47
 msgid "Logout"
 msgstr "Выйти"
 
-#: templates/base.html:45
+#: templates/base.html:51
 msgid "Login"
 msgstr "Войти"
 
-#: templates/base.html:48
+#: templates/base.html:54
 msgid "Lang"
 msgstr "Язык"
 
 #: templates/blog/category_detail.html:29 templates/blog/entry_index.html:5
-#: templates/blog/entry_index.html.py:29 templates/blog/search.html:29
+#: templates/blog/entry_index.html.py:35 templates/blog/search.html:29
 msgid "All Entries"
 msgstr "Все записи"
 
-#: templates/blog/category_detail.html:30 templates/blog/entry_index.html:30
+#: templates/blog/category_detail.html:30 templates/blog/entry_index.html:36
 #: templates/blog/search.html:30
 msgid "By Category"
 msgstr "По категориям"
 
-#: templates/blog/category_detail.html:40 templates/blog/entry_index.html:36
+#: templates/blog/category_detail.html:40 templates/blog/entry_index.html:42
 #: templates/blog/search.html:36
 msgid "Add Entry"
 msgstr "Добавить запись"
 
-#: templates/blog/entry_index.html:52 templates/blog/search.html:53
+#: templates/blog/entry_index.html:58 templates/blog/search.html:53
 msgid "Read more..."
 msgstr "Читать далее..."
 
-#: templates/blog/entry_index.html:60 templates/blog/entry_index.html.py:63
+#: templates/blog/entry_index.html:66 templates/blog/entry_index.html.py:69
 msgid "Prev"
 msgstr "Пред"
 
-#: templates/blog/entry_index.html:72 templates/blog/entry_index.html.py:74
+#: templates/blog/entry_index.html:78 templates/blog/entry_index.html.py:80
 msgid "Next"
 msgstr "След"
 
@@ -95,22 +105,22 @@ msgstr "Результаты поиска по запросу "
 msgid "No search results for query "
 msgstr "Нет результатов поиска по запросу "
 
-#: templates/mon/history.html:23 templates/mon/index.html:45
+#: templates/mon/history.html:29 templates/mon/index.html:45
 msgid "Status"
 msgstr "Статус"
 
-#: templates/mon/history.html:25 templates/mon/history.html.py:29
-#: templates/mon/history.html:33 templates/mon/index.html:47
+#: templates/mon/history.html:31 templates/mon/history.html.py:35
+#: templates/mon/history.html:39 templates/mon/index.html:47
 msgid "All"
 msgstr "Все"
 
-#: templates/mon/history.html:26 templates/mon/history.html.py:30
-#: templates/mon/history.html:34 templates/mon/index.html:49
+#: templates/mon/history.html:32 templates/mon/history.html.py:36
+#: templates/mon/history.html:40 templates/mon/index.html:49
 msgid "Warning"
 msgstr "Внимание"
 
-#: templates/mon/history.html:27 templates/mon/history.html.py:31
-#: templates/mon/history.html:35 templates/mon/index.html:51
+#: templates/mon/history.html:33 templates/mon/history.html.py:37
+#: templates/mon/history.html:41 templates/mon/index.html:51
 msgid "Error"
 msgstr "Ошибка"
 
@@ -118,11 +128,48 @@ msgstr "Ошибка"
 msgid "Home Page"
 msgstr "Мониторинг"
 
-#: templates/mon/home.html:18
+#: templates/mon/home.html:26
+msgid "Common Statistic"
+msgstr "Общая статистика"
+
+#: templates/mon/home.html:27
+msgid "Total switches"
+msgstr "Свичей всего"
+
+#: templates/mon/home.html:28 templates/mon/index.html:55
+#: templates/mon/view.html:84 templates/mon/view.html.py:101
+msgid "Disabled"
+msgstr "Отключен"
+
+#: templates/mon/home.html:29
+msgid "Resently rebooted"
+msgstr "Перезагруженные"
+
+#: templates/mon/home.html:30
+msgid "Not responding"
+msgstr "Не отвечают"
+
+#: templates/mon/home.html:33
+msgid "Not responding switches"
+msgstr "Не работающие свичи"
+
+#: templates/mon/home.html:43
+msgid "More"
+msgstr "Больше"
+
+#: templates/mon/home.html:46
+msgid "All switches are up!"
+msgstr "Все свичи работают!"
+
+#: templates/mon/home.html:51
+msgid "Events for 24h"
+msgstr "События за 24 часа"
+
+#: templates/mon/home.html:60
 msgid "Статистика пинга основного шлюза и yandex:"
 msgstr ""
 
-#: templates/mon/home.html:20
+#: templates/mon/home.html:63
 msgid "Общий трафик по всем интерфейсам:"
 msgstr ""
 
@@ -130,11 +177,7 @@ msgstr ""
 msgid "Search"
 msgstr "Поиск"
 
-#: templates/mon/index.html:55 templates/mon/view.html:81
-msgid "Disabled"
-msgstr "Отключен"
-
-#: templates/mon/index.html:58 templates/mon/view.html:70
+#: templates/mon/index.html:58 templates/mon/view.html:73
 msgid "District"
 msgstr "Район"
 
@@ -158,7 +201,7 @@ msgstr ""
 msgid "Add Switch"
 msgstr "Добавить свич"
 
-#: templates/mon/index.html:77 templates/mon/view.html:71
+#: templates/mon/index.html:77 templates/mon/view.html:74
 msgid "Address"
 msgstr "Адрес"
 
@@ -166,19 +209,19 @@ msgstr "Адрес"
 msgid "Ping"
 msgstr "Пинг"
 
-#: templates/mon/index.html:80 templates/mon/view.html:87
+#: templates/mon/index.html:80 templates/mon/view.html:90
 msgid "Uptime"
 msgstr "Работает"
 
-#: templates/mon/index.html:81 templates/mon/view.html:75
+#: templates/mon/index.html:81 templates/mon/view.html:78
 msgid "Type"
 msgstr "Тип"
 
-#: templates/mon/index.html:104 templates/mon/view.html:77
+#: templates/mon/index.html:104 templates/mon/view.html:80
 msgid "Model"
 msgstr "Модель"
 
-#: templates/mon/index.html:107 templates/mon/view.html:73
+#: templates/mon/index.html:107 templates/mon/view.html:76
 msgid "Comment"
 msgstr "Комментарий"
 
@@ -202,22 +245,66 @@ msgstr "Статистика пинга для"
 msgid "Switch information:"
 msgstr "Информация по свичу:"
 
-#: templates/mon/view.html:69
+#: templates/mon/view.html:72
 msgid "IP-address"
 msgstr "Ip-адрес"
 
-#: templates/mon/view.html:79
+#: templates/mon/view.html:82
 msgid "State"
 msgstr "Статус"
 
-#: templates/mon/view.html:80
+#: templates/mon/view.html:83 templates/mon/view.html.py:100
 msgid "Enabled"
 msgstr "Включен"
 
-#: templates/mon/view.html:82
+#: templates/mon/view.html:85
 msgid "Ping, ms"
 msgstr "Пинг, мс"
 
-#: templates/mon/view.html:84 templates/mon/view.html.py:89
+#: templates/mon/view.html:87 templates/mon/view.html.py:92
 msgid "Unknown"
 msgstr "Неизвестно"
+
+#: templates/mon/view.html:99
+msgid "Config backup"
+msgstr "Резервное копирование настроек"
+
+#: templates/traf/graph_list.html:14
+msgid "BY ISP"
+msgstr "ПО ПРОВАЙДЕРУ"
+
+#: templates/traf/graph_list.html:15
+msgid "Total"
+msgstr "Всего"
+
+#: templates/traf/graph_list.html:16
+msgid "TTK"
+msgstr ""
+
+#: templates/traf/graph_list.html:17
+msgid "RTK"
+msgstr ""
+
+#: templates/traf/graph_list.html:18
+msgid "Megafon"
+msgstr ""
+
+#: templates/traf/graph_list.html:19
+msgid "BY PERIOD"
+msgstr "ПО ПЕРИОДУ"
+
+#: templates/traf/graph_list.html:20
+msgid "Daily"
+msgstr "За день"
+
+#: templates/traf/graph_list.html:21
+msgid "Weekly"
+msgstr "За неделю"
+
+#: templates/traf/graph_list.html:22
+msgid "Monthly"
+msgstr "За месяц"
+
+#: templates/traf/graph_list.html:23
+msgid "Yearly"
+msgstr "За год"
