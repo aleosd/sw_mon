@@ -48,11 +48,12 @@
         </p>
     </div>
     <div class="span6">
-        <p class="well"><strong>{% trans "Events for 24h" %}:</strong>{{ events_per_day }}</p>
+        <p class="well"><strong>{% trans "Events for 24h" %}:</strong>{{ events_per_day }}
         {% for event in last_events %}
             <span class="{% if event.ev_type == 'err' %}text-error{% endif %}">{{ event.get_ev_type_display }}:</span>
-            {{ event.ev_switch }} - {{ event.ev_datetime|date:"d M, H:i" }}
+            {{ event.ev_switch }} - {{ event.ev_datetime|date:"d M, H:i" }}<br />
         {% endfor %}
+        </p>
     </div>
 </div>
 <p>{% trans "Статистика пинга основного шлюза и yandex:" %}</p>
