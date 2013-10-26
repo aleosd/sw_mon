@@ -34,7 +34,7 @@
             {% if error_switches|length > 0 %}
                 {% if error_switches|length < 5 %}
                     {% for switch in error_switches %}
-                        <a href="{% url 'view' switch.id %}">{{ switch}}</a>
+                        <a href="{% url 'view' switch.id %}">{{ switch}}</a><br />
                     {% endfor %}
                 {% else %}
                     {% for switch in error_switches|slice:":3" %}

@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from graphs.models import Graph
 from django.http import Http404
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def graph_by_query(request, query, type_):
     if type_ == 'isp':
         imgs = Graph.objects.filter(isp=query)
