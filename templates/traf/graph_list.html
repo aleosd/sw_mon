@@ -26,10 +26,16 @@ Traffic Monitoring
 {% endblock sidemenu%}
 
 {% block maincontent %}
-
-    {% for img in imgs %}
-        <img src="{{ STATIC_URL}}{{ img.get_web_url }}" class="img-polaroid">
-        <p></p>
-    {% endfor %}
+    {% if type_ == 'period' %}
+        {% for img in imgs %}
+            <img src="{{ STATIC_URL}}{{ img.get_web_url }}" class="img-polaroid">
+            <p></p>
+        {% endfor %}
+    {% else %}
+        {% for img in imgs %}
+            <img src="{{ STATIC_URL}}{{ img.get_web_url }}" class="img-polaroid">
+            <p></p>
+        {% endfor %}
+    {% endif %}
 
 {% endblock maincontent%}
