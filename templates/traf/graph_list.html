@@ -5,6 +5,15 @@
 Traffic Monitoring
 {% endblock %}
 
+{% block script %}
+
+// Side menu highlighter for traffic pages
+$(document).ready( function() {
+    var path_array = window.location.pathname.split('/');
+    $('#' + path_array[path_array.length - 1]).addClass('active');
+}
+
+{% endblock script %}
 
 {% block sidemenu %}
 <div class="well well-small">
@@ -12,15 +21,15 @@ Traffic Monitoring
     <li><p class="text-center muted">
         {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
     <li class="nav-header">{% trans "BY ISP" %}</li>
-        <li class="active"><a href="/traf/isp/ttl/">{% trans "Total" %}</a></li>
-        <li><a href="/traf/isp/ttk/">{% trans "TTK" %}</a></li>
-        <li><a href="/traf/isp/rtk/">{% trans "RTK" %}</a></li>
-        <li><a href="/traf/isp/mgf/">{% trans "Megafon" %}</a></li>
+        <li id="ttl"><a href="/traf/isp/ttl/">{% trans "Total" %}</a></li>
+        <li id="ttk"><a href="/traf/isp/ttk/">{% trans "TTK" %}</a></li>
+        <li id="rtk"><a href="/traf/isp/rtk/">{% trans "RTK" %}</a></li>
+        <li id="mgf"><a href="/traf/isp/mgf/">{% trans "Megafon" %}</a></li>
     <li class="nav-header">{% trans "BY PERIOD" %}</li>
-        <li><a href="/traf/period/daily/">{% trans "Daily" %}</a></li>
-        <li><a href="/traf/period/weekly/">{% trans "Weekly" %}</a></li>
-        <li><a href="/traf/period/monthly/">{% trans "Monthly" %}</a></li>
-        <li><a href="/traf/period/yearly/">{% trans "Yearly" %}</a></li>
+        <li id="daily"><a href="/traf/period/daily/">{% trans "Daily" %}</a></li>
+        <li id="weekly"><a href="/traf/period/weekly/">{% trans "Weekly" %}</a></li>
+        <li id="monthly"><a href="/traf/period/monthly/">{% trans "Monthly" %}</a></li>
+        <li id="yearly"><a href="/traf/period/yearly/">{% trans "Yearly" %}</a></li>
 </ul>
 </div>
 {% endblock sidemenu%}
