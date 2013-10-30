@@ -7,11 +7,13 @@ Traffic Monitoring
 
 {% block script %}
 
-// Side menu highlighter for traffic pages
+<!-- Side menu highlighter for traffic pages -->
+<script type="text/javascript">
 $(document).ready( function() {
     var path_array = window.location.pathname.split('/');
     $('#' + path_array[path_array.length - 1]).addClass('active');
 }
+</script>
 
 {% endblock script %}
 
