@@ -11,8 +11,9 @@ Traffic Monitoring
 <script type="text/javascript">
 $(document).ready( function() {
     var path_array = window.location.pathname.split('/');
-    $('#' + path_array[path_array.length - 1]).addClass('active');
-}
+    $('#' + path_array[path_array.length - 2]).addClass('active');
+    }
+)
 </script>
 
 {% endblock script %}
