@@ -33,6 +33,12 @@ def update():
     logging.info('Updating rrd database')
     gateway_ping = switch.Host('10.1.10.1').sys_ping(packet_count=8)
     yandex_ping = switch.Host('ya.ru').sys_ping(packet_count=8)
+    if gateway_ping[0] is None:
+        list(gateway_ping)
+        gateway_ping[0] = 0.0
+    if yandex_ping[0] is None:
+        list(yandex_ping)
+        yandex_ping[0] = 0.0
     try:
         rrdtool.update(FILE_PATH + FILE_NAME,
                        'N:{}:{}:{}'.format(gateway_ping[1], gateway_ping[0], yandex_ping[0]))
