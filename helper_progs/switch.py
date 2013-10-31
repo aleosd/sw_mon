@@ -81,7 +81,7 @@ class Host():
                 pl = float(pl.group(0).split('%')[0])
             if avg:
                 avg = float(avg.group(1).split('/')[1])
-        return avg, pl
+        return [avg, pl]
 
     def snmpget(self, oid):
         snmp_conn = snmp.Snmp(self.ip_addr)
