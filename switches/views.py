@@ -143,3 +143,16 @@ def ping_view(request):
     else:
         return_data = None
     return render(request, 'mon/ping_view.html', {'return_data': return_data})
+
+
+@login_required()
+def by_district(request, district):
+    switch_list = Switch.objects.select_related(
+        'sw_street',
+        'sw_type',
+        'sw_device',
+        'sw_device__dev_ven',
+        'sw_device__dev_ser',
+        'sw_device__dev_ser__ser_ven',
+    ).filter(sw_district=district)
+    return render(request, 'mon/index.html', {'switch_list': switch_list})

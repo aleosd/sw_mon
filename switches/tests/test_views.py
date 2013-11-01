@@ -154,6 +154,18 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response_warn.context['sw_error'], 1)
         self.assertEqual(len(response_warn.context['switch_list']), 1)
 
+    # ----------------- DISTRICT VIEWS TESTS --------------
+    def test_district_views_response_code(self):
+        response_mzv = self.client.get('/mon/district/mzv/')
+        response_ggn = self.client.get('/mon/district/ggn/')
+        response_vkz = self.client.get('/mon/district/vkz/')
+        response_szp = self.client.get('/mon/district/szp/')
+
+        self.assertEqual(response_mzv.status_code, 200)
+        self.assertEqual(response_ggn.status_code, 200)
+        self.assertEqual(response_vkz.status_code, 200)
+        self.assertEqual(response_szp.status_code, 200)
+
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):
         response = self.client.get('/mon/events/all/')

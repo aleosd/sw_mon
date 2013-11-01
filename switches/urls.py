@@ -9,4 +9,5 @@ urlpatterns = patterns('switches.views',
     url(r'^view/(?P<id>\d+)/$', 'switch_view', name='view'),
     url(r'^status/(?P<status>\w+)/$', 'index'), 
     url(r'^ping/$', 'ping_view'),
+    url(r'^district/(?P<district>\w+)/$', 'by_district'),
 ) 
