@@ -23,6 +23,10 @@ $(function(){
 $(document).ready(function()
     {
         $('#{{ status }}').addClass('active');
+        var path_array = window.location.pathname.split('/');
+        if path_array[path_array.length -3] == 'district'
+            $('#' + path_array[path_array.length - 2]).addClass('active');
+
         // $('#sw_table tbody tr').each(function(e) {
         //    if ($(this).hasClass('tr_disabled'))
         //        $(this).hide();
@@ -57,9 +61,9 @@ $(document).ready(function()
         </li>
     <li class="nav-header">{% trans "District" %}</li>
         <li id="mzv"><a href="/mon/district/mzv/">{% trans "Машзавод" %}</a></li>
-        <li id="gagrina"><a href="/mon/district/ggn/">{% trans "Гагарина" %}</a></li>
-        <li id="vokzal"><a href="/mon/district/vkz/">{% trans "Вокзал" %}</a></li>
-        <li id="sz"><a href="/mon/district/szp/">{% trans "Северо-Запад" %}</a></li>
+        <li id="ggn"><a href="/mon/district/ggn/">{% trans "Гагарина" %}</a></li>
+        <li id="vkz"><a href="/mon/district/vkz/">{% trans "Вокзал" %}</a></li>
+        <li id="szp"><a href="/mon/district/szp/">{% trans "Северо-Запад" %}</a></li>
     <li class="divider"></li>
         <li><a href="/new/">{% trans "Add Switch" %}</a><li>
 </ul>
