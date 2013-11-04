@@ -68,7 +68,7 @@ class SwitchViewsTest(TestCase):
         )
 
         # creating not responding switch (set ping to none) and bad uptime
-        self.switch3 = create_switch(
+        self.switch4 = create_switch(
             ip_addr = '192.168.1.4',
             sw_street = create_street(),
             sw_type = create_switch_type(sw_type='type_3'),
@@ -78,7 +78,7 @@ class SwitchViewsTest(TestCase):
         )
 
         # disabled switch
-        self.switch3 = create_switch(
+        self.switch5 = create_switch(
             ip_addr = '192.168.1.5',
             sw_street = create_street(),
             sw_type = create_switch_type(),
@@ -165,6 +165,10 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response_ggn.status_code, 200)
         self.assertEqual(response_vkz.status_code, 200)
         self.assertEqual(response_szp.status_code, 200)
+
+    def test_district_views_switch_count(self):
+        response_mzv = self.client.get('/mon/district/mzv/')
+        self.assertEqual(len(response_mzv.context['switch_list']), 5)
 
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):

@@ -1,5 +1,7 @@
 from django.test import TestCase
 from graphs.models import Graph
+from django.contrib.auth.models import User
+
 
 
 def create_graph(**kwargs):
@@ -18,6 +20,9 @@ class SimpleTest(TestCase):
         self.graph_ttk_d = create_graph(isp='ttk')
         self.graph_ttk_y = create_graph(isp='ttk', period='y')
 
+        User.objects.create_user('test', 'test@test.com', 'testpass')
+        self.user = self.client.login(username='test', password='testpass')
+
     # ----------------- MODEL TESTS -------------------
     def test_graph_get_web_url(self):
         self.assertEqual(self.graph_total_d.get_web_url(), 'img/total.png')
@@ -25,11 +30,11 @@ class SimpleTest(TestCase):
     # ----------------- VIEW TESTS --------------------
     def test_traf_page_response_code(self):
         response = self.client.get('/traf/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 301)
 
     def test_traf_isp_pages_response_code(self):
-        response_ttl = self.client.get('/traf/isp/ttl')
-        response_ttk = self.client.get('/traf/isp/ttk')
+        response_ttl = self.client.get('/traf/isp/ttl/')
+        response_ttk = self.client.get('/traf/isp/ttk/')
 
         self.assertEqual(response_ttl.status_code, 200)
         self.assertEqual(response_ttk.status_code, 200)
