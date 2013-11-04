@@ -24,7 +24,7 @@ $(document).ready(function()
     {
         $('#{{ status }}').addClass('active');
         var path_array = window.location.pathname.split('/');
-        if path_array[path_array.length -3] == 'district'
+        if (path_array[path_array.length - 3] == new String('district'))
             $('#' + path_array[path_array.length - 2]).addClass('active');
 
         // $('#sw_table tbody tr').each(function(e) {
