@@ -107,9 +107,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+INTERNAL_IPS = ('127.0.0.1', '10.1.7.204', '10.1.7.109', '0.0.0.0',)
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -150,6 +153,7 @@ INSTALLED_APPS = (
     'device',
     'graphs',
     'smart_selects',
+    'debug_toolbar',
 )
 
 # A sample logging configuration. The only tangible logging
