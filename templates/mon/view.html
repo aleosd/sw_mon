@@ -11,7 +11,7 @@
 <p><button class="btn sw_act_btn" id='edit_btn'>{% trans "Edit" %}</button></p>
 <p><button class="btn sw_act_btn" id='connect_btn'>{% trans "Connect" %}</button></p>
 <p><button class="btn sw_act_btn" id='ping_btn'>{% trans "Ping" %}</button></p>
-<p><button class="btn btn-danger sw_act_btn">{% trans "Reboot" %}</button></p>
+<p><button class="btn btn-danger sw_act_btn" id="reboot_btn">{% trans "Reboot" %}</button></p>
 </div>
 
 <div id="ping_modal" class="modal hide fade" tabindex="-1" role="dialog"
@@ -44,6 +44,27 @@ $('#ping_btn').click(function() {
     $.ajax({
         type: "POST",
         url: "/mon/ping/",
+        data: {
+            'id': '{{ switch.id }}',
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+        success: function(data) {
+            $('#response').html(data);
+            $('#ping_modal').modal();
+        },
+        error: function(data) {
+            $('#response').text('Error while processing request');
+        }
+        }).done(function() {
+    });
+});
+</script>
+
+<script>
+$('#reboot_btn').click(function() {
+    $.ajax({
+        type: "POST",
+        url: "/mon/reboot/",
         data: {
             'id': '{{ switch.id }}',
             'csrfmiddlewaretoken': '{{ csrf_token }}',

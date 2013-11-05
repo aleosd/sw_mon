@@ -49,7 +49,8 @@ class SwitchViewsTest(TestCase):
             ip_addr = '192.168.1.1',
             sw_street = create_street(street='my_street_1'),
             sw_type = create_switch_type(sw_type='type_1'),
-            sw_id = 1000003
+            sw_id = 1000003,
+            sw_district = 'ggn'
         )
         self.switch2 = create_switch(
             ip_addr = '192.168.1.2',
@@ -168,7 +169,10 @@ class SwitchViewsTest(TestCase):
 
     def test_district_views_switch_count(self):
         response_mzv = self.client.get('/mon/district/mzv/')
-        self.assertEqual(len(response_mzv.context['switch_list']), 5)
+        response_ggn = self.client.get('/mon/district/ggn/')
+
+        self.assertEqual(len(response_mzv.context['switch_list']), 4)
+        self.assertEqual(len(response_ggn.context['switch_list']), 1)
 
     # ----------------- EVENTS PART TESTS -----------------
     def test_event_page_response_code(self):

@@ -1,13 +1,14 @@
 # Create your views here.
 from datetime import timedelta
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 
 from helper_progs import switch as hp_switch
+from helper_progs import reboot
 
 
 @login_required
@@ -142,6 +143,18 @@ def ping_view(request):
         return_data = return_data.split('\n')
     else:
         return_data = None
+    return render(request, 'mon/ping_view.html', {'return_data': return_data})
+
+
+@login_required()
+def reboot_view(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        switch = get_object_or_404(Switch, id=id)
+        reboot.reboot(switch.ip_addr)
+        return_data = 'Successfully processed with reboot. Check uptime in 5 minutes'
+    else:
+        return HttpResponseBadRequest
     return render(request, 'mon/ping_view.html', {'return_data': return_data})
 
 
