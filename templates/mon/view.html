@@ -17,7 +17,7 @@
 <div id="ping_modal" class="modal hide fade" tabindex="-1" role="dialog"
     aria-labelledby="ping_modal_label" aria-hidden="true">
     <div class="modal-header">
-        <h4 id="ping_modal_label">{% trans "Ping statistic for" %} {{ switch.ip_addr }}, {{ switch.sw_addr }}</h3>
+        <h4 id="ping_modal_label">{% trans "Ping statistic for" %} {{ switch.ip_addr }}, {{ switch.sw_addr }}</h4>
     </div>
     <div class="modal-body">
         <p id="response"><span class="col_red">Empty Response</span></p>
@@ -30,7 +30,7 @@
 <div id="reboot_modal" class="modal hide fade" tabindex="-1" role="dialog"
     aria-labelledby="ping_modal_label" aria-hidden="true">
     <div class="modal-header">
-        <h4 id="ping_modal_label">{% trans "Reboot request for" %} {{ switch.ip_addr }}, {{ switch.sw_addr }}</h3>
+        <h4 id="reboot_modal_label">{% trans "Reboot request for" %} {{ switch.ip_addr }}, {{ switch.sw_addr }}</h4>
     </div>
     <div class="modal-body">
         <p id="response"><span class="col_red">Empty Response</span></p>
@@ -115,7 +115,7 @@ $('#reboot_btn').click(function() {
                 {% endif %}
                 <li><strong>{% trans "State" %}:</strong>
                     {% if switch.sw_enabled %}<span class="col_green">{% trans "Enabled" %}</span>
-                    {% else %}<span class="col_red">{% trans "Disabled" %}<span>{% endif %}</li>
+                    {% else %}<span class="col_red">{% trans "Disabled" %}</span>{% endif %}</li>
                 <li><strong>{% trans "Ping, ms" %}:</strong>
                     {% if switch.sw_ping %}<span class="col_green">{{ switch.sw_ping }}</span>
                     {% else %}<span class="col_red">{% trans "Unknown" %}</span>
