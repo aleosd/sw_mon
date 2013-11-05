@@ -60,8 +60,8 @@ def edit(request, id=None):
     if not id:
         return render(request, 'mon/edit.html', {'form': SwitchForm()})
     else:
-        events = Event.objects.filter(ev_switch=id)[:20]
-        switch = Switch.objects.get(id=id)
+        events = Event.objects.filter(ev_switch=id)[:20].select_related()
+        switch = Switch.objects.select_related().get(id=id)
         form = SwitchForm(instance=switch)
         request.session['instance'] = switch
         return render(request, 'mon/edit.html', {'form': form, 'events': events})
@@ -113,9 +113,9 @@ def history(request, status=None):
 def home_view(request):
     total_switches = Switch.objects.all().select_related()
     disabled_switches = len([ sw for sw in total_switches if not sw.sw_enabled])
-    error_switches = len([sw for sw in total_switches if (not sw.sw_ping and sw.sw_enabled)])
+    error_switches = [sw for sw in total_switches if (not sw.sw_ping and sw.sw_enabled)]
     warning_switches = len([sw for sw in total_switches if sw.sw_uptime and sw.sw_uptime < 86400])
-    events_per_day = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1))
+    events_per_day = Event.objects.filter(ev_datetime__gte=timezone.now() - timedelta(days=1)) # .select_related()
     last_events = [ev for ev in events_per_day][:4]
     return render(request, 'mon/home.html',
         {'total_switches': len(total_switches),
@@ -128,7 +128,7 @@ def home_view(request):
 
 @login_required
 def switch_view(request, id):
-    events = Event.objects.filter(ev_switch=id)[:30]
+    events = Event.objects.filter(ev_switch=id)[:30].select_related()
     switch = Switch.objects.select_related().get(id=id)
     return render(request, 'mon/view.html', {'switch': switch,
                                              'events': events})
