@@ -33,7 +33,7 @@
         <h4 id="reboot_modal_label">{% trans "Reboot request for" %} {{ switch.ip_addr }}, {{ switch.sw_addr }}</h4>
     </div>
     <div class="modal-body">
-        <p id="response"><span class="col_red">Empty Response</span></p>
+        <p id="reboot_response"><span class="col_red">Empty Response</span></p>
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -83,7 +83,7 @@ $('#reboot_btn').click(function() {
             'csrfmiddlewaretoken': '{{ csrf_token }}',
             },
         success: function(data) {
-            $('#response').html(data);
+            $('#reboot_response').html(data);
             $('#reboot_modal').modal();
         },
         error: function(data) {
