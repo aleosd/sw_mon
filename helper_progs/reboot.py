@@ -6,12 +6,19 @@ import argparse
 import logging
 from threading import Thread
 
-import switch
-import snmp
-import database
-import secure
-import snmp_oids
-# from timer import Timer
+try:
+    from . import switch
+    from . import snmp
+    from . import database
+    from . import secure
+    from . import snmp_oids
+except ValueError:
+    import switch
+    import snmp
+    import database
+    import secure
+    import snmp_oids
+    # from timer import Timer
 
 
 switch_types = {
