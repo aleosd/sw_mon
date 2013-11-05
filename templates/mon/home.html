@@ -27,7 +27,7 @@
         <a href="/mon/">{% trans "Total switches" %}:</a> {{ total_switches }}<br />
         <a href="/mon/">{% trans "Disabled" %}:</a> {{ disabled_switches }}<br />
         <a href="/mon/status/warnings/">{% trans "Resently rebooted" %}:</a> {{ warning_switches }}<br />
-        <a href="/mon/status/errors">{% trans "Not responding" %}:</a> {{ error_switches|length }}<br /></p>
+        <a href="/mon/status/errors">{% trans "Not responding" %}:</a> {{ error_switches }}<br /></p>
     </div>
     <div class="span4">
         <p class="well"><strong>{% trans "Not responding switches" %}:</strong><br /><br />
