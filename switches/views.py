@@ -155,7 +155,7 @@ def reboot_view(request):
         return_data = 'Successfully processed with reboot. Check uptime in 5 minutes'
     else:
         return HttpResponseBadRequest
-    return render(request, 'mon/ping_view.html', {'return_data': return_data})
+    return render(request, 'mon/reboot_view.html', {'return_data': return_data})
 
 
 @login_required()
