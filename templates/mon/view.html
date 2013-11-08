@@ -76,7 +76,7 @@ $('#ping_btn').click(function() {
 
 <script>
 $('#reboot_btn').click(function() {
-    var answer = confirm ("Please click on OK to continue.")
+    var answer = confirm ("This will reboot switch. Continue?")
     if (answer)
         $.ajax({
             type: "POST",
