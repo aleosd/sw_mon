@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 
@@ -114,6 +115,7 @@ def clear_history(request):
     if request.method == 'POST':
         id = request.POST['id']
         Event.objects.filter(ev_switch=id).delete()
+        return HttpResponse(content_type="text/html")
     else:
         return HttpResponseBadRequest
 
