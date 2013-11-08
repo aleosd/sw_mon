@@ -53,7 +53,8 @@
             <span class="{% if event.ev_type == 'err' %}text-error
                          {% else%}text-success{% endif %}">
             {{ event.get_ev_type_display }}: </span>
-            {{ event.ev_switch|truncatechars:30 }}: {{ event.ev_datetime|date:"d M, H:i" }}<br />
+            <a href="{% url 'view' event.ev_switch.id %}">{{ event.ev_switch|truncatechars:30 }}:</a>
+            {{ event.ev_datetime|date:"d M, H:i" }}<br />
         {% endfor %}
         </p>
     </div>
