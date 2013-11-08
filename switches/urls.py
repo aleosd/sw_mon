@@ -11,4 +11,5 @@ urlpatterns = patterns('switches.views',
     url(r'^ping/$', 'ping_view'),
     url(r'^reboot/$', 'reboot_view'),
     url(r'^district/(?P<district>\w+)/$', 'by_district'),
+    url(r'^clear/$', 'clear_history'),
 )

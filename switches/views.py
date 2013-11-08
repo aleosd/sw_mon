@@ -113,7 +113,7 @@ def history(request, status=None):
 def clear_history(request):
     if request.method == 'POST':
         id = request.POST['id']
-        switch_events = Event.objects.filter(ev_switch=id).delete()
+        Event.objects.filter(ev_switch=id).delete()
     else:
         return HttpResponseBadRequest
 
