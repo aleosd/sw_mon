@@ -109,6 +109,15 @@ def history(request, status=None):
                                                 'events_per_day': t})
 
 
+@login_required()
+def clear_history(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        switch_events = Event.objects.filter(ev_switch=id).delete()
+    else:
+        return HttpResponseBadRequest
+
+
 @login_required
 def home_view(request):
     total_switches = Switch.objects.all().select_related()
