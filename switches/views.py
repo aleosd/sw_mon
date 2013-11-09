@@ -4,8 +4,10 @@ from django.shortcuts import render, get_object_or_404
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 from helper_progs import switch as hp_switch
 from helper_progs import reboot
@@ -109,6 +111,16 @@ def history(request, status=None):
                                                 'events_per_day': t})
 
 
+@login_required()
+def clear_history(request):
+    if request.method == 'POST':
+        id = request.POST['id']
+        get_object_or_404(Event, ev_switch=id).delete()
+        return HttpResponse(content_type="text/html")
+    else:
+        return HttpResponseBadRequest(content_type="text/html")
+
+
 @login_required
 def home_view(request):
     total_switches = Switch.objects.all().select_related()
@@ -142,7 +154,7 @@ def ping_view(request):
         return_data = host.sys_ping(packet_count=4, verbose=True)
         return_data = return_data.split('\n')
     else:
-        return_data = None
+        return HttpResponseBadRequest(content_type="text/html")
     return render(request, 'mon/ping_view.html', {'return_data': return_data})
 
 
@@ -150,11 +162,14 @@ def ping_view(request):
 def reboot_view(request):
     if request.method == 'POST':
         id = request.POST['id']
-        switch = get_object_or_404(Switch, id=id)
-        reboot.reboot(switch.ip_addr)
-        return_data = 'Successfully processed with reboot. Check uptime in 5 minutes'
+        try:
+            switch = Switch.objects.select_related().get(id=id)
+            reboot.reboot(switch.ip_addr)
+            return_data = 'Successfully processed with reboot. Check uptime in 5 minutes'
+        except ObjectDoesNotExist:
+            return_data = 'No such switch in the database'
     else:
-        return HttpResponseBadRequest
+        return HttpResponseBadRequest(content_type="text/html")
     return render(request, 'mon/reboot_view.html', {'return_data': return_data})
 
 

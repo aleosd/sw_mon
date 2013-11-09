@@ -187,3 +187,25 @@ class SwitchViewsTest(TestCase):
     def test_home_page_response_code(self):
         response = self.client.get('/mon/home/')
         self.assertEqual(response.status_code, 200)
+
+    # ----------------- HELPER VIEWS TESTS ----------------
+    def test_ping_view_response_code(self):
+        response_get = self.client.get('/mon/ping/')
+        response_post = self.client.post('/mon/ping/', {'id': 1})
+
+        self.assertEqual(response_get.status_code, 400)
+        self.assertEqual(response_post.status_code, 200)
+
+    def test_reboot_view_response_code(self):
+        response_get = self.client.get('/mon/reboot/')
+        response_post = self.client.post('/mon/reboot/', {'id': 2222})
+
+        self.assertEqual(response_get.status_code, 400)
+        self.assertEqual(response_post.status_code, 200)
+
+    def test_clear_view_response_code(self):
+        response_get = self.client.get('/mon/clear/')
+        response_post = self.client.post('/mon/clear/', {'id': 2})
+
+        self.assertEqual(response_get.status_code, 400)
+        self.assertEqual(response_post.status_code, 404)

@@ -76,19 +76,41 @@ $('#ping_btn').click(function() {
 
 <script>
 $('#reboot_btn').click(function() {
+    var answer = confirm ("This will reboot switch. Continue?")
+    if (answer)
+        $.ajax({
+            type: "POST",
+            url: "/mon/reboot/",
+            data: {
+                'id': '{{ switch.id }}',
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+            success: function(data) {
+                $('#reboot_response').html(data);
+                $('#reboot_modal').modal();
+            },
+            error: function(data) {
+                $('#response').text('Error while processing request');
+            }
+            }).done(function() {
+        });
+});
+</script>
+
+<script>
+$('#clear_btn').click(function() {
     $.ajax({
         type: "POST",
-        url: "/mon/reboot/",
+        url: "/mon/clear/",
         data: {
             'id': '{{ switch.id }}',
             'csrfmiddlewaretoken': '{{ csrf_token }}',
             },
         success: function(data) {
-            $('#reboot_response').html(data);
-            $('#reboot_modal').modal();
+            document.location.reload(true);
         },
         error: function(data) {
-            $('#response').text('Error while processing request');
+            alert("Error while clearing history!");
         }
         }).done(function() {
     });
