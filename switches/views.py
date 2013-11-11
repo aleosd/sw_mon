@@ -95,6 +95,8 @@ def history(request, status=None):
         event_list = Event.objects.select_related().filter(ev_type='warn')[:30]
     elif status == "errors":
         event_list = Event.objects.select_related().filter(ev_type='err')
+    else:
+        event_list = []
 
     paginator = Paginator(event_list, 50)
     page = request.GET.get('page')

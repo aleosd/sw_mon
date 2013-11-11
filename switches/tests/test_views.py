@@ -183,6 +183,9 @@ class SwitchViewsTest(TestCase):
         response = self.client.get('/mon/events/errors/')
         self.assertEqual(response.status_code, 200)
 
+    def test_event_warning_page_response_code(self):
+        response = self.client.get('/mon/events/warning/')
+        self.assertEqual(response.status_code, 200)
     # ----------------- HOME PAGE PART TESTS --------------
     def test_home_page_response_code(self):
         response = self.client.get('/mon/home/')
