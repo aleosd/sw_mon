@@ -96,7 +96,7 @@ def history(request, status=None):
     elif status == "errors":
         event_list = Event.objects.select_related().filter(ev_type='err')
     else:
-        event_list = []
+        raise Http404
 
     paginator = Paginator(event_list, 50)
     page = request.GET.get('page')
