@@ -3,7 +3,7 @@ from django.core.urlresolvers import resolve
 # from django.http import HttpRequest
 from switches.views import index, edit
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from switches.models import Switch, Street, SwitchType
 
 
@@ -43,6 +43,7 @@ class SwitchViewsTest(TestCase):
     def setUp(self):
         # creating user for auth simulation
         self.user = User.objects.create_user('test', 'test@test.com', 'testpass')
+        self.user.save()
         self.client.login(username='test', password='testpass')
 
         self.switch1 = create_switch(
@@ -110,7 +111,10 @@ class SwitchViewsTest(TestCase):
         response2 = self.client.get('/mon/edit/{}/'.format(self.switch2.id))
         view = resolve('/mon/edit/{}/'.format(self.switch1.id))
 
-        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(response1.status_code, 302)
+        self.user.user_permissions.add(Permission.objects.get(codename='switches.change_switch'))
+        response3 = self.client.get('/mon/edit/{}/'.format(self.switch1.id))
+        self.assertEqual(response3.status_code, 200)
         self.assertEqual(view.func, edit)
 
         self.assertIn('192.168.1.1', response1.content.decode('utf-8'))
@@ -200,6 +204,9 @@ class SwitchViewsTest(TestCase):
         response = self.client.get('/mon/home/')
 
         self.assertEqual(response.context['total_switches'], 5)
+        self.assertEqual(response.context['disabled_switches'], 1)
+        self.assertEqual(len(response.context['error_switches']), 1)
+        self.assertEqual(response.context['warning_switches'], 3)
 
     # ----------------- HELPER VIEWS TESTS ----------------
     def test_ping_view_response_code(self):

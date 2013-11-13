@@ -2,7 +2,7 @@
 from datetime import timedelta
 from django.shortcuts import render, get_object_or_404
 from switches.models import Switch, SwitchForm, Event
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -58,6 +58,7 @@ def index(request, status='all'):
 
 
 @login_required
+@permission_required('switches.change_switch')
 def edit(request, id=None):
     if not id:
         return render(request, 'mon/edit.html', {'form': SwitchForm()})
@@ -70,6 +71,7 @@ def edit(request, id=None):
 
 
 @login_required
+@permission_required('switches.add_switch')
 def create_switch(request):
     if request.method == 'POST':
         try:
@@ -113,7 +115,8 @@ def history(request, status=None):
                                                 'events_per_day': t})
 
 
-@login_required()
+@login_required
+@permission_required('switches.change_switch')
 def clear_history(request):
     if request.method == 'POST':
         id = request.POST['id']
@@ -161,6 +164,7 @@ def ping_view(request):
 
 
 @login_required()
+@permission_required('switches.change_switch')
 def reboot_view(request):
     if request.method == 'POST':
         id = request.POST['id']
