@@ -190,10 +190,16 @@ class SwitchViewsTest(TestCase):
     def test_event_wrong_url_page_response_code(self):
         response = self.client.get('/mon/events/some_event/')
         self.assertEqual(response.status_code, 404)
+
     # ----------------- HOME PAGE PART TESTS --------------
     def test_home_page_response_code(self):
         response = self.client.get('/mon/home/')
         self.assertEqual(response.status_code, 200)
+
+    def test_home_page_response_context(self):
+        response = self.client.get('/mon/home/')
+
+        self.assertEqual(response.context['total_switches'], 5)
 
     # ----------------- HELPER VIEWS TESTS ----------------
     def test_ping_view_response_code(self):
