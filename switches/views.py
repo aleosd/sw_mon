@@ -145,8 +145,11 @@ def home_view(request):
 
 @login_required
 def switch_view(request, id):
+    try:
+        switch = Switch.objects.select_related().get(id=id)
+    except ObjectDoesNotExist:
+        raise Http404
     events = Event.objects.filter(ev_switch=id)[:30].select_related()
-    switch = Switch.objects.select_related().get(id=id)
     return render(request, 'mon/view.html', {'switch': switch,
                                              'events': events})
 
@@ -181,6 +184,8 @@ def reboot_view(request):
 
 @login_required()
 def by_district(request, district):
+    if district not in [distr[0] for distr in Switch.districts]:
+        raise Http404
     switch_list = Switch.objects.select_related(
         'sw_street',
         'sw_type',

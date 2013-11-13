@@ -90,23 +90,17 @@ class SwitchViewsTest(TestCase):
             sw_enabled = False
         )
     # ----------------- SWITCHES PART TESTS ------------------
-    def test_site_root_response_code(self):
+    def test_site_root_response(self):
         response = self.client.get('/mon/')
         view = resolve('/mon/')
         self.assertEqual(view.func, index)
         self.assertEqual(response.status_code, 200)
-
-    def test_site_root_response_context(self):
-        response = self.client.get('/mon/')
         self.assertTrue('switch_list' in response.context)
         self.assertEqual(len(response.context['switch_list']), 5)
-
-    def test_site_root_with_two_switch_obj(self):
-        response = self.client.get('/mon/')
         self.assertIn('192.168.1.2', response.content.decode('utf-8'))
         self.assertIn('192.168.1.1', response.content.decode('utf-8'))
 
-    def test_new_switch(self):
+    def test_add_new_switch(self):
         self.user.user_permissions.add(Permission.objects.get(codename='change_switch'))
         response = self.client.get('/new/')
         self.assertEqual(response.status_code, 200)
@@ -144,13 +138,18 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.switch1.ip_addr, response.content.decode('utf-8'))
 
+        response_bad = self.client.get('/mon/view/9999999/')
+        self.assertEqual(response_bad.status_code, 404)
+
     def test_mon_status_views_status_code(self):
         response_warn = self.client.get('/mon/status/warnings/')
         response_err = self.client.get('/mon/status/errors/')
         response_disabled = self.client.get('/mon/status/disabled/')
+        response_wrong = self.client.get('/mon/status/wrong_status/')
         self.assertEqual(response_warn.status_code, 200)
         self.assertEqual(response_err.status_code, 200)
         self.assertEqual(response_disabled.status_code, 200)
+        self.assertEqual(response_wrong.status_code, 404)
 
     def test_mon_warning_status_page_response(self):
         response_warn = self.client.get('/mon/status/warnings/')
@@ -182,11 +181,13 @@ class SwitchViewsTest(TestCase):
         response_ggn = self.client.get('/mon/district/ggn/')
         response_vkz = self.client.get('/mon/district/vkz/')
         response_szp = self.client.get('/mon/district/szp/')
+        response_wrong = self.client.get('/mon/district/wrong_district/')
 
         self.assertEqual(response_mzv.status_code, 200)
         self.assertEqual(response_ggn.status_code, 200)
         self.assertEqual(response_vkz.status_code, 200)
         self.assertEqual(response_szp.status_code, 200)
+        self.assertEqual(response_wrong.status_code, 404)
 
     def test_district_views_switch_count(self):
         response_mzv = self.client.get('/mon/district/mzv/')
@@ -248,5 +249,6 @@ class SwitchViewsTest(TestCase):
         response_post = self.client.post('/mon/clear/', {'id': 2})
 
         self.assertEqual(response_get.status_code, 400)
+        # because events table is empty now, we get 404
         self.assertEqual(response_post.status_code, 404)
         self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
