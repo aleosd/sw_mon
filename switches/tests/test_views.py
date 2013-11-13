@@ -106,21 +106,38 @@ class SwitchViewsTest(TestCase):
         self.assertIn('192.168.1.2', response.content.decode('utf-8'))
         self.assertIn('192.168.1.1', response.content.decode('utf-8'))
 
+    def test_new_switch(self):
+        self.user.user_permissions.add(Permission.objects.get(codename='change_switch'))
+        response = self.client.get('/new/')
+        self.assertEqual(response.status_code, 200)
+
+        self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
+
+    def test_wrong_permissions(self):
+        response_edit = self.client.get('/mon/edit/{}/'.format(self.switch1.id))
+        response_reboot_post = self.client.post('/mon/reboot/', {'id': 2222})
+        response_clear_post = self.client.post('/mon/clear/', {'id': 2})
+        response_new_switch = self.client.get('/new/')
+
+        self.assertEqual(response_edit.status_code, 302)
+        self.assertEqual(response_reboot_post.status_code, 302)
+        self.assertEqual(response_clear_post.status_code, 302)
+        self.assertEqual(response_new_switch.status_code, 302)
+
     def test_switch_edit_view(self):
+        self.user.user_permissions.add(Permission.objects.get(codename='change_switch'))
         response1 = self.client.get('/mon/edit/{}/'.format(self.switch1.id))
         response2 = self.client.get('/mon/edit/{}/'.format(self.switch2.id))
         view = resolve('/mon/edit/{}/'.format(self.switch1.id))
 
-        self.assertEqual(response1.status_code, 302)
-        self.user.user_permissions.add(Permission.objects.get(codename='switches.change_switch'))
-        response3 = self.client.get('/mon/edit/{}/'.format(self.switch1.id))
-        self.assertEqual(response3.status_code, 200)
+        self.assertEqual(response1.status_code, 200)
         self.assertEqual(view.func, edit)
 
         self.assertIn('192.168.1.1', response1.content.decode('utf-8'))
         self.assertIn('192.168.1.2', response2.content.decode('utf-8'))
         self.assertTemplateUsed(response1, 'mon/edit.html', 'base.html')
 
+        self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
 
     def test_switch_view_view(self):
         response = self.client.get('/mon/view/{}/'.format(self.switch1.id))
@@ -217,15 +234,19 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response_post.status_code, 200)
 
     def test_reboot_view_response_code(self):
+        self.user.user_permissions.add(Permission.objects.get(codename='change_switch'))
         response_get = self.client.get('/mon/reboot/')
         response_post = self.client.post('/mon/reboot/', {'id': 2222})
 
         self.assertEqual(response_get.status_code, 400)
         self.assertEqual(response_post.status_code, 200)
+        self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
 
     def test_clear_view_response_code(self):
+        self.user.user_permissions.add(Permission.objects.get(codename='change_switch'))
         response_get = self.client.get('/mon/clear/')
         response_post = self.client.post('/mon/clear/', {'id': 2})
 
         self.assertEqual(response_get.status_code, 400)
         self.assertEqual(response_post.status_code, 404)
+        self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
