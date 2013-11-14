@@ -120,7 +120,10 @@ def history(request, status=None):
 def clear_history(request):
     if request.method == 'POST':
         id = request.POST['id']
-        get_object_or_404(Event, ev_switch=id).delete()
+        try:
+            Event.objects.filter(ev_switch=id).delete()
+        except ObjectDoesNotExist:
+            raise Http404
         return HttpResponse(content_type="text/html")
     else:
         return HttpResponseBadRequest(content_type="text/html")
