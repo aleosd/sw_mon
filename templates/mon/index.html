@@ -64,8 +64,10 @@ $(document).ready(function()
         <li id="ggn"><a href="/mon/district/ggn/">{% trans "Гагарина" %}</a></li>
         <li id="vkz"><a href="/mon/district/vkz/">{% trans "Вокзал" %}</a></li>
         <li id="szp"><a href="/mon/district/szp/">{% trans "Северо-Запад" %}</a></li>
+    {% if perms.switches.add_switch %}
     <li class="divider"></li>
         <li><a href="/new/">{% trans "Add Switch" %}</a><li>
+    {% endif %}
 </ul>
 </div>
 {% endblock %}

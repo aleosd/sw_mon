@@ -8,11 +8,15 @@
 {% block sidemenu %}
 
 <div class="well-small">
+{% if perms.switches.change_switch %}
 <p><button class="btn sw_act_btn" id='edit_btn'>{% trans "Edit" %}</button></p>
+{% endif %}
 <p><button class="btn sw_act_btn" id='connect_btn'>{% trans "Connect" %}</button></p>
 <p><button class="btn sw_act_btn" id='ping_btn'>{% trans "Ping" %}</button></p>
-<p><button class="btn btn-danger sw_act_btn" id="reboot_btn">{% trans "Reboot" %}</button></p>
-<p><button class="btn btn-danger sw_act_btn" id="clear_btn">{% trans "Clear history" %}</button></p>
+{% if perms.switches.change_switch %}
+    <p><button class="btn btn-danger sw_act_btn" id="reboot_btn">{% trans "Reboot" %}</button></p>
+    <p><button class="btn btn-danger sw_act_btn" id="clear_btn">{% trans "Clear history" %}</button></p>
+{% endif %}
 </div>
 
 <div id="ping_modal" class="modal hide fade" tabindex="-1" role="dialog"
