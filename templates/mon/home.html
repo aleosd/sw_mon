@@ -50,10 +50,15 @@
     <div class="span5">
         <p class="well"><strong>{% trans "Events for 24h" %}:</strong> {{ events_per_day }}<br /><br />
         {% for event in last_events %}
-            <span class="{% if event.ev_type == 'err' %}text-error
-                         {% else%}text-success{% endif %}">
+            <span class="{% if event.ev_type == 'err' %}
+                            text-error
+                         {% elif event.ev_type == 'warn' %}
+                            text-warning
+                         {% else%}
+                            text-success
+                         {% endif %}">
             {{ event.get_ev_type_display }}: </span>
-            <a href="{% url 'view' event.ev_switch.id %}">{{ event.ev_switch|truncatechars:30 }}:</a>
+            <a href="{% url 'view' event.ev_switch.id %}">{{ event.ev_switch|truncatechars:26 }}:</a>
             {{ event.ev_datetime|date:"d M, H:i" }}<br />
         {% endfor %}
         </p>
