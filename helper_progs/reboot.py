@@ -73,16 +73,24 @@ def get_switch_list(flag):
 def reboot(ip):
     logging.debug('Starting global reboot function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
+    event_dict = {}
     for sw in switch_list:
         if sw.can_reboot():
             try:
                 logging.debug('Trying reboot the switch {}'.format(sw.ip_addr))
                 sw.reboot()
+                event_dict[sw.id_] = {}
+                event_dict[sw.id_]['ev_type'] = 'warn'
+                event_dict[sw.id_]['ev_event'] = 'Switch is rebooted manually'
             except Exception as e:
                 logging.error('Error while rebooting switch {}: {}'.format(sw, e))
         else:
             logging.warning('The switch cannot be rebooted: {}'.format(sw))
 
+    if len(event_dict) > 0:
+        with database.lock:
+            db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+            db.set_events(event_dict)
 
 def ping():
     logging.debug('Starting global ping function')
