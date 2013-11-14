@@ -122,6 +122,11 @@ def clear_history(request):
         id = request.POST['id']
         try:
             Event.objects.filter(ev_switch=id).delete()
+            clear_event = Event()
+            clear_event.ev_switch = Switch.objects.get(id=id)
+            clear_event.ev_type = 'warn'
+            clear_event.ev_event = 'History was cleaned manually'
+            clear_event.save()
         except ObjectDoesNotExist:
             raise Http404
         return HttpResponse(content_type="text/html")
