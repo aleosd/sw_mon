@@ -177,14 +177,14 @@ class SNR(Switch):
     def pass_chooser(self):
         return secure.ssh_password
 
-    def login(self):
+    def ssh_login(self):
         conn = connection.SSHConnection(self.ip_addr)
         sh = conn.connect()
         channel = sh(self.username, self.password)
         return channel, conn
 
     @log_decorator
-    def reboot(self):
+    def ssh_reboot(self):
         channel, conn = self.login()
         try:
             channel.write('reload\r\n'.encode())
@@ -195,7 +195,7 @@ class SNR(Switch):
             conn.close()
 
     @log_decorator
-    def backup(self):
+    def ssh_backup(self):
         channel, conn = self.login()
         logging.debug('Connected to {} with ssh'.format(self.ip_addr))
         command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
@@ -211,6 +211,41 @@ class SNR(Switch):
             if i > 10:
                 break
         conn.close()
+
+    def login(self):
+        conn = connection.TelnetConnection(self.ip_addr)
+        tn = conn.connect()
+        tn.read_until(b"login:")
+        tn.write(secure.user.encode('ascii') + b"\r\n")
+        tn.read_until(b"Password:")
+        tn.write(self.pass_chooser().encode('ascii') + b"\r\n")
+        return tn
+
+    @log_decorator
+    def reboot(self):
+        tn = self.login()
+        try:
+            tn.write(b"reload\r\n")
+            tn.write(b"Y\r\n")
+            debug_info = tn.read_all().decode('ascii')
+            logging.debug(debug_info)
+        except Exception as e:
+            logging.warning("Error while rebooting {}: {}".format(self, e))
+        finally:
+            tn.close()
+
+    @log_decorator
+    def backup(self):
+        tn = self.login()
+        command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
+        try:
+            tn.write(command.encode())
+            tn.write('Y\r\n'.encode())
+            tn.read_until(b'close tftp client')
+        except Exception as e:
+            logging.warning("Error while making backup of {}".format(self))
+        finally:
+            tn.close()
 
 
 class Allied(Switch):
