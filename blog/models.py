@@ -53,6 +53,9 @@ class Entry(models.Model):
             self.excerpt_html = markdown(self.excerpt)
         super(Entry, self).save(force_insert, force_update)
 
+    def make_tag_list(self):
+        return self.keywords.replace(' ', '').split(',')
+
     class Meta:
         verbose_name_plural = "Entries"
         ordering = ['-pub_date']
