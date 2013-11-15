@@ -26,6 +26,7 @@
             {% block navbar %}
             <a class="brand" href="/">LightNet</a>
             <ul class="nav">
+                {% if user.is_authenticated %}
                 <li class="dropdown active">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Monitor" %}<b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -34,6 +35,7 @@
                     </ul>
                 </li>
                 <li><a href="/mon/events/all/">{% trans "Events" %}</a></li>
+                {% endif %}
                 <li><a href="/blog/">{% trans "Blog" %}</a></li>
             </ul>
             {% endblock %}
@@ -42,8 +44,10 @@
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {{ user.username }} <b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                      <li><a href="/admin/" target="_blank">{% trans "Admin Panel" %}</a></li>
-                      <li class="divider"></li>
+                      {% if request.user.is_superuser %}
+                          <li><a href="/admin/" target="_blank">{% trans "Admin Panel" %}</a></li>
+                          <li class="divider"></li>
+                      {% endif %}
                       <li><a href="/logout/">{% trans "Logout" %}</a></li>
                   </ul>
                 </li>

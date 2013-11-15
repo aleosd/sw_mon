@@ -140,7 +140,7 @@ def uptime():
     switch_list = get_switch_list('ping')
     s = snmp.Snmp()
     result_dict = s.asyn_snmpget(switch_list, snmp_oids.UPTIME)
-    
+
     uptime_dict = {}
     for send_rh in result_dict:
         uptime_ = result_dict[send_rh]['uptime']
@@ -154,21 +154,31 @@ def uptime():
     with database.lock:
         db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
         db.set_uptime(uptime_dict)
-    
+
 
 def backup(ip):
     logging.debug('Starting global backup function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
+    event_dict = {}
     for sw in switch_list:
         if sw.can_backup():
             try:
                 logging.debug('Trying backup for ip {}'.format(sw.ip_addr))
                 sw.backup()
+                event_dict[sw.id_] = {}
+                event_dict[sw.id_]['ev_type'] = 'warn'
+                event_dict[sw.id_]['ev_event'] = 'Switch configuration backup successfull'
             except Exception as e:
                 logging.error('Error occurred while making config backup: {} from {}'.format(e, sw.ip_addr))
                 logging.info(sw)
         else:
             logging.warning('The switch cannot be backuped: {}'.format(sw))
+
+    if len(event_dict) > 0:
+        with database.lock:
+            logging.debug("Writing reboot events to database.")
+            db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+            db.set_events(event_dict)
 
 
 if __name__ == '__main__':
