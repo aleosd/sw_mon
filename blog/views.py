@@ -34,8 +34,19 @@ def entry_detail(request, year, month, day, slug):
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
+    entry_list = category.entry_set.all()
+    paginator = Paginator(entry_list, 10)
+    page = request.GET.get('page')
+
+    try:
+        entry_list = paginator.page(page)
+    except PageNotAnInteger:
+        entry_list = paginator.page(1)
+    except EmptyPage:
+        entry_list = paginator(paginator.num_pages)
+
     return render(request, 'blog/category_detail.html',
-                  {'entry_list': category.entry_set.all(),
+                  {'entry_list': entry_list,
                    'active_category': category,
                    'category_list': Category.objects.all()})
 
