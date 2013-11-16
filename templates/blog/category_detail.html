@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-{{ category.title }}
+{{ active_category.title }}
 {% endblock %}
 
 {% block sidemenu %}
@@ -30,7 +30,7 @@
     <li class="divider"></li>
     <li><a href="/admin/blog/entry/add/">{% trans "Add Entry" %}</a></li>
     {% endif %}
-
+</ul>
 </div>
 
 {% endblock %}
@@ -58,7 +58,7 @@
     <ul>
         {% if entry_list.has_previous %}
             <li><a href="?page={{ entry_list.previous_page_number }}">{% trans "Prev" %}</a></li>
-            <li><a href="?page={{ entry_list.number|add:"-1" }}">{{ entry_list.number|add:"-1" }}</a></li>
+            <li><a href="?page={{ entry_list.number|add:'-1' }}">{{ entry_list.number|add:"-1" }}</a></li>
         {% else %}
             <li class="disabled"><a href="#">{% trans "Prev" %}</a></li>
         {% endif %}
