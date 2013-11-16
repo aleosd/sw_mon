@@ -1,10 +1,24 @@
-{% extends "base_blog.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 
 {% block title %}
-{% trans "Search Results" %}
+    {% trans "Blog" %}
 {% endblock %}
 
+{% block navbar %}
+    <a class="brand" href="/">LightNet</a>
+    <ul class="nav">
+        <li class="dropdown active">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Monitor" %}<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/mon/">{% trans "Devices" %}</a></li>
+                <li><a href="/traf">{% trans "Traffic" %}</a></li>
+            </ul>
+        </li>
+        <li><a href="/mon/events/all">{% trans "Events" %}</a></li>
+        <li class="active"><a href="/blog/">{% trans "Blog" %}</a></li>
+    </ul>
+{% endblock navbar %}
 
 {% block sidemenu %}
 <div class="well well-small">

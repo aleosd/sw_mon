@@ -7,4 +7,5 @@ urlpatterns = patterns('blog.views',
         'entry_detail'),
     url(r'^categories/(?P<slug>[-\w]+)/$', 'category_detail'),
     url(r'^search/$', 'search'),
+    url(r'^tag/(?P<tag>[-\w]+)/$', 'tag_view'),
 )

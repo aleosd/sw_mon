@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
+from django.http import Http404
 from blog.models import Entry, Category
 
 
@@ -58,3 +59,14 @@ def search(request):
                   {'results': results,
                    'query': query,
                    'category_list': Category.objects.all(),})
+
+
+def tag_view(request, tag):
+    search_result = Entry.objects.all().filter(keywords__icontains=tag)
+    entry_list = []
+    for entry in search_result:
+        if tag in entry.make_tag_list():
+            entry_list.append(entry)
+    if not entry_list:
+        raise Http404
+    return render(request, 'blog/search.html', {'results': entry_list})

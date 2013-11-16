@@ -67,3 +67,11 @@ class BlogViewsTest(TestCase):
 
         response_bad_category = self.client.get('/blog/categories/wrong/')
         self.assertEqual(response_bad_category.status_code, 404)
+
+    def test_tag_view(self):
+        response = self.client.get('/blog/tag/{}/'.format(self.entry1.make_tag_list()[0]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['results']), 1)
+
+        response_404 = self.client.get('/blog/tag/t/')
+        self.assertEqual(response_404.status_code, 404)
