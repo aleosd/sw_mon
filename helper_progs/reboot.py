@@ -37,7 +37,8 @@ switch_types = {
 
 def get_switch_list(flag):
     # fetch all or given by ip switch info from db
-    db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+    db = database.Database(secure.DBNAME, secure.USER,
+                           secure.PASS, secure.DB_SERVER)
     if flag == 'backup':
         raw_data = db.get_switch_list(action='backup')
     elif flag == 'reboot':
@@ -76,21 +77,24 @@ def reboot(ip):
     event_dict = {}
     for sw in switch_list:
         if sw.can_reboot():
+            event_dict[sw.id_] = {}
+            event_dict[sw.id_]['ev_type'] = 'warn'
             try:
                 logging.debug('Trying reboot the switch {}'.format(sw.ip_addr))
                 sw.reboot()
-                event_dict[sw.id_] = {}
-                event_dict[sw.id_]['ev_type'] = 'warn'
                 event_dict[sw.id_]['ev_event'] = 'Switch is rebooted manually'
             except Exception as e:
-                logging.error('Error while rebooting switch {}: {}'.format(sw, e))
+                logging.error('Error while rebooting switch {}: {}'.format(sw,
+                                                                           e))
+                event_dict[sw.id_]['ev_event'] = 'Switch rebooted with errors'
         else:
             logging.warning('The switch cannot be rebooted: {}'.format(sw))
 
     if len(event_dict) > 0:
         with database.lock:
             logging.debug("Writing reboot events to database.")
-            db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+            db = database.Database(secure.DBNAME, secure.USER,
+                                   secure.PASS, secure.DB_SERVER)
             db.set_events(event_dict)
 
 def ping():
@@ -129,7 +133,8 @@ def ping():
     logging.debug(ping_dict)
 
     with database.lock:
-        db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+        db = database.Database(secure.DBNAME, secure.USER,
+                               secure.PASS, secure.DB_SERVER)
         db.set_ping(ping_dict)
         if len(event_dict) > 0:
             db.set_events(event_dict)
@@ -152,7 +157,8 @@ def uptime():
     logging.debug(uptime_dict)
 
     with database.lock:
-        db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+        db = database.Database(secure.DBNAME, secure.USER,
+                               secure.PASS, secure.DB_SERVER)
         db.set_uptime(uptime_dict)
 
 
@@ -162,14 +168,18 @@ def backup(ip):
     event_dict = {}
     for sw in switch_list:
         if sw.can_backup():
+            event_dict[sw.id_] = {}
+            event_dict[sw.id_]['ev_type'] = 'warn'
             try:
                 logging.debug('Trying backup for ip {}'.format(sw.ip_addr))
                 sw.backup()
-                event_dict[sw.id_] = {}
-                event_dict[sw.id_]['ev_type'] = 'warn'
-                event_dict[sw.id_]['ev_event'] = 'Switch configuration backup successfull'
+
+                event_dict[sw.id_]['ev_event'] = ('Switch configuration '
+                                                  'backup successful')
             except Exception as e:
                 logging.error('Error occurred while making config backup: {} from {}'.format(e, sw.ip_addr))
+                event_dict[sw.id_]['ev_event'] = ('Switch configuration backup'
+                                                  ' raised error')
                 logging.info(sw)
         else:
             logging.warning('The switch cannot be backuped: {}'.format(sw))
@@ -177,7 +187,8 @@ def backup(ip):
     if len(event_dict) > 0:
         with database.lock:
             logging.debug("Writing reboot events to database.")
-            db = database.Database(secure.DBNAME, secure.USER, secure.PASS, secure.DB_SERVER)
+            db = database.Database(secure.DBNAME, secure.USER,
+                                   secure.PASS, secure.DB_SERVER)
             db.set_events(event_dict)
 
 
@@ -187,9 +198,9 @@ if __name__ == '__main__':
     # setting arguments for command-line args
     # const is used when flag added without parameter
     # default is used when flag is omitted
-    parser.add_argument('-r', '--reboot', nargs='?', default=None, const='reboot',
+    parser.add_argument('-r', '--reboot', default=None, const='reboot',
                         help='Reboot all switches, if no IP specified',
-                        metavar='<ip-address>')
+                        metavar='<ip-address>', nargs='?')
     parser.add_argument('-b', '--backup', help='''Backup given by ip switch.
                                      If IP omitted - backup all switches''',
                         metavar='<ip-address>', default=None, const='backup',
@@ -206,7 +217,8 @@ if __name__ == '__main__':
     if args.log:
         lvl = args.log.upper()
         loglevel = getattr(logging, lvl)
-        logging.basicConfig(level=loglevel, format='%(asctime)s:%(levelname)s:%(message)s')
+        logging.basicConfig(level=loglevel,
+                            format='%(asctime)s:%(levelname)s:%(message)s')
 
     if args.ping:
         ping()
