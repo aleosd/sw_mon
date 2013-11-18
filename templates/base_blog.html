@@ -12,7 +12,7 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Monitor" %}<b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a href="/mon/">{% trans "Devices" %}</a></li>
-                <li><a href="/traf">{% trans "Traffic" %}</a></li>
+                <li><a href="/traf/">{% trans "Traffic" %}</a></li>
             </ul>
         </li>
         <li><a href="/mon/events/all">{% trans "Events" %}</a></li>
@@ -32,7 +32,7 @@
             </div>
         </form>
     </li>
-  <li class="active"><a href="/blog/">{% trans "All Entries" %}</a></li>
+    <li class="active"><a href="/blog/">{% trans "All Entries" %}</a></li>
     <li class="nav-header">{% trans "By Category" %}</li>
     {% for category in category_list %}
         <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
@@ -46,8 +46,12 @@
 {% endblock sidemenu %}
 
 {% block maincontent %}
+
+{% block page_title %}
+{% endblock page_title %}
+
+{% block entries %}
 {% if results %}
-    <h3>{% trans "Search results for query " %}"{{ query }}":</h3>
     {% for entry in results %}
         <small class="pull-right"><span class="label">{{ entry.pub_date|date:"F j, Y" }}</span></small>
         <h3 style="margin-top:0px"><a id="blog_header" href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h3>
@@ -62,5 +66,6 @@
 {% else %}
     <h3>{% trans "No search results for query " %}"{{ query }}"</h3>
 {% endif %}
+{% endblock entries %}
 
 {% endblock maincontent %}

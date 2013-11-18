@@ -35,7 +35,12 @@
 
 {% endblock %}
 
-{% block maincontent %}
+{% block page_title %}
+<h3>Entries for "{{ active_category }}" category</h3>
+<hr>
+{% endblock page_title %}
+
+{% block entries %}
     {% for entry in entry_list %}
         <small class="pull-right"><span class="label label-info">{{ entry.pub_date|date:"F j, Y" }}</span></small>
         <h4 style="margin-top:0px"><a id="blog_header" href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h4>
@@ -47,7 +52,7 @@
         <p><a href="{{ entry.get_absolute_url }}">{% trans "Read more..." %}</a><br />
             {% trans "Tags" %}: 
             {% for tag in entry.make_tag_list %}
-                <span class="label">{{ tag }}</span>
+                <a href="/blog/tag/{{ tag }}/"><span class="label">{{ tag }}</span></a>
             {% endfor %}
         </p>
         <hr/>
@@ -77,4 +82,4 @@
 </div>
 {% endif %}
 
-{% endblock %}
+{% endblock entries %}

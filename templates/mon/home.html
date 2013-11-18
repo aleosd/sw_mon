@@ -59,7 +59,7 @@
                          {% endif %}">
             {{ event.get_ev_type_display }}: </span>
             <a href="{% url 'view' event.ev_switch.id %}">
-                {% if event.ev_type =='warn' %}{{ event.ev_switch|truncatechars:26 }}
+                {% if event.ev_type == 'warn' %}{{ event.ev_switch|truncatechars:26 }}
                 {% else %}{{ event.ev_switch|truncatewords:30 }}
                 {% endif %}:</a>
             {{ event.ev_datetime|date:"d M, H:i" }}<br />

@@ -1,49 +1,10 @@
-{% extends "base.html" %}
+{% extends "base_blog.html" %}
 {% load i18n %}
 
 {% block title %}
 {% trans "All Entries" %}
 {% endblock %}
 
-{% block navbar %}
-    <a class="brand" href="/">LightNet</a>
-    <ul class="nav">
-        <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Monitor" %}<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a href="/mon/">{% trans "Devices" %}</a></li>
-                <li><a href="/mon/traf">{% trans "Traffic" %}</a></li>
-            </ul>
-        </li>
-        <li><a href="/mon/events/all">{% trans "Events" %}</a></li>
-        <li class="active"><a href="/blog/">{% trans "Blog" %}</a></li>
-    </ul>
-{% endblock navbar %}
-
-{% block sidemenu %}
-<div class="well well-small">
-<ul class="nav nav-list">
-    <li><p class="text-center muted">
-        {% language "ru" %}{% now "SHORT_DATETIME_FORMAT" %}{% endlanguage %}</p></li>
-    <li><form class="form-horisontal" method="get" action="/blog/search/">
-        <div class="controls-group text-center">
-        <input type="text" class="input-medium" name="q" id="id_q">
-        <button type="submit" class="btn text-center">Search</button>
-        </div>
-        </form>
-    </li>
-    <li class="active"><a href="/blog/">{% trans "All Entries" %}</a></li>
-    <li class="nav-header">{% trans "By Category" %}</li>
-    {% for category in category_list %}
-        <li><a href="/blog/categories/{{ category.slug }}">{{ category.title }}</a></li>
-    {% endfor %}
-    {% if perms.entry.change %}
-    <li class="divider"></li>
-    <li><a href="/admin/blog/entry/add/">{% trans "Add Entry" %}</a></li>
-    {% endif %}
-</div>
-
-{% endblock %}
 
 {% block maincontent %}
     {% for entry in entry_list %}
@@ -57,7 +18,7 @@
         <p><a href="{{ entry.get_absolute_url }}">{% trans "Read more..." %}</a><br />
             {% trans "Tags" %}: 
             {% for tag in entry.make_tag_list %}
-                <span class="label">{{ tag }}</span>
+                <a href="/blog/tag/{{ tag }}/"><span class="label">{{ tag }}</span></a>
             {% endfor %}
         </p>
         <hr/>
