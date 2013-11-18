@@ -177,7 +177,9 @@ def backup(ip):
                 event_dict[sw.id_]['ev_event'] = ('Switch configuration '
                                                   'backup successful')
             except Exception as e:
-                logging.error('Error occurred while making config backup: {} from {}'.format(e, sw.ip_addr))
+                msg = ('Error occurred while making '
+                        'config backup: {} from {}'.format(e, sw.ip_addr))
+                logging.error(msg)
                 event_dict[sw.id_]['ev_event'] = ('Switch configuration backup'
                                                   ' raised error')
                 logging.info(sw)

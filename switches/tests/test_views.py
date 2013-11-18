@@ -231,7 +231,7 @@ class SwitchViewsTest(TestCase):
         response_get = self.client.get('/mon/ping/')
         response_post = self.client.post('/mon/ping/', {'id': 1})
 
-        self.assertEqual(response_get.status_code, 400)
+        self.assertEqual(response_get.status_code, 405)
         self.assertEqual(response_post.status_code, 200)
 
     def test_reboot_view_response_code(self):
@@ -239,7 +239,7 @@ class SwitchViewsTest(TestCase):
         response_get = self.client.get('/mon/reboot/')
         response_post = self.client.post('/mon/reboot/', {'id': 2222})
 
-        self.assertEqual(response_get.status_code, 400)
+        self.assertEqual(response_get.status_code, 405)
         self.assertEqual(response_post.status_code, 200)
         self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
 
@@ -248,7 +248,6 @@ class SwitchViewsTest(TestCase):
         response_get = self.client.get('/mon/clear/')
         response_post = self.client.post('/mon/clear/', {'id': 2})
 
-        self.assertEqual(response_get.status_code, 400)
-        # because events table is empty now, we get 404
-        self.assertEqual(response_post.status_code, 404)
+        self.assertEqual(response_get.status_code, 405)
+        self.assertEqual(response_post.status_code, 200)
         self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))

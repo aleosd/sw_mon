@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.shortcuts import render, get_object_or_404
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, Http404, HttpResponseNotAllowed
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
@@ -131,7 +131,7 @@ def clear_history(request):
             raise Http404
         return HttpResponse(content_type="text/html")
     else:
-        return HttpResponseBadRequest(content_type="text/html")
+        return HttpResponseNotAllowed(['POST'])
 
 
 @login_required
@@ -170,7 +170,7 @@ def ping_view(request):
         return_data = host.sys_ping(packet_count=4, verbose=True)
         return_data = return_data.split('\n')
     else:
-        return HttpResponseBadRequest(content_type="text/html")
+        return HttpResponseNotAllowed(['POST'])
     return render(request, 'mon/ping_view.html', {'return_data': return_data})
 
 
@@ -186,7 +186,7 @@ def reboot_view(request):
         except ObjectDoesNotExist:
             return_data = 'No such switch in the database'
     else:
-        return HttpResponseBadRequest(content_type="text/html")
+        return HttpResponseNotAllowed(['POST'])
     return render(request, 'mon/reboot_view.html', {'return_data': return_data})
 
 
