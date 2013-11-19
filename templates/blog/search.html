@@ -6,22 +6,7 @@
 {% endblock %}
 
 
-{% block maincontent %}
-{% if results %}
-    <h3>{% trans "Search results for query " %}"{{ query }}":</h3>
-    {% for entry in results %}
-        <small class="pull-right"><span class="label">{{ entry.pub_date|date:"F j, Y" }}</span></small>
-        <h3 style="margin-top:0px"><a id="blog_header" href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h3>
-        {% if entry.excerpt_html %}
-            {{ entry.excerpt_html|safe }}
-        {% else %}
-            {{ entry.body_html|truncatewords_html:"50"|safe }}
-        {% endif %}
-        <p><a href="{{ entry.get_absolute_url }}">{% trans "Read more..." %}</a><p>
-        <hr/>
-    {% endfor %}
-{% else %}
-    <h3>{% trans "No search results for query " %}"{{ query }}"</h3>
-{% endif %}
-
-{% endblock maincontent %}
+{% block page_title %}
+<h3>Serach results for query {{ query }}</h3>
+<hr>
+{% endblock page_title %}

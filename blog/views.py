@@ -56,7 +56,7 @@ def search(request):
     query = request.GET['q']
     results = Entry.objects.all().filter(keywords__icontains=query)
     return render(request, 'blog/search.html', 
-                  {'results': results,
+                  {'entry_list': results,
                    'query': query,
                    'category_list': Category.objects.all(),})
 

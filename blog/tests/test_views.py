@@ -43,6 +43,7 @@ class BlogViewsTest(TestCase):
         self.assertTrue('category_list' in response.context)
         self.assertEqual(len(response.context['entry_list']), 1)
         self.assertEqual(len(response.context['category_list']), 2)
+        self.assertIn(self.entry1.title, response.content.decode('utf-8'))
 
     def test_entry_page_response_code(self):
         response = self.client.get(self.entry1.get_absolute_url())
