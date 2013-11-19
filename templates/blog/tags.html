@@ -2,11 +2,11 @@
 {% load i18n %}
 
 {% block title %}
-{% trans "Search Results" %}
+{% trans "Tag: " %}{{ tag }}
 {% endblock %}
 
 
 {% block page_title %}
-<h3>Serach results for query "{{ query }}"</h3>
+<h3>{% trans "Entries tagged" %} "{{ tag }}"</h3>
 <hr>
 {% endblock page_title %}

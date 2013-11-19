@@ -69,4 +69,5 @@ def tag_view(request, tag):
             entry_list.append(entry)
     if not entry_list:
         raise Http404
-    return render(request, 'blog/search.html', {'results': entry_list})
+    return render(request, 'blog/search.html', {'entry_list': entry_list,
+                                                'tag': tag})
