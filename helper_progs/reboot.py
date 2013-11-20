@@ -188,7 +188,7 @@ def backup(ip):
 
     if len(event_dict) > 0:
         with database.lock:
-            logging.debug("Writing reboot events to database.")
+            logging.debug("Writing backup events to database.")
             db = database.Database(secure.DBNAME, secure.USER,
                                    secure.PASS, secure.DB_SERVER)
             db.set_events(event_dict)

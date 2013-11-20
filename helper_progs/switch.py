@@ -219,6 +219,9 @@ class SNR(Switch):
         tn.write(secure.user.encode('ascii') + b"\r\n")
         tn.read_until(b"Password:")
         tn.write(self.pass_chooser().encode('ascii') + b"\r\n")
+        debug_info = tn.read_until(b"#", timeout=5)
+        if 'login' in debug_info.decode():
+            logging.error("Auth error on switch {}".format(self))
         return tn
 
     @log_decorator
@@ -241,9 +244,11 @@ class SNR(Switch):
         try:
             tn.write(command.encode())
             tn.write('Y\r\n'.encode())
-            tn.read_until(b'close tftp client')
+            debug_info = tn.read_until(b'close tftp client', timeout=20)
+            if 'close' not in debug_info.decode():
+                logging.warning('Probably error while making backup on {}'.format(self))
         except Exception as e:
-            logging.warning("Error while making backup of {}".format(self))
+            logging.warning("Error while making backup of {}: {}".format(self, e))
         finally:
             tn.close()
 
