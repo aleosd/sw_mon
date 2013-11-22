@@ -94,7 +94,7 @@ def history(request, status=None):
     if status == "all":
         event_list = Event.objects.select_related().all().order_by('-id')
     elif status == "warnings":
-        event_list = Event.objects.select_related().filter(ev_type='warn')[:30]
+        event_list = Event.objects.select_related().filter(ev_type='warn')
     elif status == "errors":
         event_list = Event.objects.select_related().filter(ev_type='err')
     else:
@@ -108,7 +108,7 @@ def history(request, status=None):
     except PageNotAnInteger:
         event_list = paginator.page(1)
     except EmptyPage:
-        event_list = paginator(paginator.num_pages)
+        event_list = paginator.page(paginator.num_pages)
 
     return render(request, 'mon/history.html', {'event_list': event_list,
                                                 'status': status,

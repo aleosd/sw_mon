@@ -40,6 +40,7 @@ Events history
         <li><a href="/mon/events/warnings/">{% trans "Warning" %}</a></li>
         <li class="active"><a href="/mon/events/errors/">{% trans "Error" %}</a></li>
     {% endif %}
+</ul>
 </div>
 {% endblock %}
 
@@ -85,7 +86,7 @@ $(document).ready(function()
     <ul>
         {% if event_list.has_previous %}
             <li><a href="?page={{ event_list.previous_page_number }}">Prev</a></li>
-            <li><a href="?page={{ event_list.number|add:"-1" }}">{{ event_list.number|add:"-1" }}</a></li>
+            <li><a href="?page={{ event_list.number|add:'-1' }}">{{ event_list.number|add:"-1" }}</a></li>
         {% else %}
             <li class="disabled"><a href="#">Prev</a></li>
         {% endif %}
