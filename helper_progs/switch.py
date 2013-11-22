@@ -7,6 +7,7 @@ import subprocess
 import time
 import datetime
 import unittest
+
 try:
     from . import connection
     from . import ping
@@ -29,6 +30,7 @@ def log_decorator(f):
                                                     args[0].__class__.__name__,
                                                     args[0].ip_addr))
         return f(*args)
+
     return wrapper
 
 
@@ -37,7 +39,7 @@ class Host():
         self.ip_addr = ip_addr
         self.pinger = None
 
-    def ping(self, packet_count = 3):
+    def ping(self, packet_count=3):
         """Switch.ping(int) -> [float, int]
 
         Method for host ping. Returns list of two items:
@@ -64,8 +66,8 @@ class Host():
         Using subprocess with system ping utility. Takes more resources,
         but less depends on cpu load, more accurate results.
         """
-        p = subprocess.Popen(["ping", "-c", str(packet_count), "-i", "0.2", self.ip_addr],
-                             stdout=subprocess.PIPE)
+        p = subprocess.Popen(["ping", "-c", str(packet_count), "-i",
+                              "0.2", self.ip_addr], stdout=subprocess.PIPE)
         result = p.communicate()
         result = result[0].decode()
 
@@ -190,7 +192,8 @@ class SNR(Switch):
             channel.write('reload\r\n'.encode())
             channel.write('Y\r\n'.encode())
         except Exception as e:
-            logging.error("Error {} while rebooting SNR switch: {}".format(e, self.ip_addr))
+            logging.error("Error {} while rebooting SNR switch: {}".format(e,
+                                                                           self.ip_addr))
         finally:
             conn.close()
 
@@ -198,7 +201,8 @@ class SNR(Switch):
     def ssh_backup(self):
         channel, conn = self.login()
         logging.debug('Connected to {} with ssh'.format(self.ip_addr))
-        command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
+        command = "copy running-config " \
+                  "tftp://{}/{}.cfg\r\n".format(secure.TFTP_SERVER, self.sw_id)
         channel.write(command.encode())
         channel.write('Y\r\n'.encode('ascii'))
         # waiting for success message
@@ -220,13 +224,20 @@ class SNR(Switch):
         tn.read_until(b"Password:")
         tn.write(self.pass_chooser().encode('ascii') + b"\r\n")
         debug_info = tn.read_until(b"#", timeout=5)
-        if 'login' in debug_info.decode():
-            logging.error("Auth error on switch {}".format(self))
-        return tn
+        if '#' in debug_info.decode():
+            logging.debug('Successfully logged in to {}'.format(self.ip_addr))
+            return tn
+        else:
+            tn.close()
+            logging.error("Probably wrong username/password "
+                          "on login: {}".format(self))
+            return None
 
     @log_decorator
     def reboot(self):
         tn = self.login()
+        if not tn:
+            return
         try:
             tn.write(b"reload\r\n")
             tn.write(b"Y\r\n")
@@ -240,15 +251,20 @@ class SNR(Switch):
     @log_decorator
     def backup(self):
         tn = self.login()
-        command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
+        if not tn:
+            return
+        command = 'copy running-config tftp://{}/{}.cfg\r\n'.format(
+            secure.TFTP_SERVER, self.sw_id)
         try:
             tn.write(command.encode())
             tn.write('Y\r\n'.encode())
             debug_info = tn.read_until(b'close tftp client', timeout=20)
             if 'close' not in debug_info.decode():
-                logging.warning('Probably error while making backup on {}'.format(self))
+                logging.warning('Probably error while making '
+                                'backup on {}'.format(self))
         except Exception as e:
-            logging.warning("Error while making backup of {}: {}".format(self, e))
+            logging.warning("Error while making backup of {}: {}".format(self,
+                                                                         e))
         finally:
             tn.close()
 
@@ -265,11 +281,21 @@ class Allied(Switch):
         tn.write(secure.allied_user.encode('ascii') + b"\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\n")
-        return tn
+        debug_info = tn.read_until(b">", timeout=5)
+        if '>' in debug_info.decode():
+            logging.debug('Successfully logged in to {}'.format(self.ip_addr))
+            return tn
+        else:
+            tn.close()
+            logging.error("Probably wrong username/password "
+                          "on login: {}".format(self))
+            return None
 
     @log_decorator
     def reboot(self):
         tn = self.login()
+        if not tn:
+            return
         tn.write(b"restart reboot\n")
         debug_info = tn.read_all().decode('ascii')
         logging.debug(debug_info)
@@ -278,7 +304,10 @@ class Allied(Switch):
     @log_decorator
     def backup(self):
         tn = self.login()
-        command = "upload server={} file=boot.cfg method=tftp destfile={}.cfg\n".format(secure.TFTP_SERVER, self.sw_id)
+        if not tn:
+            return
+        command = "upload server={} file=boot.cfg method=tftp destfile={}.cfg\n".format(
+            secure.TFTP_SERVER, self.sw_id)
         tn.write(command.encode('ascii'))
         tn.close()
 
@@ -301,7 +330,8 @@ class DLink(Switch):
             time.sleep(1)
             channel.write('y\r\n'.encode())
         except Exception as e:
-            logging.error('Error while rebooting DLink switch {}: {}'.format(self.ip_addr, e))
+            logging.error('Error while rebooting DLink '
+                          'switch {}: {}'.format(self.ip_addr, e))
         finally:
             conn.close()
 
@@ -309,12 +339,14 @@ class DLink(Switch):
     def backup(self):
         channel, conn = self.login()
         try:
-            command = 'upload cfg_toTFTP {} dest_file {}.cfg\r\n'.format(secure.TFTP_SERVER, self.sw_id)
+            command = 'upload cfg_toTFTP {} dest_file {}.cfg\r\n'.format(
+                secure.TFTP_SERVER, self.sw_id)
             channel.write(command.encode())
             conn.read_until('Success')
             channel.write('logout\r\n'.encode())
         except Exception as e:
-            logging.error('Error while backuping DLink switch {}: {}'.format(self.ip_addr, e))
+            logging.error('Error while backuping DLink '
+                          'switch {}: {}'.format(self.ip_addr, e))
         finally:
             conn.close()
 
@@ -342,7 +374,8 @@ class Com3(Switch):
             debug_info = tn.read_all().decode('ascii')
             logging.debug(debug_info)
         except Exception as e:
-            logging.warning('Error while reading info from {}: {}'.format(self.ip_addr, e))
+            logging.warning('Error while reading info '
+                            'from {}: {}'.format(self.ip_addr, e))
         finally:
             tn.close()
             logging.info('Rebooted 3com, ip: {}'.format(self.ip_addr))
@@ -371,14 +404,24 @@ class Cisco(Switch):
         conn = connection.TelnetConnection(self.ip_addr)
         tn = conn.connect()
         tn.read_until(b"Username: ")
-        tn.write(b"admin\r\n")
+        tn.write(secure.user.encode('ascii') + b"\n")
         tn.read_until(b"Password: ")
         tn.write(self.password.encode('ascii') + b"\n")
-        return tn
+        debug_info = tn.read_until(b"#", timeout=5)
+        if '#' in debug_info.decode():
+            logging.debug('Successfully logged in to {}'.format(self.ip_addr))
+            return tn
+        else:
+            tn.close()
+            logging.error("Probably wrong username/password "
+                          "on login: {}".format(self))
+            return None
 
     @log_decorator
     def reboot(self):
         tn = self.login()
+        if not tn:
+            return
         tn.write(b"reload\n")
         tn.write(b"\n")
         debug_info = tn.read_all().decode('ascii')
@@ -388,14 +431,18 @@ class Cisco(Switch):
     @log_decorator
     def backup(self):
         tn = self.login()
-        command = 'copy running-config tftp://{}/{}.cfg\n'.format(secure.TFTP_SERVER, self.sw_id)
+        if not tn:
+            return
+        command = 'copy running-config tftp://{}/{}.cfg\n'.format(
+            secure.TFTP_SERVER, self.sw_id)
         try:
             tn.write(command.encode())
             tn.write(b'\r\n')
             tn.write(b'\r\n')
             tn.read_until(b'bytes copied')  # indicates success
         except Exception as e:
-            logging.error('Error while backuping cisco {}: {}'.format(self.ip_addr, e))
+            logging.error('Error while backuping cisco {}: {}'.format(
+                self.ip_addr, e))
         finally:
             tn.close()
 
@@ -439,10 +486,11 @@ class Unmanaged(Switch):
 
 
 class TestSwitch(unittest.TestCase):
-
     def setUp(self):
-        self.google_dns = Switch(1, "8.8.8.8", 2, 100000, True, 236, True, 592, 2)
-        self.error_device = Switch(1, "1.1.1.1", 2, 200000, False, 237, False, None, 2)
+        self.google_dns = Switch(1, "8.8.8.8", 2, 100000, True, 236, True,
+                                 592, 2)
+        self.error_device = Switch(1, "1.1.1.1", 2, 200000, False, 237,
+                                   False, None, 2)
         self.wrong_domain = Host('qwewqe')
 
     def test_is_alive(self):
@@ -473,6 +521,7 @@ class TestSwitch(unittest.TestCase):
     def test_can_reboot(self):
         self.assertTrue(self.google_dns.can_reboot())
         self.assertFalse(self.error_device.can_reboot())
+
 
 if __name__ == '__main__':
     unittest.main()
