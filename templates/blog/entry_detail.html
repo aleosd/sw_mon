@@ -16,7 +16,7 @@
     {{ entry.body_html|safe }}
     <hr/>
     {% if perms.entry.change %}
-        <a href="/admin/blog/entry/{{ entry.id }}/">Редактировать</a>
+        <a href="/admin/blog/entry/{{ entry.id }}/">{% trans "Edit" %}</a>
         <p> {% trans "Tags" %}: 
             {% for tag in entry.make_tag_list %}
                 <a href="/blog/tag/{{ tag }}/"><span class="label">{{ tag }}</span></a>
