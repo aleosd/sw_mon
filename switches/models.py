@@ -102,6 +102,7 @@ class SwitchForm(forms.ModelForm):
 class Event(models.Model):
     ev_datetime = models.DateTimeField(auto_now_add=True,
                                        verbose_name='Date and time')
+    # ev_datetime.editable = True
     types = (('info', 'Info'),
             ('warn', 'Warning'),
             ('err', 'Error'))
