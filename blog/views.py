@@ -14,7 +14,7 @@ def entries_index(request):
     except PageNotAnInteger:
         entry_list = paginator.page(1)
     except EmptyPage:
-        entry_list = paginator(paginator.num_pages)
+        entry_list = paginator.page(paginator.num_pages)
 
     return render(request, 'blog/entry_index.html',
                               {'entry_list': entry_list,
@@ -44,7 +44,7 @@ def category_detail(request, slug):
     except PageNotAnInteger:
         entry_list = paginator.page(1)
     except EmptyPage:
-        entry_list = paginator(paginator.num_pages)
+        entry_list = paginator.page(paginator.num_pages)
 
     return render(request, 'blog/category_detail.html',
                   {'entry_list': entry_list,
