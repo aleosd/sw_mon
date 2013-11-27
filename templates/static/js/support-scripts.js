@@ -54,7 +54,7 @@ $(document).ready(function() {
 });
 
 <!-- Dropdown script -->
-$(docment).ready( function() {
+$(document).ready( function() {
     $('.dropdown-toggle').dropdown();
 });
 
