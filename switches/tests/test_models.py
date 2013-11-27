@@ -89,5 +89,6 @@ class SwitchModelsTest(TestCase):
 
     def test_get_config_path(self):
         switch3_configs = self.switch3.get_config_path()
-        self.assertEqual(switch3_configs, 'configs/{}.cfg'.format(self.switch3.sw_id))
+        self.assertEqual(switch3_configs,
+                         'configs/{}.cfg'.format(self.switch3.sw_id))
         self.assertFalse(self.switch1.get_config_path())

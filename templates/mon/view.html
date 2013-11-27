@@ -161,6 +161,11 @@ $('#clear_btn').click(function() {
                     {% if switch.sw_backup_conf %}<span class="col_green">{% trans "Enabled" %}</span>
                     {% else %}<span class="col_red">{% trans "Disabled" %}</span>{% endif %}
                 </li>
+                <li><strong>{% trans "Config file" %}:</strong>
+                    {% if not switch.get_config_path %}{% trans "No configuration file found" %}
+                    {% else %}<a href="{{ MEDIA_URL }}{{ switch.get_config_path }}">{{ switch.sw_id }}.cfg</a>
+                    {% endif %}
+                </li>
             </ul>
         </div>
     </div>
