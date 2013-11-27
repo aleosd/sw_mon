@@ -1,10 +1,12 @@
 import re
 import datetime
+import os
 from django.core.exceptions import ValidationError
 from django.db import models
 from django import forms
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.conf import settings
 # from django.utils import timezone
 from device.models import Device
 
@@ -82,6 +84,12 @@ class Switch(models.Model):
 
     def get_absolute_url(self):
         return "/mon/edit/%i/" % self.id
+
+    def get_config_path(self):
+        if os.path.isfile(settings.MEDIA_ROOT +
+                'configs/{}.cfg'.format(self.sw_id)):
+            return 'configs/{}.cfg'.format(self.sw_id)
+        return False
 
 
 class SwitchForm(forms.ModelForm):
