@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/login/'}),
     url(r'^chaining/', include('smart_selects.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^files/configs/(?P<file_name>.+)$', 'switches.views.config_download'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
