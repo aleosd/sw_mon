@@ -92,3 +92,7 @@ class SwitchModelsTest(TestCase):
         self.assertEqual(switch3_configs,
                          'configs/{}.cfg'.format(self.switch3.sw_id))
         self.assertFalse(self.switch1.get_config_path())
+
+    def test_get_absolute_url(self):
+        switch1_url = self.switch1.get_absolute_url()
+        self.assertEqual(switch1_url, '/mon/edit/1/')

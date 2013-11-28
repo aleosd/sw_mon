@@ -89,7 +89,7 @@ class Switch(models.Model):
         if os.path.isfile(settings.MEDIA_ROOT +
                 'configs/{}.cfg'.format(self.sw_id)):
             return 'configs/{}.cfg'.format(self.sw_id)
-        return False
+        return None
 
 
 class SwitchForm(forms.ModelForm):
