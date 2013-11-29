@@ -60,6 +60,8 @@ class Switch(models.Model):
                                   verbose_name='Comments')
     
     sw_device = models.ForeignKey(Device, blank=True, null=True)
+    # value of max uptime in seconds
+    sw_uptime_to_reboot = models.IntegerField(default=1209600)
 
     class Meta:
         verbose_name_plural = "Switches"

@@ -10,7 +10,7 @@ class SwitchAdmin(admin.ModelAdmin):
         ('Basics', {'fields': ['ip_addr', 'sw_type', 'sw_id']}),
         ('Address', {'fields': ['sw_district', 'sw_street', 'sw_build_num']}),
         ('Other', {'fields': ['sw_enabled', 'sw_backup_conf', 'sw_uplink',
-                              'sw_comment', 'sw_device'],
+                              'sw_comment', 'sw_device', 'sw_uptime_to_reboot'],
                    'classes': ['collapse']})
     ]
 

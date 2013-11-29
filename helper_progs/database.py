@@ -16,7 +16,6 @@ USER = secure.USER
 PASS = secure.PASS
 HOST = secure.DB_SERVER
 
-UPTIME = 1209600  # Value in seconds (2 weeks), if greater - switch need to be rebooted
 lock = Lock()
 
 
@@ -73,8 +72,8 @@ class Database():
                     WHERE ip_addr=('{}')""".format(self.table_name, ip)
             data = self.execute_query(query)
         elif action == 'reboot':
-            query = """SELECT * from {}
-                    WHERE sw_uptime>('{}') AND sw_enabled""".format(self.table_name, UPTIME)
+            query = """SELECT * from {} as sw
+                    WHERE sw.sw_uptime>sw.sw_uptime_to_reboot AND sw_enabled""".format(self.table_name)
             data = self.execute_query(query)
         elif action == 'backup':
             query = """SELECT * from {}
@@ -148,7 +147,8 @@ class TestDatabase(unittest.TestCase):
                                   "sw_uptime" integer,
                                   "sw_uplink" varchar(200),
                                   "sw_comment" varchar(500),
-                                  "sw_device_id" integer);""")
+                                  "sw_device_id" integer,
+                                  "sw_uptime_to_reboot" integer DEFAULT 1209600);""")
 
         # Adding disabled switch
         c.execute("""INSERT INTO switches_switch_test VALUES (
