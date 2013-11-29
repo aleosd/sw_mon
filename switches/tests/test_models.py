@@ -47,7 +47,7 @@ class SwitchModelsTest(TestCase):
             ip_addr = '192.168.1.1',
             sw_street = create_street(street='my_street_1'),
             sw_type = create_switch_type(sw_type='type_1'),
-            sw_id = 1000003,
+            sw_id = 76543212334,
             sw_district = 'ggn'
         )
         self.switch2 = create_switch(

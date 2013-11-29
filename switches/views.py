@@ -1,6 +1,9 @@
 # Create your views here.
+import os
 from datetime import timedelta
 from django.shortcuts import render, get_object_or_404
+from django.conf import settings
+from django.core.servers.basehttp import FileWrapper
 from switches.models import Switch, SwitchForm, Event
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotAllowed
@@ -203,3 +206,16 @@ def by_district(request, district):
         'sw_device__dev_ser__ser_ven',
     ).filter(sw_district=district)
     return render(request, 'mon/index.html', {'switch_list': switch_list})
+
+
+@login_required()
+def config_download(request, file_name):
+    file_path = settings.MEDIA_ROOT + 'configs/' + file_name
+    if not os.path.isfile(file_path):
+        raise Http404
+    wrapper = FileWrapper(open(file_path, 'r'))
+    response = HttpResponse(wrapper, mimetype='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+    response['Content-Length'] = os.path.getsize(file_path)
+    response['X-Sendfile'] = file_path
+    return response
