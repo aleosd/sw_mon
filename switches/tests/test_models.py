@@ -1,5 +1,7 @@
 from django.test import TestCase
+import os
 from switches.models import Switch, Street, SwitchType
+from django.conf import settings
 
 
 def create_street(**kwargs):
@@ -88,6 +90,11 @@ class SwitchModelsTest(TestCase):
         )
 
     def test_get_config_path(self):
+        file_name = str(self.switch3.sw_id) + '.cfg'
+        file_path = settings.MEDIA_ROOT + 'configs/' + file_name
+        if not os.path.isfile(file_name):
+            file = open(file_path, 'w')
+            file.close()
         switch3_configs = self.switch3.get_config_path()
         self.assertEqual(switch3_configs,
                          'configs/{}.cfg'.format(self.switch3.sw_id))

@@ -1,7 +1,9 @@
+import os
 from django.core.urlresolvers import resolve
 # from django.template.loader import render_to_string
 # from django.http import HttpRequest
 from switches.views import index, edit
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth.models import User, Permission
 from switches.models import Switch, Street, SwitchType
@@ -251,3 +253,16 @@ class SwitchViewsTest(TestCase):
         self.assertEqual(response_get.status_code, 405)
         self.assertEqual(response_post.status_code, 200)
         self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
+
+    def test_config_download_link(self):
+        file_name = str(self.switch1.sw_id) + '.cfg'
+        file_path = settings.MEDIA_ROOT + 'configs/' + file_name
+        if not os.path.isfile(file_name):
+            file = open(file_path, 'w')
+            file.close()
+
+        response = self.client.get(settings.MEDIA_URL + self.switch1.get_config_path())
+        self.assertEqual(response.status_code, 200)
+
+        response_not_exist = self.client.get(settings.MEDIA_URL + 'configs/' + str(self.switch2.sw_id))
+        self.assertEqual(response_not_exist.status_code, 404)
