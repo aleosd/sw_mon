@@ -61,7 +61,8 @@ class Switch(models.Model):
     
     sw_device = models.ForeignKey(Device, blank=True, null=True)
     # value of max uptime in seconds
-    sw_uptime_to_reboot = models.IntegerField(default=1209600)
+    sw_uptime_to_reboot = models.IntegerField(default=1209600,
+                                              help_text='Maximum uptime value in sec')
 
     class Meta:
         verbose_name_plural = "Switches"
