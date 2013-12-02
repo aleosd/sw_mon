@@ -255,14 +255,20 @@ class SwitchViewsTest(TestCase):
         self.user.user_permissions.remove(Permission.objects.get(codename='change_switch'))
 
     def test_config_download_link(self):
+        CONF_FILE_CREATED = False
         file_name = str(self.switch1.sw_id) + '.cfg'
         file_path = settings.MEDIA_ROOT + 'configs/' + file_name
         if not os.path.isfile(file_name):
             file = open(file_path, 'w')
             file.close()
+            CONF_FILE_CREATED = True
 
         response = self.client.get(settings.MEDIA_URL + self.switch1.get_config_path())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['X-sendfile'], file_path)
 
-        response_not_exist = self.client.get(settings.MEDIA_URL + 'configs/' + str(self.switch2.sw_id))
+        response_not_exist = self.client.get('files/configs/wrong_name.cfg')
         self.assertEqual(response_not_exist.status_code, 404)
+
+        if CONF_FILE_CREATED:
+            os.remove(file_path)
