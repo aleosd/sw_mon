@@ -1,5 +1,9 @@
 #! /usr/bin/python3
 
+"""
+Main script for operations with switches. Can be used
+with command-line arguments: use 'reboot.py -h' to see them.
+"""
 
 import sys
 import argparse
@@ -36,7 +40,20 @@ switch_types = {
 
 
 def get_switch_list(flag):
-    # fetch all or given by ip switch info from db
+    """Fetch switches from database, according to given flag.
+
+    string -> list of switches
+
+    Function for fetching switch information from database.
+    Returns list of switches. One parameter - flag - a string,
+    can be ip address of particular switch or flag, pointing
+    to a group of switches.
+    Possible values of argumet 'flag':
+    valid ip address - fetch info of particular switch
+    'backup' - get all switches, with config backup sw_enabled
+    'reboot' - get all switches, ready to reboot (according to uptime)
+    'ping' - get all switches with enabled ping/uptime checking
+    """
     db = database.Database(secure.DBNAME, secure.USER,
                            secure.PASS, secure.DB_SERVER)
     if flag == 'backup':
@@ -54,7 +71,6 @@ def get_switch_list(flag):
 
     switch_list = []
     for row in raw_data:
-        # fancy names, just for better look
         id_ = int(row[0])
         ip_addr = row[1]
         sw_district = row[2]
@@ -72,6 +88,15 @@ def get_switch_list(flag):
 
 
 def reboot(ip):
+    """Reboots given switches.
+
+    string -> None
+
+    Function for switch rebooting. Takes one argument, either valid
+    ip address of flag 'reboot' (automatic from command line '-r'
+    parameter). Gets switch list from get_switch_list function
+    and reboots them. Writes event for every rebooted switch.
+    """
     logging.debug('Starting global reboot function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
     event_dict = {}
@@ -97,7 +122,15 @@ def reboot(ip):
                                    secure.PASS, secure.DB_SERVER)
             db.set_events(event_dict)
 
+
 def ping():
+    """Ping all enabled switches from the database.
+
+    Multithreaded function. Fetches all enabled switches
+    from the database and starts ping thread for everyone
+    of them. Writes an event if switch status changes.
+    """
+
     logging.debug('Starting global ping function')
     switch_list = get_switch_list('ping')
     threads = []
@@ -141,6 +174,13 @@ def ping():
 
 
 def uptime():
+    """Checks uptime of all enables switches in the database.
+
+    Multithreaded function for uptime checking. Fetches all
+    enabled switches from the database and checks their uptime.
+    Takes no arguments.
+    """
+
     logging.debug('Starting global uptime function')
     switch_list = get_switch_list('ping')
     s = snmp.Snmp()
@@ -163,6 +203,16 @@ def uptime():
 
 
 def backup(ip):
+    """Run configuration backup for given switches.
+
+    string -> None
+
+    Function for switch config backup. Takes one argument, either valid
+    ip address of flag 'backup' (automatic from command line '-b'
+    parameter). Gets switch list from get_switch_list function
+    and runs backup. Writes event for every backuped switch.
+    """
+
     logging.debug('Starting global backup function with ip {}'.format(ip))
     switch_list = get_switch_list(ip)
     event_dict = {}
